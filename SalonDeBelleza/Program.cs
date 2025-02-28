@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 //  Configurar servicios básicos
-builder.Services.AddRazorPages(); // Habilita Razor Pages
+//builder.Services.AddRazorPages(); // Habilita Razor Pages
 builder.Services.AddControllers(); // Habilita controladores para APIs
 builder.Services.AddEndpointsApiExplorer(); // Habilita documentación de API
 builder.Services.AddSwaggerGen(); // Habilita Swagger para pruebas
@@ -13,12 +13,7 @@ builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 });
 
 var app = builder.Build();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "public")),
-    RequestPath = ""
-});
+
 
 //  Configurar el servidor para que escuche en Railway/Heroku
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
