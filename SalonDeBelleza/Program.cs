@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SalonDeBelleza.src.models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using SalonDeBelleza.src.models; // Asegúrate de que este using apunte a la carpeta donde está tu modelo y DbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,8 @@ builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 21)),
-        options => options.EnableRetryOnFailure() // Habilitar reintentos
+        new MySqlServerVersion(new Version(8, 0, 21)), // Asegúrate de usar la versión correcta de MySQL
+        mySqlOptions => mySqlOptions.EnableRetryOnFailure() // Habilita la resiliencia a errores transitorios
     ));
 
 var app = builder.Build();

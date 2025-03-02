@@ -23,7 +23,13 @@ public class TestController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { Error = ex.Message });
+            // Agrega más detalles sobre el error
+            return StatusCode(500, new
+            {
+                Error = ex.Message,
+                InnerException = ex.InnerException?.Message,
+                StackTrace = ex.StackTrace
+            });
         }
     }
 }

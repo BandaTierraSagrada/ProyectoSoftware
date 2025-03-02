@@ -22,7 +22,7 @@ namespace SalonDeBelleza.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("SalonDeBelleza.Models.Usuario", b =>
+            modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()

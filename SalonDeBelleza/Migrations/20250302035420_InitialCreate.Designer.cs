@@ -12,7 +12,7 @@ using SalonDeBelleza.src.models;
 namespace SalonDeBelleza.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250302025626_InitialCreate")]
+    [Migration("20250302035420_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace SalonDeBelleza.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("SalonDeBelleza.Models.Usuario", b =>
+            modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
