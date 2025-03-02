@@ -4,33 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    
   </PropertyGroup>
 
-  <ItemGroup>
-    
-    <Compile Include="src/config/*.cs" />
-    
-    <Compile Include="src/controllers/*.cs" />
-    
-    <Compile Include="src/models/*.cs" />
-    
-    <Compile Include="src/repositories/*.cs" />
-    
-    <Compile Include="src/services/*.cs" />
-    
-    <Compile Include="src/routes/*.cs" />
-    
-    <Content Include="src/views/**/*.cshtml" />
-    
-  </ItemGroup>
-  
   <ItemGroup>
     <!-- Dependencias necesarias -->
     
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     
   </ItemGroup>
