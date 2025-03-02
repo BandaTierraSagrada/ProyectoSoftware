@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalonDeBelleza.src.services;
 
-namespace SalonDeBelleza.Controllers
+namespace SalonDeBelleza.src.controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,61 +1,53 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.EntityFrameworkCore.Query;
 using SalonDeBelleza.src.models;
+using SalonDeBelleza.src.services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Obtener la conexión de la variable de entorno de Heroku
-var connectionString = Environment.GetEnvironmentVariable("MYSQL_ADDON_URI") ??
-                        "server=bqoiit78a116zt8g5ovu-mysql.services.clever-cloud.com:3306;database=bqoiit78a116zt8g5ovu;user=uaarc4dw9qk5anxf;password=v9NDoyB9DEaRNsY9U71B";
-
-// Reemplazar el esquema `mysql://usuario:password@host:puerto/db` de Clever Cloud
-if (connectionString.StartsWith("mysql://"))
+// Configurar servicios básicos
+builder.Services.AddControllers(); // Habilita controladores para APIs
+builder.Services.AddEndpointsApiExplorer(); // Habilita documentación de API
+builder.Services.AddSwaggerGen(); // Habilita Swagger para pruebas
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 {
-    var uri = new Uri(connectionString);
-    var host = uri.Host;
-    var dbport = uri.Port;
-    var userInfo = uri.UserInfo.Split(':');
-    var user = userInfo[0];
-    var password = userInfo[1];
-    var database = uri.AbsolutePath.TrimStart('/');
+    options.RootDirectory = "/src/views"; // Establece la nueva ruta de las vistas
+});
 
-    connectionString = $"server={host};port={dbport};database={database};user={user};password={password}";
+// Configurar el contexto de la base de datos con MySql.EntityFrameworkCore
+var connectionString = "server=j6jbbxae5c8vg4m1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com;port=3306;database=r7ul5s0h1znsh05k;user=b5p1cxxztq4ff0c5;password=u8xnmhd7bdge29t5";
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("La cadena de conexión 'DefaultConnection' no está configurada.");
 }
 
-// Configurar Entity Framework con MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySQL(connectionString));
 
-// Agregar servicios
-//builder.Services.AddScoped<UsuariosRepository>();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddRazorPages();
+// Registrar el servicio de base de datos
+builder.Services.AddSingleton<DatabaseService>(provider =>
+    new DatabaseService(connectionString));
 
 var app = builder.Build();
 
-// Configurar puerto de Heroku
+// Configurar el servidor para que escuche en Railway/Heroku
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
-// Configurar middleware
+// Middleware para manejar solicitudes
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseAuthorization();
+app.UseStaticFiles(); // Para archivos en wwwroot
+app.UseRouting(); // Habilita enrutamiento
+app.UseAuthorization(); // Se activará cuando se implemente autenticación
 
-app.MapControllers();
-app.MapRazorPages();
+// Mapear rutas
+app.MapControllers(); // API Controllers
+app.MapRazorPages(); // Razor Pages
 
 app.Run();
