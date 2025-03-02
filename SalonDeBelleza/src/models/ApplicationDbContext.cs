@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SalonDeBelleza.src.models;
 
 namespace SalonDeBelleza.src.models
 {
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         public DbSet<Usuario> Usuarios { get; set; }
 
@@ -23,6 +22,15 @@ namespace SalonDeBelleza.src.models
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.Rol)
                 .HasConversion<string>();
+
+            // Configurar valores por defecto para created_at y updated_at
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.UpdatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         }
     }
 }

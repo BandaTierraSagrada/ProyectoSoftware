@@ -1,35 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SalonDeBelleza.src.models; // Asegúrate de que este using apunte a tu DbContext
+using SalonDeBelleza.src.services;
 
-[ApiController]
-[Route("test")]
-public class TestController : ControllerBase
+namespace SalonDeBelleza.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public TestController(ApplicationDbContext context)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TestController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly DatabaseService _databaseService;
 
-    [HttpGet("database")]
-    public async Task<IActionResult> TestDatabase()
-    {
-        try
+        public TestController(DatabaseService databaseService)
         {
-            var canConnect = await _context.Database.CanConnectAsync();
-            return Ok(new { Success = canConnect });
+            _databaseService = databaseService;
         }
-        catch (Exception ex)
+
+        [HttpGet("test-database")]
+        public IActionResult TestDatabase()
         {
-            // Agrega más detalles sobre el error
-            return StatusCode(500, new
-            {
-                Error = ex.Message,
-                InnerException = ex.InnerException?.Message,
-                StackTrace = ex.StackTrace
-            });
+            var result = _databaseService.TestConnection();
+            return Ok(result);
         }
     }
 }
