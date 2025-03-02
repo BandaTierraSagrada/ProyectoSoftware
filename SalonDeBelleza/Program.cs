@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SalonDeBelleza.Models;
+using SalonDeBelleza.src.models;
 
 var builder = WebApplication.CreateBuilder(args);
 

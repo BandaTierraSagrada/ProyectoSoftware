@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SalonDeBelleza.Models
+namespace SalonDeBelleza.src.models
 {
     public class Usuario
     {

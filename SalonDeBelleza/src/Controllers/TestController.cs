@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SalonDeBelleza.Models; // Asegúrate de que este using apunte a tu DbContext
+using SalonDeBelleza.src.models; // Asegúrate de que este using apunte a tu DbContext
 
 [ApiController]
 [Route("test")]

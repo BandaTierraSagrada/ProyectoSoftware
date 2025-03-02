@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SalonDeBelleza.Models
+namespace SalonDeBelleza.src.models
 {
     public class ApplicationDbContext : DbContext
     {
