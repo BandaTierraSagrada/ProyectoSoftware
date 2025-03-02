@@ -1,1 +1,1 @@
-web: cd heroku_output && dotnet Proyecto.dll
+web: cd heroku_output && dotnet SalonDeBelleza.dll
