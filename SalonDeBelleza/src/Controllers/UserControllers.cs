@@ -86,7 +86,7 @@ namespace SalonDeBelleza.src.controllers
             existingUser.Email = usuario.Email;
             existingUser.Password = usuario.Password;
             existingUser.Rol = usuario.Rol;
-            existingUser.UpdatedAt = DateTime.UtcNow;
+
 
             _context.Usuarios.Update(existingUser);
             await _context.SaveChangesAsync();

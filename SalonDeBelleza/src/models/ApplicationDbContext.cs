@@ -23,14 +23,6 @@ namespace SalonDeBelleza.src.models
                 .Property(u => u.Rol)
                 .HasConversion<string>();
 
-            // Configurar valores por defecto para created_at y updated_at
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.UpdatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         }
     }
 }

@@ -31,8 +31,5 @@ namespace SalonDeBelleza.src.models
         [Required]
         public string Rol { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
