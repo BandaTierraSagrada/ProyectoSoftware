@@ -1,31 +1,58 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SalonDeBelleza.src.models;
-using SalonDeBelleza.src.services;
+using System.Threading.Tasks;
 
 namespace SalonDeBelleza.src.views.Usuarios
 {
     public class RegisterModel : PageModel
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly UserManager<Usuario> _userManager;
 
-        public RegisterModel(UsuarioService usuarioService)
+        public RegisterModel(UserManager<Usuario> userManager)
         {
-            _usuarioService = usuarioService;
+            _userManager = userManager;
         }
 
         [BindProperty]
-        public Usuario Usuario { get; set; }
+        public Usuario Usuario { get; set; } = new Usuario();
 
-        public IActionResult OnPost()
+        [BindProperty]
+        public string Password { get; set; }
+
+        public void OnGet()
+        {
+        }
+
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _usuarioService.RegistrarUsuarioAsync(Usuario).Wait();
-            return RedirectToPage("/Usuarios/Login");
+            // Crear un nuevo usuario a partir de los datos del formulario
+            var usuario = new Usuario
+            {
+                Nombre = Usuario.Nombre,
+                Telefono = Usuario.Telefono,
+                Email = Usuario.Email,
+                UserName = Usuario.Email // Usar el email como nombre de usuario
+            };
+
+            var result = await _userManager.CreateAsync(usuario, Password);
+            if (result.Succeeded)
+            {
+                return RedirectToPage("/Usuarios/Login"); // Redirigir a la página de inicio de sesión
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return Page();
         }
     }
 }

@@ -1,47 +1,45 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SalonDeBelleza.src.models;
-using SalonDeBelleza.src.services;
+using System.Threading.Tasks;
 
 namespace SalonDeBelleza.src.views.Usuarios
 {
     public class LoginModel : PageModel
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly SignInManager<Usuario> _signInManager;
 
-        public LoginModel(UsuarioService usuarioService)
+        public LoginModel(SignInManager<Usuario> signInManager)
         {
-            _usuarioService = usuarioService;
+            _signInManager = signInManager;
         }
 
         [BindProperty]
-        public string EmailOrPhone { get; set; }
+        public string Email { get; set; }
 
         [BindProperty]
         public string Password { get; set; }
 
-        public IActionResult OnPost()
+        public void OnGet()
         {
-            var usuario = _usuarioService.AutenticarUsuarioAsync(EmailOrPhone, Password).Result;
+        }
 
-            if (usuario == null)
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
                 return Page();
             }
 
-            // Guardar el usuario en la sesión
-            HttpContext.Session.SetString("Nombre", usuario.Nombre);
-            HttpContext.Session.SetString("Rol", usuario.Rol);
-
-            // Redirigir según el rol
-            return usuario.Rol switch
+            var result = await _signInManager.PasswordSignInAsync(Email, Password, isPersistent: false, lockoutOnFailure: false);
+            if (result.Succeeded)
             {
-                "Cliente" => RedirectToPage("/Home/Cliente"),
-                "Colaborador" => RedirectToPage("/Home/Colaborador"),
-                "Administrador" => RedirectToPage("/Home/Administrador"),
-                _ => RedirectToPage("/Index")
-            };
+                return RedirectToPage("/Index"); // Redirigir a la página principal
+            }
+
+            ModelState.AddModelError(string.Empty, "Inicio de sesión no válido.");
+            return Page();
         }
     }
 }

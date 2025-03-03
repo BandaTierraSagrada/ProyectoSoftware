@@ -3,5 +3,4 @@
 @{
 	ViewData["Title"] = "Cliente";
 }
-<h2>Bienvenido, Cliente</h2>
-<p>Nombre: @HttpContext.Session.GetString("Nombre")</p>
+<h2>Bienvenido, @Model.UserName</h2>

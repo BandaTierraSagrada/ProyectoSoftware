@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalonDeBelleza.src.models
 {
-    public class Usuario
+    public class Usuario : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserID { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Nombre { get; set; }
@@ -19,17 +14,12 @@ namespace SalonDeBelleza.src.models
         public string Telefono { get; set; }
 
         [StringLength(255)]
-        public string Email { get; set; }
+        public string Email { get; set; } // Este campo es opcional
 
         [Required]
-        [StringLength(255)]
-        public string Password { get; set; }
+        public string Loginstatus { get; set; } = "Inactivo"; // Estado de inicio de sesión
 
         [Required]
-        public string Loginstatus { get; set; } = "Inactivo";
-
-        [Required]
-        public string Rol { get; set; }
-
+        public string Rol { get; set; } = "Cliente"; // Rol por defecto
     }
 }
