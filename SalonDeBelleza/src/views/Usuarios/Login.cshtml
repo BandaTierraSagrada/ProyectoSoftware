@@ -1,6 +1,7 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Usuarios.LoginModel
 @{
+	ViewData["Title"] = "Inicio de Sesión";
 }
 <header>
 
@@ -8,3 +9,31 @@
 
 
 </header>
+
+<h2>Inicio de Sesión</h2>
+
+<form method="post">
+    <div>
+        <label for="emailOrPhone">Correo o Teléfono:</label>
+        <input type="text" id="emailOrPhone" name="EmailOrPhone" required />
+    </div>
+    <div>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="Password" required />
+    </div>
+    <button type="submit">Iniciar Sesión</button>
+</form>
+
+@if (!ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<p>¿No tienes una cuenta? <a href="/Usuarios/Register">Regístrate aquí</a>.</p>

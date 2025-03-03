@@ -1,0 +1,7 @@
+﻿@page
+@model SalonDeBelleza.src.views.Home.ColaboradorModel
+@{
+	ViewData["Title"] = "Colaborador";
+}
+<h2>Bienvenido, Colaborador</h2>
+<p>Nombre: @HttpContext.Session.GetString("Nombre")</p>

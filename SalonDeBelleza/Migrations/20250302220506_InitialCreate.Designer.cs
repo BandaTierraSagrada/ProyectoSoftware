@@ -10,7 +10,7 @@ using SalonDeBelleza.src.models;
 namespace SalonDeBelleza.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250302101705_InitialCreate")]
+    [Migration("20250302220506_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

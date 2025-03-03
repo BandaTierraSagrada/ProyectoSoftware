@@ -1,10 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using SalonDeBelleza.src.models;
+using SalonDeBelleza.src.repositories;
 using SalonDeBelleza.src.services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configurar sesiones
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 // Configurar servicios básicos
 builder.Services.AddControllers(); // Habilita controladores para APIs
@@ -29,6 +38,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<DatabaseService>(provider =>
     new DatabaseService(connectionString));
 
+// Registrar el repositorio y el servicio
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<UsuarioService>();
+
+
 var app = builder.Build();
 
 // Configurar el servidor para que escuche en Railway/Heroku
@@ -41,11 +55,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseSession();
 app.UseStaticFiles(); // Para archivos en wwwroot
 app.UseRouting(); // Habilita enrutamiento
 app.UseAuthorization(); // Se activará cuando se implemente autenticación
-
 // Mapear rutas
 app.MapControllers(); // API Controllers
 app.MapRazorPages(); // Razor Pages

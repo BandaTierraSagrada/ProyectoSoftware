@@ -1,0 +1,7 @@
+﻿@page
+@model SalonDeBelleza.src.views.Home.AdministradorModel
+@{
+	ViewData["Title"] = "Administrador";
+}
+<h2>Bienvenido, Administrador</h2>
+<p>Nombre: @HttpContext.Session.GetString("Nombre")</p>
