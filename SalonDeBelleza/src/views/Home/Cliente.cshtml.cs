@@ -6,11 +6,11 @@ namespace SalonDeBelleza.src.views.Home
 {
     public class ClienteModel : PageModel
     {
-        public string UserName { get; private set; }
+        public string Nombre { get; private set; }
 
         public void OnGet()
         {
-            UserName = HttpContext.Session.GetString("UserName") ?? "Invitado";
+            Nombre = HttpContext.Session.GetString("Nombre") ?? "Invitado";
         }
     }
 }
