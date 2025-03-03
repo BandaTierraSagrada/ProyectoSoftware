@@ -1,61 +1,47 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SalonDeBelleza.src.models;
-using System.Threading.Tasks;
+using SalonDeBelleza.src.services;
 
-public class UsuariosController : Controller
+namespace SalonDeBelleza.src.controllers
 {
-    private readonly UserManager<Usuario> _userManager;
-
-    public UsuariosController(UserManager<Usuario> userManager)
+    [Route("api/usuarios")]
+    [ApiController]
+    public class UsuarioController : ControllerBase
     {
-        _userManager = userManager;
-    }
+        private readonly UsuarioService _usuarioService;
 
-    // Crear usuario
-    [HttpPost]
-    public async Task<IActionResult> Create(Usuario usuario, string password)
-    {
-        var result = await _userManager.CreateAsync(usuario, password);
-        if (result.Succeeded)
+        public UsuarioController(UsuarioService usuarioService)
         {
-            return RedirectToAction("Index");
+            _usuarioService = usuarioService;
         }
-        // Manejar errores
-        return View(usuario);
-    }
 
-    // Leer usuarios
-    public IActionResult Index()
-    {
-        // Lógica para obtener y mostrar usuarios
-        return View();
-    }
-
-    // Actualizar usuario
-    public async Task<IActionResult> Edit(string id)
-    {
-        var usuario = await _userManager.FindByIdAsync(id);
-        return View(usuario);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Edit(Usuario usuario)
-    {
-        var result = await _userManager.UpdateAsync(usuario);
-        if (result.Succeeded)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] Usuario usuario)
         {
-            return RedirectToAction("Index");
+            var user = await _usuarioService.AutenticarUsuarioAsync(usuario.Email, usuario.Password);
+            if (user == null)
+            {
+                return Unauthorized(new { mensaje = "Credenciales inválidas" });
+            }
+            return Ok(new { mensaje = "Inicio de sesión exitoso", user });
         }
-        // Manejar errores
-        return View(usuario);
-    }
 
-    // Eliminar usuario
-    public async Task<IActionResult> Delete(string id)
-    {
-        var usuario = await _userManager.FindByIdAsync(id);
-        await _userManager.DeleteAsync(usuario);
-        return RedirectToAction("Index");
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            _usuarioService.CerrarSesion();
+            return Ok(new { mensaje = "Sesión cerrada correctamente" });
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] Usuario usuario)
+        {
+            var nuevoUsuario = await _usuarioService.RegistrarUsuarioAsync(usuario);
+            if (nuevoUsuario == null)
+            {
+                return BadRequest(new { mensaje = "Error al registrar usuario" });
+            }
+            return Ok(new { mensaje = "Usuario registrado exitosamente", nuevoUsuario });
+        }
     }
 }

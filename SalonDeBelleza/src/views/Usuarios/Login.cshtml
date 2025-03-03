@@ -1,36 +1,27 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Usuarios.LoginModel
-<header>
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
 
-    href="~/css/Login.css" asp-append-version="true"
-
-
-</header>
 <h2>Iniciar Sesión</h2>
 
+@if (!string.IsNullOrEmpty(Model.Mensaje))
+{
+    <div class="alert alert-danger">@Model.Mensaje</div>
+}
+
 <form method="post">
-    @Html.AntiForgeryToken() <!-- Asegúrate de incluir esto -->
-    
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" required />
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label for="Email" class="form-label">Correo Electrónico</label>
+        <input type="email" class="form-control" id="Email" name="Email" required>
     </div>
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" type="password" required />
+    <div class="mb-3">
+        <label for="Password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="Password" name="Password" required>
     </div>
-    <button type="submit">Iniciar Sesión</button>
+    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div>
-        <h4>Errores:</h4>
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-    </div>
-}
+<p>¿No tienes cuenta? <a asp-page="/Usuarios/Register">Regístrate aquí</a></p>

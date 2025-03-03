@@ -1,18 +1,17 @@
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SalonDeBelleza.src.models;
-using System.Threading.Tasks;
+using SalonDeBelleza.src.services;
 
 namespace SalonDeBelleza.src.views.Usuarios
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<Usuario> _signInManager;
+        private readonly UsuarioService _usuarioService;
 
-        public LoginModel(SignInManager<Usuario> signInManager)
+        public LoginModel(UsuarioService usuarioService)
         {
-            _signInManager = signInManager;
+            _usuarioService = usuarioService;
         }
 
         [BindProperty]
@@ -21,25 +20,25 @@ namespace SalonDeBelleza.src.views.Usuarios
         [BindProperty]
         public string Password { get; set; }
 
-        public void OnGet()
-        {
-        }
+        public string Mensaje { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public void OnGet() { }
+        public async Task<IActionResult> OnPost()
         {
-            if (!ModelState.IsValid)
+            var usuario = await _usuarioService.AutenticarUsuarioAsync(Email, Password);
+            if (usuario == null)
             {
+                Mensaje = "Correo o contraseña incorrectos.";
                 return Page();
             }
 
-            var result = await _signInManager.PasswordSignInAsync(Email, Password, isPersistent: false, lockoutOnFailure: false);
-            if (result.Succeeded)
-            {
-                return RedirectToPage("/Index"); // Redirigir a la página principal
-            }
+            // Guardar sesión
+            HttpContext.Session.SetInt32("UserID", usuario.UserID);
+            HttpContext.Session.SetString("Nombre", usuario.Nombre);
+            HttpContext.Session.SetString("Rol", usuario.Rol);
 
-            ModelState.AddModelError(string.Empty, "Inicio de sesión no válido.");
-            return Page();
+            return RedirectToPage("/Home/Cliente");
         }
+
     }
 }
