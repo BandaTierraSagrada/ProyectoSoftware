@@ -27,11 +27,14 @@ namespace SalonDeBelleza.src.views.Usuarios
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var errors = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+            Console.WriteLine(errors.ToString());
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
+            Console.WriteLine("aqui");
             // Crear un nuevo usuario a partir de los datos del formulario
             var usuario = new Usuario
             {
@@ -40,7 +43,7 @@ namespace SalonDeBelleza.src.views.Usuarios
                 Email = Usuario.Email,
                 UserName = Usuario.Email // Usar el email como nombre de usuario
             };
-
+            Console.WriteLine("aqui");
             var result = await _userManager.CreateAsync(usuario, Password);
             if (result.Succeeded)
             {
