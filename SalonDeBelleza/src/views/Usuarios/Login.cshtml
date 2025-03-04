@@ -3,28 +3,46 @@
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
-<header>
+<html>
+<head>
     <link rel="stylesheet" href="~/css/Login.css" />
-</header>
+</head>
 
-<h2>Iniciar Sesión</h2>
+<body>
+    <div class="login">
 
-@if (!string.IsNullOrEmpty(Model.Mensaje))
-{
-    <div class="alert alert-danger">@Model.Mensaje</div>
-}
+        @if (!string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-danger">@Model.Mensaje</div>
+        }
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <h2>Iniciar Sesión</h2>
 
-<form method="post">
-    @Html.AntiForgeryToken()
-    <div class="mb-3">
-        <label for="Email" class="form-label">Correo Electrónico</label>
-        <input type="email" class="form-control" id="Email" name="Email" required>
+            <div class="input">
+                <input type="email"
+                       id="Email"
+                       name="Email"
+                       placeholder="Correo"
+                       required />
+            </div>
+            <div class="input">
+                <input type="password"
+                       id="Password"
+                       name="Password"
+                       placeholder="Contraseña"
+                       required />
+            </div>
+
+            <button type="submit" class="btn">Iniciar Sesión</button>
+
+            <div class="rgt">
+                <p>
+                    ¿No tienes cuenta?
+                    <a asp-page="/Usuarios/Register">Regístrate aquí</a>
+                </p>
+            </div>
+        </form>
     </div>
-    <div class="mb-3">
-        <label for="Password" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="Password" name="Password" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-</form>
-
-<p>¿No tienes cuenta? <a asp-page="/Usuarios/Register">Regístrate aquí</a></p>
+</body>
+</html>
