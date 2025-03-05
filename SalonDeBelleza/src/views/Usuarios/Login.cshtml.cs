@@ -37,7 +37,7 @@ namespace SalonDeBelleza.src.views.Usuarios
             HttpContext.Session.SetString("Nombre", usuario.Nombre);
             HttpContext.Session.SetString("Rol", usuario.Rol);
 
-            return RedirectToPage("/Home/Cliente");
+            return RedirectToPage("/Home/"+usuario.Rol);
         }
 
     }

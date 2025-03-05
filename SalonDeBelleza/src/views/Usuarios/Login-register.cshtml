@@ -1,0 +1,80 @@
+﻿@page
+@model SalonDeBelleza.src.views.Usuarios.Login_registerModel
+@{
+}
+<html>
+<head>
+	<meta charset="UTF-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="/css/Login.css" />
+</head>
+
+<body style="display: flex; justify-content:center ; align-items: center;height: 100vh;overflow: hidden;">
+    <div class="form-wrap">
+
+        @if (!string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-danger">@Model.Mensaje</div>
+        }
+        <div class="tabs">
+            <h3 class="signup-tab"><a class="active" href="#signup-tab-content" style="border-top-left-radius: 7px;">Registrarse</a></h3>
+            <h3 class="login-tab"><a href="#login-tab-content" style="border-top-right-radius: 7px;">Iniciar Sesion</a></h3>
+        </div>
+        <div class="tabs-content">
+
+            <div id="signup-tab-content" class="active">
+                <form method="post" class="signup-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="decision" value="Register" />
+                    <div class="mb-3">
+                        <input type="text" class="input" id="Nombre" name="Nombre" placeholder="Nombre"required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="input" id="Telefono" name="Telefono" placeholder="Telefono" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="input" id="Email" name="Email" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="input" id="Password" name="Password" placeholder="Contrasena" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="hidden" id="Rol" name="Rol" value="Cliente" />
+                    </div>
+                    <button type="submit" class="button">Registrarse</button>
+                </form>
+
+            </div>
+            <div id="login-tab-content">
+                <form method="post" class="login-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="decision" value="Login" />
+                    <div>
+                        <input type="email"
+                               class="input"
+                               id="LEmail"
+                               name="LEmail"
+                               placeholder="Correo"
+                               required />
+                    </div>
+                    <div>
+                        <input type="password"
+                               class="input"
+                               id="LPassword"
+                               name="LPassword"
+                               placeholder="Contraseña"
+                               required />
+                    </div>
+
+                    <button type="submit" class="button">Iniciar Sesión</button>
+                </form>
+                
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
