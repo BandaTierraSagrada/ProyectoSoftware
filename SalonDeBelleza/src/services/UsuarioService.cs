@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SalonDeBelleza.src.models;
 using SalonDeBelleza.src.repositories;
 
@@ -30,7 +31,10 @@ namespace SalonDeBelleza.src.services
 
             return usuario;
         }
-
+        public async Task ActualizarUsuarioAsync(Usuario usuario)
+        {
+            await _usuarioRepository.ActualizarUsuarioAsync(usuario);
+        }
         public async Task<Usuario> RegistrarUsuarioAsync(Usuario usuario)
         {
             usuario.Password = HashPassword(usuario.Password);
@@ -40,11 +44,10 @@ namespace SalonDeBelleza.src.services
         {
             return await _usuarioRepository.ObtenerPorEmailAsync(email);
         }
-        public void CerrarSesion()
+        public async Task<Usuario> ObtenerPorIdAsync(int id)
         {
-            _httpContextAccessor.HttpContext.Session.Clear();
+            return await _usuarioRepository.ObtenerPorIdAsync(id);
         }
-
         private string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())

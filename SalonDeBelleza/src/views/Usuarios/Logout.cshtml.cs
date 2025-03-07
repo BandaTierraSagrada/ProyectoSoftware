@@ -13,10 +13,25 @@ namespace SalonDeBelleza.src.views.Usuarios
             _usuarioService = usuarioService;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            _usuarioService.CerrarSesion();
-            return RedirectToPage("/Usuarios/Login");
+            int? userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToPage("/Usuarios/Login-register");
+            }
+
+            var usuario = await _usuarioService.ObtenerPorIdAsync(userId.Value);
+            if (usuario != null)
+            {
+                usuario.LoginStatus = "Inactivo";
+                await _usuarioService.ActualizarUsuarioAsync(usuario);
+            }
+
+            // Cerrar sesión
+            HttpContext.Session.Clear();
+
+            return RedirectToPage("/Usuarios/Login-register");
         }
     }
 }

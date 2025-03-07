@@ -14,8 +14,22 @@ namespace SalonDeBelleza.src.views.Usuarios
             _usuarioService = usuarioService;
         }
 
+        public class InputModel
+        {
+            // Login
+            public string? LEmail { get; set; }
+            public string? LPassword { get; set; }
+
+            // Registro
+            public string? Nombre { get; set; }
+            public string? Telefono { get; set; }
+            public string? Email { get; set; }
+            public string? Password { get; set; }
+            public string Rol { get; set; } = "Cliente";
+        }
+
         [BindProperty]
-        public Usuario Usuario { get; set; }
+        public InputModel Input { get; set; } = new();
         [BindProperty]
         public string LEmail { get; set; }
 
@@ -41,27 +55,44 @@ namespace SalonDeBelleza.src.views.Usuarios
         }
         private async Task<IActionResult> HandleRegistration()
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(Input.Nombre) ||
+                string.IsNullOrEmpty(Input.Telefono) ||
+                string.IsNullOrEmpty(Input.Email) ||
+                string.IsNullOrEmpty(Input.Password))
+            {
+                Mensaje = "Todos los campos son obligatorios.";
                 return Page();
+            }
 
-            var existeUsuario = await _usuarioService.ObtenerPorEmailAsync(Usuario.Email);
+            var existeUsuario = await _usuarioService.ObtenerPorEmailAsync(Input.Email);
             if (existeUsuario != null)
             {
                 Mensaje = "El correo ya está registrado.";
                 return Page();
             }
 
-            await _usuarioService.RegistrarUsuarioAsync(Usuario);
-            return RedirectToPage("/Usuarios/Login");
+            var nuevoUsuario = new Usuario
+            {
+                Nombre = Input.Nombre,
+                Telefono = Input.Telefono,
+                Email = Input.Email,
+                Password = Input.Password,
+                Rol = Input.Rol
+            };
+            await _usuarioService.RegistrarUsuarioAsync(nuevoUsuario);
+            return RedirectToPage("/Usuarios/Login-register");
         }
         private async Task<IActionResult> HandleLogin()
         {
-            var usuario = await _usuarioService.AutenticarUsuarioAsync(LEmail, LPassword);
+            var usuario = await _usuarioService.AutenticarUsuarioAsync(Input.LEmail, Input.LPassword);
+
             if (usuario == null)
             {
                 Mensaje = "Correo o contraseña incorrectos.";
                 return Page();
             }
+            usuario.LoginStatus = "Activo";
+            await _usuarioService.ActualizarUsuarioAsync(usuario);
 
             // Guardar sesión
             HttpContext.Session.SetInt32("UserID", usuario.UserID);

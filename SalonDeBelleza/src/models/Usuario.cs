@@ -26,6 +26,6 @@ namespace SalonDeBelleza.src.models
         public string LoginStatus { get; set; } = "Inactivo";
 
         [StringLength(50)]
-        public string Rol { get; set; } // Cliente, Administrador, Colaborador
+        public string Rol { get; set; } = "Cliente";// Cliente, Administrador, Colaborador
     }
 }

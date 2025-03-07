@@ -26,13 +26,6 @@ namespace SalonDeBelleza.src.controllers
             return Ok(new { mensaje = "Inicio de sesión exitoso", user });
         }
 
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            _usuarioService.CerrarSesion();
-            return Ok(new { mensaje = "Sesión cerrada correctamente" });
-        }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Usuario usuario)
         {

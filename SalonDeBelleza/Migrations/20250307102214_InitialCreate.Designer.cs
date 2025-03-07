@@ -11,7 +11,7 @@ using SalonDeBelleza.src.config;
 namespace SalonDeBelleza.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250303161803_InitialCreate")]
+    [Migration("20250307102214_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -24,5 +24,14 @@ namespace SalonDeBelleza.src.repositories
             await _context.SaveChangesAsync();
             return usuario;
         }
+        public async Task ActualizarUsuarioAsync(Usuario usuario)
+        {
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Usuario> ObtenerPorIdAsync(int id)
+        {
+            return await _context.Usuarios.FindAsync(id);
+        }
     }
 }
