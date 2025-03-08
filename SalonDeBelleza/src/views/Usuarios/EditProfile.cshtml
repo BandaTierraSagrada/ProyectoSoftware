@@ -1,0 +1,55 @@
+﻿@page
+@model SalonDeBelleza.src.views.Usuarios.EditProfileModel
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<h2>Editar Perfil</h2>
+
+@if (!string.IsNullOrEmpty(Model.Mensaje))
+{
+    <div class="alert alert-danger">@Model.Mensaje</div>
+}
+
+<form method="post" id="editarPerfilForm">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label for="Nombre">Nombre:</label>
+        <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Usuario.Nombre" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="Telefono">Teléfono:</label>
+        <input type="text" class="form-control" id="Telefono" name="Telefono" value="@Model.Usuario.Telefono" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="Email">Correo Electrónico:</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Usuario.Email" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="NuevaPassword">Nueva Contraseña:</label>
+        <input type="password" class="form-control" id="NuevaPassword" name="NuevaPassword">
+    </div>
+
+    <div class="mb-3">
+        <label for="ConfirmarPassword">Confirmar Nueva Contraseña:</label>
+        <input type="password" class="form-control" id="ConfirmarPassword" name="ConfirmarPassword">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+
+<script>
+    document.getElementById("editarPerfilForm").addEventListener("submit", function (event) {
+        var nuevaPassword = document.getElementById("NuevaPassword").value;
+        var confirmarPassword = document.getElementById("ConfirmarPassword").value;
+
+        if (nuevaPassword !== confirmarPassword) {
+            alert("Las contraseñas no coinciden.");
+            event.preventDefault(); // Evita el envío del formulario
+        }
+    });
+</script>
