@@ -5,10 +5,10 @@ namespace SalonDeBelleza.src.views.Home
 {
     public class ColaboradorModel : PageModel
     {
-        public string UserName { get; private set; }
+        public string Nombre { get; private set; }
         public void OnGet()
         {
-            UserName = HttpContext.Session.GetString("UserName") ?? "Invitado";
+            Nombre = HttpContext.Session.GetString("Nombre") ?? "Invitado";
         }
     }
 }

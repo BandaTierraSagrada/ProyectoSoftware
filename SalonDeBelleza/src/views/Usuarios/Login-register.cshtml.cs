@@ -84,7 +84,20 @@ namespace SalonDeBelleza.src.views.Usuarios
         }
         private async Task<IActionResult> HandleLogin()
         {
-            var usuario = await _usuarioService.AutenticarUsuarioAsync(Input.LEmail, Input.LPassword);
+            if (!ModelState.IsValid)
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    Console.WriteLine("OnPost Actualizar invalido");
+
+                    var errors = ModelState[key].Errors;
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine($"Error en {key}; {error.ErrorMessage}");
+                    }
+                }
+            }
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(Input.LEmail,Input.LPassword);
 
             if (usuario == null)
             {

@@ -1,0 +1,143 @@
+﻿@page
+@model SalonDeBelleza.src.views.Administrador.AdminUsuariosModel
+@{
+    ViewData["Title"] = "Administrar Usuarios";
+}
+
+<div class="grid grid-cols-3 gap-4">
+    <!-- Tabla de Usuarios -->
+    <div class="col-span-2">
+        <h2 class="text-lg font-bold mb-4">Usuarios Registrados</h2>
+        <table class="table-auto w-full border-collapse border border-gray-200">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border px-4 py-2">Nombre</th>
+                    <th class="border px-4 py-2">Email</th>
+                    <th class="border px-4 py-2">Teléfono</th>
+                    <th class="border px-4 py-2">Rol</th>
+                    <th class="border px-4 py-2">Estado</th>
+                    <th class="border px-4 py-2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td class="border px-4 py-2">@usuario.Nombre</td>
+                        <td class="border px-4 py-2">@usuario.Email</td>
+                        <td class="border px-4 py-2">@usuario.Telefono</td>
+                        <td class="border px-4 py-2">@usuario.Rol</td>
+                        <td class="border px-4 py-2">@usuario.LoginStatus</td>
+                        <td class="border px-4 py-2">
+                            <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="editarUsuario(@usuario.UserID)">Editar</button>
+                            <!--<button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="cambiarContrasena(@usuario.UserID)">Cambiar Contraseña</button>-->
+                            <form method="post" class="inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@usuario.UserID" />
+                                <input type="hidden" id="decision" name="decision" value="EliminarUsuario" />
+                                <input type="hidden" name="email" value="@usuario.Email" />
+                                <input type="hidden" name="nombre" value="@usuario.Nombre" />
+                                <input type="hidden" name="password" value="@usuario.Password" />
+                                <input type="hidden" name="telefono" value="@usuario.Telefono" />
+                                <input type="hidden" name="Password" value="@usuario.Password" />
+                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <!-- Formulario de Edición o Cambio de Contraseña -->
+    <div class="col-span-1 p-4 border border-gray-300 rounded">
+        @if (Model.UsuarioEdit != null)
+        {
+            <h2 class="text-lg font-bold mb-4">Editar Usuario</h2>
+            <form id="formActualizar" method="post" asp-page-handler="Actualizar">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="decision" name="decision" value="ActualizarUsuario" />
+                <p>Usuario cargado: @Model.UsuarioEdit?.Nombre</p>
+                <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
+                <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
+                <label class="block">Nombre:</label>
+                <input value="@Model.UsuarioEdit?.Nombre" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" class="w-full border px-2 py-1 mb-2" />
+                <label class="block">Email:</label>
+                <input type="email" value="@Model.UsuarioEdit?.Email" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" class="w-full border px-2 py-1 mb-2" />
+                <label class="block">Teléfono:</label>
+                <input type="tel" value="@Model.UsuarioEdit?.Telefono" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" class="w-full border px-2 py-1 mb-2" />
+                <label class="block">Rol:</label>
+                <select name="UsuarioEdit.Rol" asp-for-handler="UsuarioEdit.Rol" class="w-full border px-2 py-1 mb-2">
+                    <option>Colaborador</option>
+                    <option>Administrador</option>
+                    <option>Cliente</option>
+                </select>
+                
+                <input type="hidden" name="@Model.UsuarioEdit?.LoginStatus" asp-for-handler="UsuarioEdit.LoginStatus" />
+                <button type="button" onclick="actualizarUsuario()" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
+            </form>
+        
+            <h2 class="text-lg font-bold mb-4">Cambiar Contraseña</h2>
+            <form id="formContrasena" method="post" asp-page-handler="CambiarContrasena">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="decision" value="CambiarContrasena" />
+                <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
+                <input type="hidden" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" value="@Model.UsuarioEdit?.Email" />
+                <input type="hidden" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" value="@Model.UsuarioEdit?.Nombre" />
+                <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
+                <input type="hidden" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" value="@Model.UsuarioEdit?.Telefono" />
+
+                <p>Usuario cargado: @Model.UsuarioEdit?.Nombre</p>
+                <label class="block">Nueva Contraseña:</label>
+                <input type="password" name="NuevaContrasena" asp-for="NuevaContrasena" class="w-full border px-2 py-1 mb-2" />
+                <label class="block">Confirmar Contraseña:</label>
+                <input type="password" name="ConfirmarContrasena" asp-for="ConfirmarContrasena" class="w-full border px-2 py-1 mb-2" />
+                <button type="submit" onclick="cambiarContrasena(Model.UsuarioEdit.UserID)" class="bg-green-500 text-white px-4 py-2 rounded">Actualizar Contraseña</button>
+            </form>
+        }
+    </div>
+</div>
+
+<script>
+    function editarUsuario(userID) {
+        console.log(" Editar usuario, UserID:", userID);
+        window.location.href = "?handler=Editar&UserID=" + userID;
+    }
+    function cambiarContrasena(userID) {
+        console.log(" Cambiar contraseña, UserID:", userID);
+        window.location.href = "?handler=CambiarContrasena&UserID=" + userID;
+    }
+    async function actualizarUsuario() {
+        const form = document.getElementById("formActualizar");
+        if (!form) {
+            console.error("No se encontró el formulario.");
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch("?handler=Actualizar", {
+                method: "POST",
+                body: formData
+            });
+
+            const responseText = await response.text();
+            console.log("📩 Respuesta del servidor:", responseText);
+
+            if (response.ok) {
+                alert("Usuario actualizado correctamente.");
+                window.location.reload();
+            } else {
+                alert("Error al actualizar usuario.");
+                console.error("🚨 Error en la respuesta:", responseText);
+            }
+        } catch (error) {
+            console.error("🚨 Error en la petición:", error);
+        }
+    }
+</script>
+

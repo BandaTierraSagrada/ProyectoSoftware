@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SalonDeBelleza.src.models;
 using SalonDeBelleza.src.repositories;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace SalonDeBelleza.src.services
 {
@@ -31,6 +33,7 @@ namespace SalonDeBelleza.src.services
 
             return usuario;
         }
+
         public async Task ActualizarUsuarioAsync(Usuario usuario)
         {
             await _usuarioRepository.ActualizarUsuarioAsync(usuario);
@@ -48,6 +51,11 @@ namespace SalonDeBelleza.src.services
         {
             return await _usuarioRepository.ObtenerPorIdAsync(id);
         }
+        
+        public async Task<Usuario> ObtenerPorIdAdmin(int userId)
+        {
+            return await _usuarioRepository.ObtenerPorIdAdmin(userId);
+        }
         public string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -55,6 +63,26 @@ namespace SalonDeBelleza.src.services
                 var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return Convert.ToBase64String(hashBytes);
             }
+        }
+
+        public async Task CambiarContrasenaAsync(int userId, string nuevaContrasena)
+        {
+            var usuario = await _usuarioRepository.ObtenerPorIdAsync(userId);
+            if (usuario != null)
+            {
+                usuario.Password = HashPassword(nuevaContrasena);
+                await _usuarioRepository.ActualizarUsuarioContrasena(usuario);
+            }
+        }
+
+
+        public async Task<List<Usuario>> ObtenerTodosAsync()
+        {
+            return await _usuarioRepository.ObtenerTodosAsync();
+        }
+        public async Task EliminarUsuarioAsync(int id)
+        {
+            await _usuarioRepository.EliminarUsuarioAsync(id);
         }
     }
 }
