@@ -1,0 +1,71 @@
+﻿@page
+@model SalonDeBelleza.src.Citas.CalendarioModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calendario</title>
+    <link rel="stylesheet" href="css/calendario.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+
+
+    <div class="calendario">
+        <h2>Reserva tu Cita</h2>
+
+        <label for="fecha">Selecciona la fecha y hora:</label>
+        <input class="input" type="text" id="fecha" placeholder="Elige la fecha">
+
+
+        <label for="hora">Selecciona la hora:</label>
+        <select class="select" id="hora">
+            <option value="09:00">09:00 AM</option>
+            <option value="09:30">09:30 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="10:30">10:30 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="11:30">11:30 AM</option>
+            <option value="12:00">12:00 PM</option>
+        </select>
+
+        <label for="servicio">Elige el servicio:</label>
+        <select class="select" id="servicio">
+            <option value="corte">Corte de Cabello</option>
+            <option value="tinte">Tinte</option>
+            <option value="manicura">Manicura</option>
+            <option value="pedicura">Pedicura</option>
+        </select>
+
+        <button class="button" onclick="reservarCita()">Reservar</button>
+    </div>
+
+    <button>HOME</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Configurar Flatpickr solo para fecha (sin hora)
+        flatpickr("#fecha", {
+            dateFormat: "Y-m-d", // Formato de fecha
+            minDate: "today", // No permite fechas pasadas
+        });
+
+        function reservarCita() {
+            let fecha = document.getElementById("fecha").value;
+            let hora = document.getElementById("hora").value;
+            let servicio = document.getElementById("servicio").value;
+
+            if (fecha === "") {
+                alert("Por favor, selecciona una fecha.");
+                return;
+            }
+
+            alert(`✅ Cita reservada para el ${fecha} a las ${hora} para el servicio de ${servicio}.`);
+        }
+    </script>
+
+</body>
+</html>
