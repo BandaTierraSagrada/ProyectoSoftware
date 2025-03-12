@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Editar Perfil";
 }
-
+<html>
+    <head>
+    <link rel="stylesheet" href="~/css/EditUsuarios.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
 <h2>Editar Perfil</h2>
 
 @if (!string.IsNullOrEmpty(Model.Mensaje))
@@ -13,33 +18,34 @@
 
 <form method="post" id="editarPerfilForm">
     @Html.AntiForgeryToken()
-
-    <div class="mb-3">
+    <div class="Fondo">
+    <div class="Campos">
         <label for="Nombre">Nombre:</label>
         <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Usuario.Nombre" required>
     </div>
 
-    <div class="mb-3">
+    <div class="Campos">
         <label for="Telefono">Teléfono:</label>
         <input type="text" class="form-control" id="Telefono" name="Telefono" value="@Model.Usuario.Telefono" required>
     </div>
 
-    <div class="mb-3">
+    <div class="Campos">
         <label for="Email">Correo Electrónico:</label>
         <input type="email" class="form-control" id="Email" name="Email" value="@Model.Usuario.Email" required>
     </div>
 
-    <div class="mb-3">
+    <div class="Campos">
         <label for="NuevaPassword">Nueva Contraseña:</label>
         <input type="password" class="form-control" id="NuevaPassword" name="NuevaPassword">
     </div>
 
-    <div class="mb-3">
+    <div class="Campos">
         <label for="ConfirmarPassword">Confirmar Nueva Contraseña:</label>
         <input type="password" class="form-control" id="ConfirmarPassword" name="ConfirmarPassword">
     </div>
 
     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
 </form>
 
 <script>
@@ -53,3 +59,7 @@
         }
     });
 </script>
+
+</body>
+
+</html>
