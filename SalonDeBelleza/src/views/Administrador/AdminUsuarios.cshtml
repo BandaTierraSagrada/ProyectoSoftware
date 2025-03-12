@@ -4,6 +4,9 @@
     ViewData["Title"] = "Administrar Usuarios";
 }
 
+<link href="~/css/UsuariosR.css" rel="stylesheet" />
+
+
 <div class="grid grid-cols-3 gap-4">
     <!-- Tabla de Usuarios -->
     <div class="col-span-2">
@@ -29,7 +32,7 @@
                         <td class="border px-4 py-2">@usuario.Rol</td>
                         <td class="border px-4 py-2">@usuario.LoginStatus</td>
                         <td class="border px-4 py-2">
-                            <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="editarUsuario(@usuario.UserID)">Editar</button>
+                            <button class="btn btn-edit" onclick="editarUsuario(@usuario.UserID)">Editar</button>
                             <!--<button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="cambiarContrasena(@usuario.UserID)">Cambiar Contraseña</button>-->
                             <form method="post" class="inline">
                                 @Html.AntiForgeryToken()
@@ -40,7 +43,7 @@
                                 <input type="hidden" name="password" value="@usuario.Password" />
                                 <input type="hidden" name="telefono" value="@usuario.Telefono" />
                                 <input type="hidden" name="Password" value="@usuario.Password" />
-                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</button>
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -75,11 +78,11 @@
                     <option>Administrador</option>
                     <option>Cliente</option>
                 </select>
-                
+
                 <input type="hidden" name="@Model.UsuarioEdit?.LoginStatus" asp-for-handler="UsuarioEdit.LoginStatus" />
                 <button type="button" onclick="actualizarUsuario()" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
             </form>
-        
+
             <h2 class="text-lg font-bold mb-4">Cambiar Contraseña</h2>
             <form id="formContrasena" method="post" asp-page-handler="CambiarContrasena">
                 @Html.AntiForgeryToken()
