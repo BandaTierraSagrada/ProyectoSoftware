@@ -1,0 +1,59 @@
+﻿@page
+@model SalonDeBelleza.src.views.Administrador.CrearUsuarioModel
+@{
+    ViewData["Title"] = "RegistroColaboradores";
+}
+<h2>Registro de Usuario</h2>
+
+@if (!string.IsNullOrEmpty(Model.Mensaje))
+{
+    <div class="alert alert-danger">@Model.Mensaje</div>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+    </div>
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Teléfono</label>
+        <input type="text" class="form-control" id="Telefono" name="Telefono" required>
+    </div>
+    <div class="mb-3">
+        <label for="Email" class="form-label">Correo Electrónico</label>
+        <input type="email" class="form-control" id="Email" name="Email" required>
+    </div>
+    <div class="mb-3">
+        <label for="Password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="Password" name="Password" required>
+    </div>
+    <div class="mb-3">
+        <label for="Rol" class="form-label">Rol</label>
+        <select class="form-control" id="Rol" name="Rol" required>
+            <option value="Colaborador">Colaborador</option>
+            <option value="Administrador">Administrador</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="TipoServicio">Servicio</label>
+        <select id="TipoServicio" name="TipoServicio" placeholder=" " required>
+            <option value="Unas">Uñas</option>
+            <option value="Tintes">Tintes</option>
+            <option value="Corte">Corte</option>
+            <option value="Peinado">Peinado</option>
+            <option value="Cejas">Cejas</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="DuracionServicio">Duracion</label>
+        <input type="number" id="DuracionServicio" name="DuracionServicio" min="0" placeholder="En minutos" required>
+    </div>
+    <div class="mb-3">
+        <label for="HoraEntrada">Hora Entrada </label>
+        <input type="time" id="HorarioEntrada" name="HorarioEntrada" required>
+        <label for="HoraSalida">Hora Salida </label>
+        <input type="time" id="HorarioSalida" name="HorarioSalida" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>

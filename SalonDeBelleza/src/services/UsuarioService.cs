@@ -43,6 +43,11 @@ namespace SalonDeBelleza.src.services
             usuario.Password = HashPassword(usuario.Password);
             return await _usuarioRepository.CrearUsuarioAsync(usuario);
         }
+        public async Task<Usuario> RegistrarColaboradorAsync(Usuario Colaborador,ColaboradorInfo ColaInfo)
+        {
+            Colaborador.Password = HashPassword(Colaborador.Password);
+            return await _usuarioRepository.CrearColaboradorAsync(Colaborador,ColaInfo);
+        }
         public async Task<Usuario?> ObtenerPorEmailAsync(string email)
         {
             return await _usuarioRepository.ObtenerPorEmailAsync(email);

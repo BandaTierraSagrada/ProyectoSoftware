@@ -1,0 +1,214 @@
+﻿@page
+@model SalonDeBelleza.src.views.Citas.CitasColaboradorModel
+@{
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <style>
+        /* Estilos para el modal */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 400px;
+            position:relative;
+            z-index: 1001;
+        }
+        .modal button {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #cerrarModal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="calendario"></div>
+
+    <!-- MODAL DE EDICIÓN -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3>Detalles de la Cita</h3>
+            <input type="hidden" id="UserID" value="@Model.UserID" />
+            <input type="hidden" id="Rol" value="@Model.Rol" />
+            <input type="hidden" id="citaId">
+            <p><strong>Cliente:</strong> <span id="modalCliente"></span></p>
+            <p><strong>Servicio:</strong> <span id="modalServicio"></span></p>
+            <p><strong>Fecha y Hora:</strong> <input type="datetime-local" id="modalFechaHora"></p>
+            <p>
+                <strong>Estado:</strong>
+                <select id="modalEstado">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Confirmada">Confirmada</option>
+                    <option value="Completada">Completada</option>
+                </select>
+            </p>
+            <p><strong>Notas:</strong> <textarea id="modalNotas"></textarea></p>
+            <button onclick="guardarCambios()">✅ Guardar Cambios</button>
+            <button onclick="cancelarCita()">❌ Cancelar Cita</button>
+            <button onclick="cerrarModal()">🔙 Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            let calendarEl = document.getElementById("calendario");
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                locale: "es",
+                events: async function (fetchInfo, successCallback, failureCallback) {
+                    try {
+                        let colaboradorId = document.getElementById("UserID").value;
+                        let rol = document.getElementById("Rol").value;
+                        if (!colaboradorId) {
+                            console.error("❌ Error: colaboradorId es null");
+                        } else {
+                            console.log("✅ colaboradorId:", colaboradorId);
+                        }
+                        let url = `/api/citas/agenda?colaboradorId=${colaboradorId}`;
+
+                        if(rol == "Administrador"){
+                            url = "/api/citas/agenda";
+                        }
+                        console.log("el rol es",rol)
+
+                        let response = await fetch(url);
+                        let citas = await response.json();
+
+                        console.log("📅 Citas recibidas:", citas);
+
+                        let eventos = citas.map(c => ({
+                            id: c.citaID,
+                            title: `${c.servicio} - ${c.cliente}`,
+                            start: new Date(c.fechaHora).toISOString(), // Asegura que sea ISO 8601
+                            color: obtenerColorEstado(c.estado)
+                        }));
+
+                        successCallback(eventos);
+                    } catch (error) {
+                        console.error("Error cargando citas:", error);
+                        failureCallback(error);
+                    }
+                },
+                eventClick: function(info) {
+                    abrirModal(info.event);
+                }
+            });
+
+            calendar.render();
+        });
+        
+        function obtenerColorEstado(estado) {
+            switch (estado.toLowerCase()) {
+                case "pendiente": return "yellow";   // Amarillo
+                case "confirmada": return "orange";  // Naranja
+                case "cancelada": return "red";      // Rojo
+                case "completada": return "green";   // Verde
+                default: return "gray";              // Gris para estados desconocidos
+            }
+        }
+        async function abrirModal(evento) {
+            let modal = document.getElementById("modal");
+            modal.style.display = "flex";
+            modal.style.opacity = "1";
+
+            try {
+                let response = await fetch(`/api/citas/detalle/${evento.id}`); // Endpoint para obtener detalles de la cita
+                if (!response.ok) {
+                    throw new Error("No se pudo obtener la información de la cita");
+                }
+
+                let cita = await response.json();
+
+                // Llenar los campos del modal con los datos obtenidos de la API
+                document.getElementById("citaId").value = cita.citaID;
+                document.getElementById("modalCliente").textContent = cita.cliente;
+                document.getElementById("modalServicio").textContent = cita.servicio;
+                document.getElementById("modalFechaHora").value = cita.fechaHora.slice(0, 16); // Formatear fecha para el input
+                document.getElementById("modalEstado").value = cita.estado;
+                document.getElementById("modalNotas").value = cita.notas;
+
+            } catch (error) {
+                console.error("Error obteniendo datos de la cita:", error);
+                alert("❌ Error al cargar la información de la cita.");
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        async function guardarCambios() {
+            let id = document.getElementById("citaId").value;
+            let fechaHora = document.getElementById("modalFechaHora").value;
+            let estado = document.getElementById("modalEstado").value;
+            let notas = document.getElementById("modalNotas").value;
+
+            let formData = new URLSearchParams();
+            formData.append("fechaHora", fechaHora);
+            formData.append("estado", estado);
+            formData.append("notas", notas);
+
+            let response = await fetch(`/api/citas/editar/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData.toString()
+            });
+
+            if (response.ok) {
+                alert("✅ Cita actualizada correctamente.");
+                cerrarModal();
+                location.reload();
+            } else {
+                alert("❌ Error al actualizar la cita.");
+            }
+        }
+
+        async function cancelarCita() {
+            let id = document.getElementById("citaId").value;
+
+            let response = await fetch(`/api/citas/cancelar/${id}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                alert("✅ Cita cancelada correctamente.");
+                cerrarModal();
+                location.reload();
+            } else {
+                alert("❌ Error al cancelar la cita.");
+            }
+        }
+    </script>
+</body>
+</html>

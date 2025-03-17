@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SalonDeBelleza.src.config;
+using SalonDeBelleza.src.Controllers;
 using SalonDeBelleza.src.repositories;
 using SalonDeBelleza.src.services;
 
@@ -17,6 +18,13 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 {
     options.RootDirectory = "/src/views";
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
 // Configurar sesiones
@@ -37,6 +45,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Registrar dependencias
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<CitaService>();
+builder.Services.AddScoped<CitaRepository>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -59,7 +69,7 @@ app.UseSession(); // Habilitar sesiones
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-
+app.UseCors("AllowAll");
 app.MapControllers();
 app.MapRazorPages();
 
