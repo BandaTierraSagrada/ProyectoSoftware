@@ -104,13 +104,11 @@ namespace SalonDeBelleza.src.views.Usuarios
                 Mensaje = "Correo o contraseña incorrectos.";
                 return Page();
             }
-            usuario.LoginStatus = "Activo";
-            await _usuarioService.ActualizarUsuarioAsync(usuario);
-
-            // Guardar sesión
             HttpContext.Session.SetInt32("UserID", usuario.UserID);
             HttpContext.Session.SetString("Nombre", usuario.Nombre);
             HttpContext.Session.SetString("Rol", usuario.Rol);
+            usuario.LoginStatus = "Activo";
+            await _usuarioService.ActualizarUsuarioAsync(usuario);
 
             return RedirectToPage("/Home/" + usuario.Rol);
         }

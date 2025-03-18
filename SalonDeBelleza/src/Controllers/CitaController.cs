@@ -1,0 +1,164 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SalonDeBelleza.src.models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SalonDeBelleza.src.config;
+
+namespace SalonDeBelleza.src.Controllers
+{
+    [Route("api/citas")]
+    [ApiController]
+    public class CitaController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public CitaController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet("colaboradores")]
+        public async Task<IActionResult> GetColaboradoresPorServicio([FromQuery] string servicio)
+        {
+            var colaboradores = await _context.Colaboradores
+                .Include(c => c.Usuario)
+                .Where(c => c.TipoServicio == servicio)
+                .Select(c => new { c.UserID, c.Usuario.Nombre })
+                .ToListAsync();
+
+            return Ok(colaboradores);
+        }
+
+        [HttpGet("horarios")]
+        public async Task<IActionResult> GetHorariosDisponibles([FromQuery] int colaboradorId, [FromQuery] DateTime fecha)
+        {
+            var colaborador = await _context.Colaboradores.FindAsync(colaboradorId);
+            if (colaborador == null) return NotFound("Colaborador no encontrado");
+
+            var citas = await _context.Citas
+                .Where(c => c.ColaboradorID == colaboradorId && c.FechaHora.Date == fecha.Date)
+                .Select(c => c.FechaHora.TimeOfDay)
+                .ToListAsync();
+
+            var horariosDisponibles = new List<string>();
+            var horaActual = colaborador.HorarioEntrada;
+            var duracion = TimeSpan.FromMinutes(colaborador.DuracionServicio);
+
+            while (horaActual + duracion <= colaborador.HorarioSalida)
+            {
+                bool ocupado = citas.Any(c => Math.Abs((c - horaActual).TotalMinutes) < 1);
+
+                if (!ocupado)
+                    horariosDisponibles.Add(horaActual.ToString(@"hh\:mm"));
+                horaActual += duracion;
+            }
+
+            return Ok(horariosDisponibles);
+        }
+
+        [HttpPost("reservar")]
+        public async Task<IActionResult> ReservarCita(
+        [FromForm] int clienteID,
+        [FromForm] int colaboradorID,
+        [FromForm] DateTime fechaHora,
+        [FromForm] string servicio,
+        [FromForm] string estado,
+        [FromForm] string notas)
+        {
+            Cita nuevaCita = new Cita { ClienteID = clienteID, ColaboradorID = colaboradorID,FechaHora=fechaHora,Servicio=servicio,Estado=estado,Notas=notas };
+            if (!_context.Usuarios.Any(u => u.UserID == nuevaCita.ClienteID))
+                return BadRequest("Cliente no válido");
+
+            if (!_context.Colaboradores.Any(c => c.UserID == nuevaCita.ColaboradorID))
+                return BadRequest("Colaborador no válido");
+
+            _context.Citas.Add(nuevaCita);
+            await _context.SaveChangesAsync();
+            return Ok("Cita reservada con éxito");
+        }
+
+        [HttpGet("agenda")]
+        public async Task<IActionResult> GetAgenda([FromQuery] int? colaboradorId)
+        {
+            // Si el usuario es colaborador, solo ve sus citas; el admin ve todas.
+            var citasQuery = _context.Citas.Include(c => c.Cliente).Include(c => c.Colaborador).AsQueryable();
+
+            if (colaboradorId.HasValue) // Si se envía un ID, filtrar por colaborador.
+            {
+                citasQuery = citasQuery.Where(c => c.ColaboradorID == colaboradorId.Value);
+            }
+
+            var citas = await citasQuery
+                .Select(c => new
+                {
+                    c.CitaID,
+                    Cliente = c.Cliente.Nombre,
+                    Colaborador = c.Colaborador.Nombre,
+                    c.FechaHora,
+                    c.Servicio,
+                    c.Estado,
+                    c.Notas
+                })
+                .ToListAsync();
+
+            return Ok(citas);
+        }
+
+        [HttpPut("editar/{id}")]
+        public async Task<IActionResult> EditarCita(int id, [FromForm] DateTime fechaHora,
+        [FromForm] string estado,
+        [FromForm] string notas)
+        {
+            var cita = await _context.Citas.FindAsync(id);
+            if (cita == null) return NotFound("Cita no encontrada");
+
+            // Actualizar datos de la cita
+            cita.FechaHora = fechaHora;
+            cita.Estado = estado;
+            cita.Notas = notas;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Cita actualizada correctamente" });
+        }
+
+        [HttpDelete("cancelar/{id}")]
+        public async Task<IActionResult> CancelarCita(int id)
+        {
+            var cita = await _context.Citas.FindAsync(id);
+            if (cita == null) return NotFound("Cita no encontrada");
+
+            cita.Estado = "Cancelada";  // No la eliminamos, solo la marcamos como cancelada.
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Cita cancelada correctamente" });
+        }
+
+        [HttpGet("detalle/{id}")]
+        public async Task<IActionResult> GetCitaDetalle(int id)
+        {
+            var cita = await _context.Citas
+                .Where(c => c.CitaID == id)
+                .Select(c => new {
+                    c.CitaID,
+                    Cliente = c.Cliente.Nombre,
+                    Colaborador = c.Colaborador.Nombre,
+                    c.FechaHora,
+                    c.Servicio,
+                    c.Estado,
+                    c.Notas
+                })
+                .FirstOrDefaultAsync();
+
+            if (cita == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(cita);
+        }
+
+    }
+}

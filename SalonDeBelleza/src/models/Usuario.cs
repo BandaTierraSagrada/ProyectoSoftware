@@ -27,5 +27,8 @@ namespace SalonDeBelleza.src.models
 
         [StringLength(50)]
         public string Rol { get; set; } = "Cliente";// Cliente, Administrador, Colaborador
+
+        // Relación con ColaboradorInfo (Si el usuario es colaborador)
+        public virtual ColaboradorInfo? ColaboradorInfo { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalonDeBelleza.src.config;
 using SalonDeBelleza.src.models;
+using System.Dynamic;
 
 namespace SalonDeBelleza.src.repositories
 {
@@ -23,6 +24,31 @@ namespace SalonDeBelleza.src.repositories
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
             return usuario;
+        }
+        public async Task<Usuario> CrearColaboradorAsync(Usuario Colaborador,ColaboradorInfo ColaInfo)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Guardar usuario primero
+                _context.Usuarios.Add(Colaborador);
+                await _context.SaveChangesAsync();
+
+                // 2. Asignar el UserID generado al ColaboradorInfo
+                ColaInfo.UserID = Colaborador.UserID;
+                _context.Colaboradores.Add(ColaInfo);
+
+                // 3. Guardar todo en la base de datos y confirmar la transacción
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Colaborador;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw; // Re-lanzar excepción para manejarla externamente
+            }
         }
         public async Task ActualizarUsuarioAsync(Usuario usuario)
         {
