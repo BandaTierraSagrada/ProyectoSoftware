@@ -5,13 +5,15 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     font-family: Arial, sans-serif;
 }
 
 h2 {
     text-align: center;
 }
+
+
 
 
 /*----------------navbar-------------------------------*/
@@ -236,3 +238,16 @@ h2 {
     .card:hover h3 {
         background: #005C39;
     }
+
+
+/*----------------footer-----------------------*/
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 40px 0;
+    font-size: 16px;
+    width: 100%;
+    margin-top: auto;
+}
