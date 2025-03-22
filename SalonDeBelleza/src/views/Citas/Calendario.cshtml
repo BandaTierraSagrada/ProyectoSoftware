@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
+   
 
     <div class="calendario">
         <h2>Reserva tu Cita</h2>
@@ -49,6 +50,10 @@
         <input type="text" id="notas" placeholder=" " />
         <input type="hidden" id="UserIDCliente" name="@Model.UserIDCliente" value="@Model.UserIDCliente" />
         <button type="button" class="button" onclick="reservarCita(event)">Reservar</button>
+    </div>
+
+    <div class="button-container">
+        <button onclick="window.location.href='/Home/Administrador'">Regresar</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

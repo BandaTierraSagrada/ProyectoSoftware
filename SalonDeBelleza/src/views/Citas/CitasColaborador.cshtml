@@ -12,6 +12,44 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
     <style>
         /* Estilos para el modal */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #calendario {
+            width: 80%;
+            max-width: 1000px;
+            height: 550px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+         }
+
+        .button-container button:hover {
+           background-color: #0056b3;
+          }
+        
         #modal {
             display: none;
             position: fixed;
@@ -52,9 +90,11 @@
     </style>
 </head>
 <body>
-
+    <h1>Citas Agendadas</h1>
     <div id="calendario"></div>
-
+    <div class="button-container">
+        <button onclick="window.location.href='/Home/Administrador'">Regresar</button>
+    </div>
     <!-- MODAL DE EDICIÓN -->
     <div id="modal" class="modal">
         <div class="modal-content">
