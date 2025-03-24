@@ -1,0 +1,177 @@
+﻿@page
+@model SalonDeBelleza.src.views.Citas.CitasClienteModel
+@{
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <input type="hidden" id="UserID" value="@Model.UserID" />
+    <input type="hidden" id="Rol" value="@Model.Rol" />
+    <input type="hidden" id="Nombre" value="@Model.Nombre" />
+    <div class="container mt-4">
+        <h2 class="text-center">📅 Mis Citas</h2>
+        <table class="table table-hover mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCitasBody"></tbody>
+        </table>
+    </div>
+
+    <!-- MODAL PARA VER CITA -->
+    <div class="modal fade" id="modalCita" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles de la Cita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="citaId" />
+                    <p><strong>Servicio:</strong> <span id="modalServicio"></span></p>
+                    <p><strong>Colaborador:</strong> <span id="modalColaborador"></span></p>
+                    <p><strong>Fecha y Hora:</strong> <input type="datetime-local" id="modalFechaHora" disabled></p>
+                    <p><strong>Estado:</strong> <span id="modalEstado"></span></p>
+                    <p><strong>Notas:</strong> <textarea id="modalNotas" class="form-control" readonly></textarea></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnConfirmar" class="btn btn-success" onclick="confirmarAsistencia()">✅ Confirmar</button>
+                    <button class="btn btn-danger" onclick="cancelarCita()">❌ Cancelar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            let userId = document.getElementById("UserID").value;
+            let response = await fetch(`/api/citas/cliente?userId=${userId}`);
+            let citas = await response.json();
+
+            console.log("Datos recibidos de la API:", citas); // 👀 Depuración
+
+            let tablaCitas = document.getElementById("tablaCitasBody");
+            tablaCitas.innerHTML = "";
+
+            citas.forEach(c => {
+                console.log("Cita procesada:", c); // 👀 Ver cada objeto en la consola
+
+                let fecha = new Date(c.fechaHora);  // 🔄 Corrección en la propiedad
+                if (isNaN(fecha)) {
+                    console.warn("⚠️ Fecha inválida:", c.fechaHora); // Mensaje si la fecha no es válida
+                    fecha = "Fecha no disponible";
+                } else {
+                    fecha = fecha.toLocaleString();
+                }
+
+                let fila = document.createElement("tr");
+                fila.innerHTML = `
+                    <td>${c.servicio || "No disponible"}</td>
+                    <td>${fecha}</td>
+                    <td><span class="badge ${getEstadoColor(c.estado)}">${c.estado || "Sin estado"}</span></td>
+                    <td>
+                        <button onclick="verCita(${c.citaID})" class="btn btn-info">👁 Ver</button>
+                    </td>
+                `;
+                tablaCitas.appendChild(fila);
+            });
+        });
+
+
+
+        function getEstadoColor(estado) {
+            switch (estado) {
+                case "Pendiente": return "bg-warning";
+                case "Confirmada": return "bg-primary";
+                case "Cancelada": return "bg-danger";
+                case "Completada": return "bg-success";
+                default: return "bg-secondary";
+            }
+        }
+
+        async function verCita(citaID) {
+            let response = await fetch(`/api/citas/detalle/${citaID}`);
+            let cita = await response.json();
+            console.log("📌 Datos de la cita seleccionada:", cita); // 👀 Depuración
+
+            // Asegurar que los datos se asignen correctamente
+            document.getElementById("citaId").value = cita.citaID;
+            document.getElementById("modalServicio").textContent = cita.servicio || "No disponible";
+            document.getElementById("modalColaborador").textContent = cita.colaborador || "No asignado";
+
+            console.log("📌 Fecha original:", cita.fechaHora); // 🧐 Verificar el formato exacto
+            document.getElementById("modalFechaHora").value = cita.fechaHora.slice(0, 16);
+
+            document.getElementById("modalEstado").textContent = cita.estado || "Sin estado";
+            document.getElementById("modalNotas").textContent = cita.notas || "Sin notas";
+
+            let modal = new bootstrap.Modal(document.getElementById("modalCita"));
+            modal.show();
+        }
+
+
+        async function cancelarCita() {
+            let id = document.getElementById("citaId").value;
+            let fechaCitaStr = document.getElementById("modalFechaHora").textContent; // Obtener la fecha desde el modal
+            let fechaCita = new Date(fechaCitaStr);
+            let ahora = new Date();
+
+            // Calcular la diferencia en milisegundos y convertirla a horas
+            let diferenciaHoras = (fechaCita - ahora) / (1000 * 60 * 60);
+
+            let mensajeConfirmacion = "¿Estás seguro de que deseas cancelar la cita?";
+
+            // Si la cita es en menos de 24 horas, agregar la advertencia
+            if (diferenciaHoras <= 24) {
+                mensajeConfirmacion = "⚠️ Cancelar la cita dentro de las 24 horas puede generar penalización. ¿Deseas continuar?";
+            }
+
+            let confirmacion = confirm(mensajeConfirmacion);
+
+            if (confirmacion) {
+                let response = await fetch(`/api/citas/cancelar/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    alert("✅ Cita cancelada correctamente.");
+                    location.reload();
+                } else {
+                    alert("❌ Error al cancelar la cita.");
+                }
+            }
+        }
+
+        async function confirmarAsistencia() {
+           let id = document.getElementById("citaId").value;
+           let response = await fetch(`/api/citas/confirmar/${id}`, {
+                method:"PUT",
+                headers:{
+					"Content-Type":"application/json"
+                }
+           });
+            if (response.ok) {
+                alert("✅ Cita confirmada correctamente.");
+                location.reload();
+            } else {
+                alert("❌ Error al confirmar la cita.");
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

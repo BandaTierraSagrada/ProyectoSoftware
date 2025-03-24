@@ -135,6 +135,17 @@ namespace SalonDeBelleza.src.Controllers
 
             return Ok(new { message = "Cita cancelada correctamente" });
         }
+        [HttpPut("confirmar/{id}")]
+        public async Task<IActionResult> ConfirmarCita(int id)
+        {
+            var cita = await _context.Citas.FindAsync(id);
+            if (cita == null) return NotFound("Cita no encontrada");
+
+            cita.Estado = "Confirmada";  // No la eliminamos, solo la marcamos como cancelada.
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Cita confirmada correctamente" });
+        }
 
         [HttpGet("detalle/{id}")]
         public async Task<IActionResult> GetCitaDetalle(int id)
@@ -158,6 +169,26 @@ namespace SalonDeBelleza.src.Controllers
             }
 
             return Ok(cita);
+        }
+
+        [HttpGet("cliente")]
+        public async Task<IActionResult> GetCitasCliente([FromQuery] int userId)
+        {
+            var citas = await _context.Citas
+                .Where(c => c.ClienteID == userId)
+                .Select(c => new
+                {
+                    c.CitaID,
+                    Cliente = c.Cliente.Nombre,
+                    Colaborador = c.Colaborador.Nombre,
+                    c.FechaHora,
+                    c.Servicio,
+                    c.Estado,
+                    c.Notas
+                }).OrderBy(c => c.FechaHora)
+                .ToListAsync();
+
+            return Ok(citas);
         }
 
     }
