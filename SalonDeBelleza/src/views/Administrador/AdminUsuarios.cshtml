@@ -79,6 +79,23 @@
                     <option>Cliente</option>
                 </select>
 
+                @if(Model.UsuarioEdit.Rol == "Colaborador"){
+                    <input type="hidden" name="ColaboradorEdit.UserID" asp-for-handler="ColaboradorEdit.UserID" value="@Model.ColaboradorEdit?.UserID" />
+                    <input type="hidden" name="ColaboradorEdit.Usuario" asp-for-handler="ColaboradorEdit.Usuario" value="@Model.UsuarioEdit" />
+                    <br />
+                    <label class="block">Horario Entrada</label>
+                    <input type="datetime" value="@Model.ColaboradorEdit?.HorarioEntrada" name="ColaboradorEdit.HorarioEntrada" asp-for-handler="ColaboradorEdit.HorarioEntrada" />
+                    <label class="block">Horario Salida</label>
+                    <input type="datetime" value="@Model.ColaboradorEdit?.HorarioSalida" name="ColaboradorEdit.HorarioSalida" asp-for-handler="ColaboradorEdit.HorarioSalida" />
+                    <label class="block">Tipo de Servicio:</label>
+                    <select name="ColaboradorEdit.TipoServicio" asp-for-handler="ColaboradorEdit.TipoServicio" value="@Model.ColaboradorEdit.TipoServicio"  class="w-full border px-2 py-1 mb-2">
+                        <option value="Corte">Corte</option>
+                        <option value="Tintes">Tintes</option>
+                    </select>
+                    <label class="block">Duracion Servicio</label>
+                    <input type="number" value="@Model.ColaboradorEdit?.DuracionServicio" name="ColaboradorEdit.DuracionServicio" asp-for-handler="ColaboradorEdit.DuracionServicio" min="1" />
+                }
+
                 <input type="hidden" name="@Model.UsuarioEdit?.LoginStatus" asp-for-handler="UsuarioEdit.LoginStatus" />
                 <button type="button" onclick="actualizarUsuario()" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
             </form>

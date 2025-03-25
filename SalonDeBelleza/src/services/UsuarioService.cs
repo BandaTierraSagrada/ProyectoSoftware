@@ -38,6 +38,10 @@ namespace SalonDeBelleza.src.services
         {
             await _usuarioRepository.ActualizarUsuarioAsync(usuario);
         }
+        public async Task ActualizarColaboradorAsync(ColaboradorInfo usuario)
+        {
+            await _usuarioRepository.ActualizarColaboradorAsync(usuario);
+        }
         public async Task<Usuario> RegistrarUsuarioAsync(Usuario usuario)
         {
             usuario.Password = HashPassword(usuario.Password);
@@ -60,6 +64,10 @@ namespace SalonDeBelleza.src.services
         public async Task<Usuario> ObtenerPorIdAdmin(int userId)
         {
             return await _usuarioRepository.ObtenerPorIdAdmin(userId);
+        }
+        public async Task<ColaboradorInfo> ObtenerPorIdColaborador(int userId)
+        {
+            return await _usuarioRepository.ObtenerPorIdColaborador(userId);
         }
         public string HashPassword(string password)
         {

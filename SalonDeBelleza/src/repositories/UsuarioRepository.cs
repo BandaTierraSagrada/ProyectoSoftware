@@ -61,6 +61,20 @@ namespace SalonDeBelleza.src.repositories
             _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
         }
+        public async Task ActualizarColaboradorAsync(ColaboradorInfo usuario)
+        {
+            //var usuarioExistente = await _context.Usuarios.FindAsync(usuario.UserID);
+            var usuarioExistente = await _context.Colaboradores.FindAsync(usuario.UserID);
+            if (usuarioExistente == null)
+            {
+                throw new KeyNotFoundException("Usuario no encontrado."); // Lanza una excepción si no se encuentra
+            }
+            _context.Entry(usuarioExistente).State = EntityState.Detached;
+            Console.WriteLine(usuario.HorarioSalida);
+            Console.WriteLine(usuarioExistente.HorarioSalida);
+            _context.Colaboradores.Update(usuario);
+            await _context.SaveChangesAsync();
+        }
         public async Task ActualizarUsuarioContrasena(Usuario usuario)
         {
             var usuarioExistente = await _context.Usuarios.FindAsync(usuario.UserID);
@@ -80,6 +94,11 @@ namespace SalonDeBelleza.src.repositories
         {
             
             return await Task.FromResult(_context.Usuarios.FirstOrDefault(u => u.UserID == userId));
+        }
+        public async Task<ColaboradorInfo> ObtenerPorIdColaborador(int userId)
+        {
+
+            return await Task.FromResult(_context.Colaboradores.FirstOrDefault(u => u.UserID == userId));
         }
         public async Task<List<Usuario>> ObtenerTodosAsync()
         {

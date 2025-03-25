@@ -20,6 +20,8 @@ namespace SalonDeBelleza.src.views.Administrador
 
         [BindProperty]
         public Usuario UsuarioEdit { get; set; }
+        [BindProperty]
+        public ColaboradorInfo? ColaboradorEdit { get; set; }
 
         [BindProperty]
         public string? NuevaContrasena { get; set; } = "";
@@ -52,6 +54,11 @@ namespace SalonDeBelleza.src.views.Administrador
             }
             this.decision = decision;
             UsuarioEdit = await _usuarioService.ObtenerPorIdAdmin(UserID);
+            if(UsuarioEdit.Rol == "Colaborador")
+            {
+                ColaboradorEdit = await _usuarioService.ObtenerPorIdColaborador(UserID);
+            }
+
             Usuarios = await _usuarioService.ObtenerTodosAsync();
             return Page();
         }
@@ -79,25 +86,17 @@ namespace SalonDeBelleza.src.views.Administrador
             var usuario = await _usuarioService.ObtenerPorIdAdmin(UsuarioEdit.UserID);
             UsuarioEdit.Password = usuario.Password;
             Console.WriteLine("OnPost Actualizar ejecutado");
-            if (!ModelState.IsValid)
-            {
-                foreach(var key in ModelState.Keys)
-                {
-                    Console.WriteLine("OnPost Actualizar invalido");
+            
 
-                    var errors = ModelState[key].Errors;
-                    foreach(var error in errors)
-                    {
-                        Console.WriteLine($"Error en {key}; {error.ErrorMessage}");
-                    }
-                }
-                Usuarios = await _usuarioService.ObtenerTodosAsync();
-                return Page();
-            }
             Console.WriteLine("OnPost Actualizar actualizando usuario");
             Console.WriteLine($" Datos recibidos: ID={UsuarioEdit.UserID}, Nombre={UsuarioEdit.Nombre}, Email={UsuarioEdit.Email}");
+            Console.WriteLine($" Datos recibidos: UserID={ColaboradorEdit.UserID}, HorarioEntrada={ColaboradorEdit.HorarioEntrada}, HorarioSalida={ColaboradorEdit.HorarioSalida}, TipoServicio={ColaboradorEdit.TipoServicio},DuracionServicio={ColaboradorEdit.DuracionServicio}");
 
             await _usuarioService.ActualizarUsuarioAsync(UsuarioEdit);
+            if (UsuarioEdit.Rol == "Colaborador")
+            {
+                await _usuarioService.ActualizarColaboradorAsync(ColaboradorEdit);
+            }
             return Page();
         }
 
