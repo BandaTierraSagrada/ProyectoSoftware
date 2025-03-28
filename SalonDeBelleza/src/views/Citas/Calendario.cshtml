@@ -47,7 +47,7 @@
             <option value="">Selecciona un horario</option>
         </select>
         <label for="notas">Notas adicionales:</label>
-        <input type="text" id="notas" placeholder=" " />
+        <input type="text" id="notas" value=" " placeholder=" " />
         <input type="hidden" id="UserIDCliente" name="@Model.UserIDCliente" value="@Model.UserIDCliente" />
         <input type="hidden" id="UserRol" name="@Model.Rol" value="@Model.Rol" />
         <button type="button" class="button" onclick="reservarCita(event)">Reservar</button>
@@ -128,7 +128,14 @@
                 id = await BuscarCliente(document.getElementById("EmailBusqueda").value);
             }
             console.log(id);
+            let response = await fetch(`/api/citas/recurrente/${id}`);
+            let recurrente = await response.json();
 
+            console.log(recurrente);
+            if(recurrente.recurrente){
+                nota = `ES CLIENTE FRECUENTE \n${nota}`;
+            }
+            console.log(nota);
             let formData = new URLSearchParams();
             formData.append("clienteID", id);
             formData.append("colaboradorID", colaborador);

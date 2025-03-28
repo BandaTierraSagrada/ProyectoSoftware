@@ -202,8 +202,8 @@ namespace SalonDeBelleza.src.Controllers
                 .CountAsync();
 
             bool esRecurrente = citasCompletadas >= 6;
-
-            return Ok(new { UserID = userId, Recurrente = esRecurrente });
+            var response = new { UserID = userId, recurrente = esRecurrente };
+            return Ok(response);
         }
 
         [HttpGet("buscar-cliente")]
