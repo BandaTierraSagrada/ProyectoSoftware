@@ -191,5 +191,37 @@ namespace SalonDeBelleza.src.Controllers
             return Ok(citas);
         }
 
+        [HttpGet("recurrente/{userId}")]
+        public async Task<IActionResult> EsClienteRecurrente(int userId)
+        {
+            DateTime tresMesesAtras = DateTime.UtcNow.AddMonths(-3);
+
+            // Obtener las citas completadas del cliente en los últimos 3 meses
+            var citasCompletadas = await _context.Citas
+                .Where(c => c.ClienteID == userId && c.Estado == "Completada" && c.FechaHora >= tresMesesAtras)
+                .CountAsync();
+
+            bool esRecurrente = citasCompletadas >= 6;
+
+            return Ok(new { UserID = userId, Recurrente = esRecurrente });
+        }
+
+        [HttpGet("buscar-cliente")]
+        public async Task<IActionResult> BuscarClientePorEmail([FromQuery] string email)
+        {
+            var cliente = await _context.Usuarios
+                .Where(u => u.Email == email && u.Rol == "Cliente")
+                .Select(u => new { u.UserID, u.Nombre })
+                .FirstOrDefaultAsync();
+
+            if (cliente == null)
+            {
+                return NotFound(new { mensaje = "Cliente no encontrado" });
+            }
+
+            return Ok(cliente);
+        }
+
+
     }
 }

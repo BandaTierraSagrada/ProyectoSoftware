@@ -20,9 +20,8 @@
         @if (Model.Rol != "Cliente")
         {
             <label for="email">Ingresar correo del cliente:</label>
-            <form method="post">
-                <input class="input" type="email" name="EmailBusqueda" placeholder="Correo del cliente" required>
-                <button class="button" type="submit">Buscar</button>
+            <form >
+                <input class="input" type="email" id="EmailBusqueda" placeholder="Correo del cliente" required>
             </form>
         }
 
@@ -50,6 +49,7 @@
         <label for="notas">Notas adicionales:</label>
         <input type="text" id="notas" placeholder=" " />
         <input type="hidden" id="UserIDCliente" name="@Model.UserIDCliente" value="@Model.UserIDCliente" />
+        <input type="hidden" id="UserRol" name="@Model.Rol" value="@Model.Rol" />
         <button type="button" class="button" onclick="reservarCita(event)">Reservar</button>
     </div>
 
@@ -63,6 +63,28 @@
             dateFormat: "Y-m-d",
             minDate: "today",
         });
+        
+
+        async function BuscarCliente(email){
+            try {
+            let response = await fetch(`/api/citas/buscar-cliente?email=${email}`);
+            console.log("🔎 Código de respuesta:", response.status);
+            if (!response.ok) {
+                alert("❌ Error al encontrar usuario. Inténtalo de nuevo.");
+                return null; // 🔹 Retorna null explícitamente en caso de error
+            }
+
+            let data = await response.json();
+            console.log(data);
+            return data.userID || null; // 🔹 Si no hay UserID, devuelve null en lugar de undefined
+
+            } catch (error) {
+                console.error("❌ Error al buscar cliente:", error);
+                alert("❌ Ocurrió un error al buscar el cliente.");
+                return null; // 🔹 También retorna null si ocurre un error en el fetch
+            }
+        }
+     
 
         async function cargarColaboradores() {
             let servicio = document.getElementById("servicio").value;
@@ -90,7 +112,7 @@
         }
 
         async function reservarCita(event) {
-
+            let rol = document.getElementById("UserRol").value;
             let fecha = document.getElementById("fecha").value;
             let hora = document.getElementById("hora").value;
             let colaborador = document.getElementById("colaborador").value;
@@ -102,8 +124,10 @@
                 alert("Por favor, completa todos los campos.");
                 return;
             }
-
-            console.log(hora);
+            if(rol=="Administrador"){
+                id = await BuscarCliente(document.getElementById("EmailBusqueda").value);
+            }
+            console.log(id);
 
             let formData = new URLSearchParams();
             formData.append("clienteID", id);
@@ -135,6 +159,7 @@
                 alert("❌ Ocurrió un error en la conexión.");
             }
         }
+
     </script>
 
 </body>

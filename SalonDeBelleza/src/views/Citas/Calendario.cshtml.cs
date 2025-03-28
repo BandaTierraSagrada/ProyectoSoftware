@@ -40,20 +40,11 @@ namespace SalonDeBelleza.src.Citas
             UserIDCliente = HttpContext.Session.GetInt32("UserID");
             Nombre = HttpContext.Session.GetString("Nombre") ?? "Invitado";
             Rol = HttpContext.Session.GetString("Rol") ?? "Cliente";
+
         }
 
-        public async Task<IActionResult> OnPostBuscarUsuarioAsync()
-        {
-            if (!string.IsNullOrEmpty(EmailBusqueda))
-            {
-                UsuarioEncontrado = await _usuarioService.ObtenerPorEmailAsync(EmailBusqueda);
-                if (UsuarioEncontrado != null)
-                {
-                    UserIDCliente = UsuarioEncontrado.UserID;
-                }
-            }
-            return Page();
-        }
+        
+
 
     }
 }
