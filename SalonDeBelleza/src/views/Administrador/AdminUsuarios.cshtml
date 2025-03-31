@@ -4,10 +4,16 @@
     ViewData["Title"] = "Administrar Usuarios";
 }
 
-<link href="~/css/UsuariosR.css" rel="stylesheet" />
 
 
-<div class="grid grid-cols-3 gap-4">
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/UsuariosR.css" rel="stylesheet" />
+</head>
+    <body>
+    <div class="grid grid-cols-3 gap-4">
     <!-- Tabla de Usuarios -->
     <div class="col-span-2">
         <h2 class="text-lg font-bold mb-4">Usuarios Registrados</h2>
@@ -50,6 +56,9 @@
                 }
             </tbody>
         </table>
+        <div class="button-container">
+            <button onclick="window.location.href='/Home/Administrador'">Regresar</button>
+        </div>
     </div>
 
 
@@ -121,7 +130,7 @@
     </div>
 </div>
 
-<script>
+    <script>
     function editarUsuario(userID) {
         console.log(" Editar usuario, UserID:", userID);
         window.location.href = "?handler=Editar&UserID=" + userID;
@@ -160,4 +169,5 @@
         }
     }
 </script>
-
+</body>
+</html>
