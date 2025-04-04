@@ -23,6 +23,18 @@ namespace SalonDeBelleza.src.repositories
         {
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
+
+            // Ahora que el usuario tiene un UserID, se crea la preferencia
+            PreferenciaNotificacion preferencias = new PreferenciaNotificacion
+            {
+                UserID = usuario.UserID,
+                RecibirCorreo = true,  // Puedes establecer valores predeterminados
+                RecibirWhatsApp = false
+            };
+
+            _context.PreferenciasNotificaciones.Add(preferencias);
+            await _context.SaveChangesAsync(); // Guardar la preferencia
+
             return usuario;
         }
         public async Task<Usuario> CrearColaboradorAsync(Usuario Colaborador,ColaboradorInfo ColaInfo)
@@ -30,18 +42,32 @@ namespace SalonDeBelleza.src.repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                Console.WriteLine("Se ejecuta primero");
                 // 1. Guardar usuario primero
                 _context.Usuarios.Add(Colaborador);
                 await _context.SaveChangesAsync();
 
                 // 2. Asignar el UserID generado al ColaboradorInfo
+                Console.WriteLine("Se ejecuta segundo");
+
                 ColaInfo.UserID = Colaborador.UserID;
                 _context.Colaboradores.Add(ColaInfo);
 
                 // 3. Guardar todo en la base de datos y confirmar la transacción
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                
+                // Ahora que el usuario tiene un UserID, se crea la preferencia
+                PreferenciaNotificacion preferencias = new PreferenciaNotificacion
+                {
+                    UserID = Colaborador.UserID,
+                    RecibirCorreo = true,  // Puedes establecer valores predeterminados
+                    RecibirWhatsApp = false
+                };
+                Console.WriteLine("Se ejecuta tercero");
 
+                _context.PreferenciasNotificaciones.Add(preferencias);
+                await _context.SaveChangesAsync(); // Guardar la preferencia
+                await transaction.CommitAsync();
                 return Colaborador;
             }
             catch (Exception)

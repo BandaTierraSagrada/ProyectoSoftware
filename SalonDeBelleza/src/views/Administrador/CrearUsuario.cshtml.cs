@@ -30,8 +30,6 @@ namespace SalonDeBelleza.src.views.Administrador
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-                return Page();
 
             var existeUsuario = await _usuarioService.ObtenerPorEmailAsync(Colaborador.Email);
             if (existeUsuario != null)

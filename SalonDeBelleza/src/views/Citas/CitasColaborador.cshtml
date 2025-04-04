@@ -177,6 +177,11 @@
                 default: return "gray";              // Gris para estados desconocidos
             }
         }
+        async function cerrarModal(evento) {
+            let modal = document.getElementById("modal");
+            modal.style.display = "flex";
+            modal.style.opacity = "0";
+        }
         async function abrirModal(evento) {
             let modal = document.getElementById("modal");
             modal.style.display = "flex";

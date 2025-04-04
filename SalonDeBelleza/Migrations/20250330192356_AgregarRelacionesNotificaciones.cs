@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SalonDeBelleza.Migrations
 {
     /// <inheritdoc />
-    public partial class AgregarColaboradorInfo : Migration
+    public partial class AgregarRelacionesNotificaciones : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,6 +85,56 @@ namespace SalonDeBelleza.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Notificaciones",
+                columns: table => new
+                {
+                    NotificacionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    Tipo = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Destinatario = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Mensaje = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaEnvio = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Enviado = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notificaciones", x => x.NotificacionID);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Usuarios_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Usuarios",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PreferenciasNotificaciones",
+                columns: table => new
+                {
+                    PreferenciaID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    RecibirCorreo = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    RecibirWhatsApp = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PreferenciasNotificaciones", x => x.PreferenciaID);
+                    table.ForeignKey(
+                        name: "FK_PreferenciasNotificaciones_Usuarios_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Usuarios",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Citas_ClienteID",
                 table: "Citas",
@@ -94,6 +144,16 @@ namespace SalonDeBelleza.Migrations
                 name: "IX_Citas_ColaboradorID",
                 table: "Citas",
                 column: "ColaboradorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_UserID",
+                table: "Notificaciones",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreferenciasNotificaciones_UserID",
+                table: "PreferenciasNotificaciones",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_ColaboradorInfoUserID",
@@ -134,6 +194,12 @@ namespace SalonDeBelleza.Migrations
 
             migrationBuilder.DropTable(
                 name: "Citas");
+
+            migrationBuilder.DropTable(
+                name: "Notificaciones");
+
+            migrationBuilder.DropTable(
+                name: "PreferenciasNotificaciones");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

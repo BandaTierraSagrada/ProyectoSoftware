@@ -10,6 +10,8 @@ namespace SalonDeBelleza.src.config
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Cita> Citas { get; set; }
         public DbSet<ColaboradorInfo> Colaboradores { get; set; }
+        public DbSet<Notificacion> Notificaciones { get; set; }
+        public DbSet<PreferenciaNotificacion> PreferenciasNotificaciones { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -19,6 +21,18 @@ namespace SalonDeBelleza.src.config
                 .HasOne(c => c.Usuario)
                 .WithMany()
                 .HasForeignKey(c => c.UserID);
+
+            modelBuilder.Entity<Notificacion>()
+            .HasOne(n => n.Usuario)
+            .WithMany(u => u.Notificaciones)
+            .HasForeignKey(n => n.UserID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PreferenciaNotificacion>()
+                .HasOne(p => p.Usuario)
+                .WithMany(u => u.PreferenciasNotificaciones)
+                .HasForeignKey(p => p.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -30,5 +30,8 @@ namespace SalonDeBelleza.src.models
 
         // Relación con ColaboradorInfo (Si el usuario es colaborador)
         public virtual ColaboradorInfo? ColaboradorInfo { get; set; }
+
+        public ICollection<Notificacion> Notificaciones { get; set; }
+        public ICollection<PreferenciaNotificacion> PreferenciasNotificaciones { get; set; }
     }
 }

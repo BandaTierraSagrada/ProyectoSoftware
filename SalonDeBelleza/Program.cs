@@ -9,8 +9,9 @@ using SalonDeBelleza.src.Controllers;
 using SalonDeBelleza.src.repositories;
 using SalonDeBelleza.src.services;
 
-var builder = WebApplication.CreateBuilder(args);
 
+var builder = WebApplication.CreateBuilder(args);
+var mySetting = builder.Configuration.GetSection("SMTP");
 // Configurar servicios
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
@@ -47,6 +48,8 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CitaService>();
 builder.Services.AddScoped<CitaRepository>();
+builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<WhatsAppService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -64,6 +67,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; // <-- Esto hace que Swagger UI esté disponible en la raíz
     });*/
 }
+
+
 
 app.UseSession(); // Habilitar sesiones
 app.UseStaticFiles();

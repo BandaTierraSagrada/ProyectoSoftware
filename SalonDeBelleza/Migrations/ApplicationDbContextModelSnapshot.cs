@@ -86,6 +86,66 @@ namespace SalonDeBelleza.Migrations
                     b.ToTable("Colaboradores");
                 });
 
+            modelBuilder.Entity("SalonDeBelleza.src.models.Notificacion", b =>
+                {
+                    b.Property<int>("NotificacionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificacionID"));
+
+                    b.Property<string>("Destinatario")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Enviado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("FechaEnvio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificacionID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Notificaciones");
+                });
+
+            modelBuilder.Entity("SalonDeBelleza.src.models.PreferenciaNotificacion", b =>
+                {
+                    b.Property<int>("PreferenciaID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PreferenciaID"));
+
+                    b.Property<bool>("RecibirCorreo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("RecibirWhatsApp")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PreferenciaID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("PreferenciasNotificaciones");
+                });
+
             modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
                 {
                     b.Property<int>("UserID")
@@ -163,6 +223,28 @@ namespace SalonDeBelleza.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("SalonDeBelleza.src.models.Notificacion", b =>
+                {
+                    b.HasOne("SalonDeBelleza.src.models.Usuario", "Usuario")
+                        .WithMany("Notificaciones")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SalonDeBelleza.src.models.PreferenciaNotificacion", b =>
+                {
+                    b.HasOne("SalonDeBelleza.src.models.Usuario", "Usuario")
+                        .WithMany("PreferenciasNotificaciones")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
                 {
                     b.HasOne("SalonDeBelleza.src.models.ColaboradorInfo", "ColaboradorInfo")
@@ -170,6 +252,13 @@ namespace SalonDeBelleza.Migrations
                         .HasForeignKey("ColaboradorInfoUserID");
 
                     b.Navigation("ColaboradorInfo");
+                });
+
+            modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
+                {
+                    b.Navigation("Notificaciones");
+
+                    b.Navigation("PreferenciasNotificaciones");
                 });
 #pragma warning restore 612, 618
         }

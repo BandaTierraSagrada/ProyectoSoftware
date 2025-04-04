@@ -25,10 +25,12 @@ namespace SalonDeBelleza.src.views.Usuarios
         public string ConfirmarPassword { get; set; }
 
         public string Mensaje { get; set; }
+        public int? UserID { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
+            UserID = userId;
             if (userId == null)
             {
                 return RedirectToPage("/Usuarios/Login-register");
@@ -46,6 +48,7 @@ namespace SalonDeBelleza.src.views.Usuarios
         public async Task<IActionResult> OnPost()
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
+            UserID = userId;
             if (userId == null)
             {
                 return RedirectToPage("/Usuarios/Login-register");
