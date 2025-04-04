@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SalonDeBelleza.src.config;
+using SalonDeBelleza.src.services;
 
 namespace SalonDeBelleza.src.Controllers
 {
@@ -14,10 +15,15 @@ namespace SalonDeBelleza.src.Controllers
     public class CitaController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
-        public CitaController(ApplicationDbContext context)
+        private readonly WhatsAppService _whatsAppService;
+        private readonly EmailService _emailService;
+        private readonly UsuarioService _usuarioService;
+        public CitaController(ApplicationDbContext context, WhatsAppService whatsAppService, EmailService emailService, UsuarioService usuarioService)
         {
             _context = context;
+            _whatsAppService = whatsAppService;
+            _emailService = emailService;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet("colaboradores")]
@@ -69,6 +75,7 @@ namespace SalonDeBelleza.src.Controllers
         [FromForm] string notas)
         {
             Cita nuevaCita = new Cita { ClienteID = clienteID, ColaboradorID = colaboradorID,FechaHora=fechaHora,Servicio=servicio,Estado=estado,Notas=notas };
+            Usuario user = await _usuarioService.ObtenerPorIdAsync(clienteID);
             if (!_context.Usuarios.Any(u => u.UserID == nuevaCita.ClienteID))
                 return BadRequest("Cliente no válido");
 
@@ -77,6 +84,24 @@ namespace SalonDeBelleza.src.Controllers
 
             _context.Citas.Add(nuevaCita);
             await _context.SaveChangesAsync();
+            PreferenciaNotificacion preferencia = await _context.PreferenciasNotificaciones.FirstOrDefaultAsync(u => u.UserID == user.UserID);
+            string mensaje = $"Hola {user.Nombre}, tu cita ha sido agendada para {nuevaCita.FechaHora}.";
+            if (preferencia.RecibirWhatsApp)
+            {
+                await _whatsAppService.EnviarMensajeAsync("+521" + nuevaCita.Cliente.Telefono.ToString(), mensaje);
+                Notificacion notificacionwhats = new Notificacion { UserID = user.UserID, Tipo = "WhatsApp", Destinatario = "+521" + nuevaCita.Cliente.Telefono.ToString(), Mensaje = mensaje, Enviado = true };
+                _context.Notificaciones.Add(notificacionwhats);
+                await _context.SaveChangesAsync();
+            }
+            if (preferencia.RecibirCorreo)
+            {
+                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = nuevaCita.Cliente.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                await _emailService.EnviarCorreoAsync(men_correo);
+                Notificacion notificacioncorreo = new Notificacion { UserID = user.UserID, Tipo = "Correo", Destinatario = user.Email.ToString(), Mensaje = mensaje, Enviado = true };
+                _context.Notificaciones.Add(notificacioncorreo);
+
+                await _context.SaveChangesAsync();
+            }
             return Ok("Cita reservada con éxito");
         }
 
@@ -121,6 +146,18 @@ namespace SalonDeBelleza.src.Controllers
             cita.Notas = notas;
 
             await _context.SaveChangesAsync();
+            Usuario user = await _usuarioService.ObtenerPorIdAsync(cita.ClienteID);
+            PreferenciaNotificacion preferencia = await _context.PreferenciasNotificaciones.FirstOrDefaultAsync(u => u.UserID == user.UserID);
+            string mensaje = $"Hola {user.Nombre}, tu cita ha sido modificada para {cita.FechaHora}.";
+            if (preferencia.RecibirWhatsApp)
+            {
+                await _whatsAppService.EnviarMensajeAsync("+521" + user.Telefono.ToString(), mensaje);
+            }
+            if (preferencia.RecibirCorreo)
+            {
+                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                await _emailService.EnviarCorreoAsync(men_correo);
+            }
             return Ok(new { message = "Cita actualizada correctamente" });
         }
 
@@ -132,7 +169,18 @@ namespace SalonDeBelleza.src.Controllers
 
             cita.Estado = "Cancelada";  // No la eliminamos, solo la marcamos como cancelada.
             await _context.SaveChangesAsync();
-
+            Usuario user = await _usuarioService.ObtenerPorIdAsync(cita.ClienteID);
+            PreferenciaNotificacion preferencia = await _context.PreferenciasNotificaciones.FirstOrDefaultAsync(u => u.UserID == user.UserID);
+            string mensaje = $"Hola {user.Nombre}, tu cita ha sido cancelada del dia {cita.FechaHora}.";
+            if (preferencia.RecibirWhatsApp)
+            {
+                await _whatsAppService.EnviarMensajeAsync("+521" + user.Telefono.ToString(), mensaje);
+            }
+            if (preferencia.RecibirCorreo)
+            {
+                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                await _emailService.EnviarCorreoAsync(men_correo);
+            }
             return Ok(new { message = "Cita cancelada correctamente" });
         }
         [HttpPut("confirmar/{id}")]

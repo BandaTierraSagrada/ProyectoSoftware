@@ -1,0 +1,52 @@
+﻿@page
+@model SalonDeBelleza.src.views.Administrador.HistorialNotificacionesModel
+@{
+	ViewData["Title"] = "Historial de Notificaciones";
+}
+
+<h2 class="text-center text-2xl font-bold mt-4">Historial de Notificaciones</h2>
+
+<!-- Filtros -->
+<form method="get" class="flex gap-4 my-4">
+    <input type="date" name="fecha" value="@Model.FechaFiltro?.ToString("yyyy-MM-dd")" class="border p-2 rounded" />
+    <select name="tipo" class="border p-2 rounded">
+        <option value="">Todos</option>
+        <option value="WhatsApp" selected="@(Model.TipoFiltro == "WhatsApp")">WhatsApp</option>
+        <option value="Correo" selected="@(Model.TipoFiltro == "Correo")">Correo</option>
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filtrar</button>
+</form>
+
+<!-- Tabla de notificaciones -->
+<table class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
+    <thead class="bg-gray-100">
+        <tr>
+            <th class="p-2 text-left border">Fecha</th>
+            <th class="p-2 text-left border">Tipo</th>
+            <th class="p-2 text-left border">Destinatario</th>
+            <th class="p-2 text-left border">Mensaje</th>
+            <th class="p-2 text-left border">Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var notificacion in Model.Notificaciones)
+        {
+            <tr class="border-b">
+                <td class="p-2">@notificacion.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</td>
+                <td class="p-2">@notificacion.Tipo</td>
+                <td class="p-2">@notificacion.Destinatario</td>
+                <td class="p-2">@notificacion.Mensaje</td>
+                <td class="p-2">
+                    @if (notificacion.Enviado)
+                    {
+                        <span class="text-green-600 font-bold">Enviado</span>
+                    }
+                    else
+                    {
+                        <span class="text-red-600 font-bold">Fallido</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

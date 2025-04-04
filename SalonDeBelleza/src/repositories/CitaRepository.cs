@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalonDeBelleza.src.models;
 using SalonDeBelleza.src.config;
+using SalonDeBelleza.src.Controllers;
+using SalonDeBelleza.src.services;
 
 namespace SalonDeBelleza.src.repositories
 {
     public class CitaRepository
     {
         private readonly ApplicationDbContext _context;
-
+        
         public CitaRepository(ApplicationDbContext context)
         {
             _context = context;

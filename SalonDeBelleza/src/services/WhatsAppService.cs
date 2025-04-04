@@ -25,8 +25,8 @@ namespace SalonDeBelleza.src.services
                 body: mensaje,
                 from: new Twilio.Types.PhoneNumber(_whatsAppNumber),
                 to: new Twilio.Types.PhoneNumber($"whatsapp:{destinatario}")
-                
             );
+
             Console.WriteLine($"Mensaje enviado: {message.Sid}");
             Console.WriteLine($"Mensaje enviado: {message.Body}");
         }
