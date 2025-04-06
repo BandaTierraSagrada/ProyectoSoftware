@@ -12,8 +12,8 @@ using SalonDeBelleza.src.config;
 namespace SalonDeBelleza.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250330192356_AgregarRelacionesNotificaciones")]
-    partial class AgregarRelacionesNotificaciones
+    [Migration("20250406024223_ModificarProducto")]
+    partial class ModificarProducto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,6 +147,37 @@ namespace SalonDeBelleza.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("PreferenciasNotificaciones");
+                });
+
+            modelBuilder.Entity("SalonDeBelleza.src.models.Producto", b =>
+                {
+                    b.Property<int>("ProductoID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductoID"));
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockMinimo")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductoID");
+
+                    b.ToTable("Productos");
                 });
 
             modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>

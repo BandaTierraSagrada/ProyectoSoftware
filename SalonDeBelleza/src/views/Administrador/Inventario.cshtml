@@ -1,0 +1,203 @@
+﻿@page
+@model SalonDeBelleza.src.views.Administrador.InventarioModel
+@{
+    ViewData["Title"] = "Inventario";
+}
+
+<h1>Inventario de Productos</h1>
+
+<div>
+    <button onclick="abrirModalCrear()">Crear Producto</button>
+    <input type="text" id="filtro" placeholder="Filtrar por nombre..." onkeyup="filtrarProductos()">
+</div>
+
+<table id="productosTable">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="productosBody">
+        <!-- Productos serán cargados aquí con JavaScript -->
+    </tbody>
+</table>
+
+<!-- Modal para crear o editar productos -->
+<div id="modalProducto" style="display:none;">
+    <form id="formProducto" onsubmit="guardarProducto(event)">
+        <input type="hidden" id="productoId">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" required><br>
+        <label>Descripción:</label>
+        <input type="text" id="descripcion" required><br>
+        <label>Stock Mínimo:</label>
+        <input type="number" id="stockMinimo" required><br>
+        <label>Stock Actual:</label>
+        <input type="number" id="stock" required><br>
+        <label>Categoría:</label>
+        <select id="categoria"></select><br>
+        <button type="submit">Guardar</button>
+        <button type="button" onclick="cerrarModal()">Cancelar</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarProductos();
+        cargarCategorias();
+    });
+
+    // Cargar productos desde la API
+    function cargarProductos() {
+        fetch('/api/inventario/productos')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('productosBody');
+                tbody.innerHTML = '';
+                data.forEach(producto => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${producto.nombre}</td>
+                        <td>${producto.descripcion}</td>
+                        <td>${producto.stock}</td>
+                        <td>
+                            <button onclick="actualizarStock(${producto.productoID}, -1)">-</button>
+                            <input type="number" value="1" min="1" id="cantidad-${producto.productoID}">
+                            <button onclick="actualizarStock(${producto.productoID}, 1)">+</button>
+                        </td>
+                        <td>
+                            <button onclick="abrirModalEditar(${producto.productoID})">Editar</button>
+                            <button onclick="eliminarProducto(${producto.productoID})">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error("Error al cargar los productos", error));
+    }
+
+
+
+    // Actualizar el stock de un producto
+    function actualizarStock(id, cantidad) {
+        const cantidadInput = document.getElementById(`cantidad-${id}`).value;
+        const cantidadFinal = cantidad === 1 ? parseInt(cantidadInput) : -parseInt(cantidadInput);
+        fetch(`/api/inventario/actualizarStock/${id}?cantidad=${cantidadFinal}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    cargarProductos();
+                }
+            })
+            .catch(error => console.error("Error al actualizar el stock", error));
+    }
+
+    // Abrir el modal para crear un producto
+    function abrirModalCrear() {
+        document.getElementById('modalProducto').style.display = 'block';
+        document.getElementById('productoId').value = '';
+        document.getElementById('formProducto').reset();
+    }
+
+    // Abrir el modal para editar un producto
+    function abrirModalEditar(id) {
+        fetch(`/api/inventario/producto/${id}`)
+            .then(response => response.json())
+            .then(producto => {
+                document.getElementById('productoId').value = producto.productoID;
+                document.getElementById('nombre').value = producto.nombre;
+                document.getElementById('descripcion').value = producto.descripcion;
+                document.getElementById('stockMinimo').value = producto.stockMinimo;
+                document.getElementById('stock').value = producto.stock;
+                document.getElementById('categoria').value = producto.categoria;
+                document.getElementById('modalProducto').style.display = 'block';
+            })
+            .catch(error => console.error("Error al cargar el producto", error));
+    }
+
+    // Guardar producto (crear o editar)
+    function guardarProducto(event) {
+        event.preventDefault();
+        const id = document.getElementById('productoId').value;
+        const producto = {
+            nombre: document.getElementById('nombre').value,
+            descripcion: document.getElementById('descripcion').value,
+            stockMinimo: document.getElementById('stockMinimo').value,
+            stock: document.getElementById('stock').value,
+            categoria: document.getElementById('categoria').value
+        };
+
+        let url = '/api/inventario/crearProducto';
+        let method = 'POST';
+
+        if (id) {
+            url = `/api/inventario/actualizarProducto/${id}`;
+            method = 'PUT';
+        }
+
+        fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(producto)
+        })
+            .then(response => {
+                if (response.ok) {
+                    cargarProductos();
+                    cerrarModal();
+                }
+            })
+            .catch(error => console.error("Error al guardar el producto", error));
+    }
+
+    // Eliminar producto
+    function eliminarProducto(id) {
+        fetch(`/api/inventario/eliminarProducto/${id}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    cargarProductos();
+                }
+            })
+            .catch(error => console.error("Error al eliminar el producto", error));
+    }
+
+    // Cerrar el modal
+    function cerrarModal() {
+        document.getElementById('modalProducto').style.display = 'none';
+    }
+
+    // Cargar las categorías desde la API
+    function cargarCategorias() {
+        fetch('/api/inventario/categorias')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('categoria');
+                data.forEach(categoria => {
+                    const option = document.createElement('option');
+                    option.value = categoria;
+                    option.textContent = categoria;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar las categorías", error));
+    }
+
+    // Filtrar productos por nombre
+    function filtrarProductos() {
+        const filtro = document.getElementById('filtro').value.toLowerCase();
+        const filas = document.getElementById('productosBody').getElementsByTagName('tr');
+        Array.from(filas).forEach(fila => {
+            const nombre = fila.getElementsByTagName('td')[0].textContent.toLowerCase();
+            if (nombre.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    }
+</script>

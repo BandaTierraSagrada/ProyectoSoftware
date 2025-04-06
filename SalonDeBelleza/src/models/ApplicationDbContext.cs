@@ -11,6 +11,7 @@ namespace SalonDeBelleza.src.config
         public DbSet<Cita> Citas { get; set; }
         public DbSet<ColaboradorInfo> Colaboradores { get; set; }
         public DbSet<Notificacion> Notificaciones { get; set; }
+        public DbSet<Producto> Productos { get; set; }
         public DbSet<PreferenciaNotificacion> PreferenciasNotificaciones { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

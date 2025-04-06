@@ -106,10 +106,11 @@ namespace SalonDeBelleza.src.Controllers
     public class WhatsappController : ControllerBase
     {
         private readonly WhatsAppService _whatsAppService;
-
-        public WhatsappController(WhatsAppService whatsAppService)
+        private readonly ApplicationDbContext _context;
+        public WhatsappController(WhatsAppService whatsAppService, ApplicationDbContext context)
         {
             _whatsAppService = whatsAppService;
+            _context = context;
         }
 
         [HttpPost("enviar")]
@@ -121,6 +122,7 @@ namespace SalonDeBelleza.src.Controllers
             await _whatsAppService.EnviarMensajeAsync(request.Destinatario, request.Mensaje);
             return Ok("Notificación enviada por WhatsApp.");
         }
+
     }
 
 }

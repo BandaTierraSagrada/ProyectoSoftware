@@ -146,6 +146,37 @@ namespace SalonDeBelleza.Migrations
                     b.ToTable("PreferenciasNotificaciones");
                 });
 
+            modelBuilder.Entity("SalonDeBelleza.src.models.Producto", b =>
+                {
+                    b.Property<int>("ProductoID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductoID"));
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockMinimo")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductoID");
+
+                    b.ToTable("Productos");
+                });
+
             modelBuilder.Entity("SalonDeBelleza.src.models.Usuario", b =>
                 {
                     b.Property<int>("UserID")

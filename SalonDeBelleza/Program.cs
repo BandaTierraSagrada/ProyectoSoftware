@@ -49,7 +49,7 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CitaService>();
 builder.Services.AddScoped<CitaRepository>();
 builder.Services.AddSingleton<EmailService>();
-builder.Services.AddSingleton<WhatsAppService>();
+builder.Services.AddScoped<WhatsAppService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
