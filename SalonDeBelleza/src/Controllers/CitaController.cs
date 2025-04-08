@@ -95,7 +95,7 @@ namespace SalonDeBelleza.src.Controllers
             }
             if (preferencia.RecibirCorreo)
             {
-                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = nuevaCita.Cliente.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                NotificacionRequest men_correo = new NotificacionRequest { Nombre = nuevaCita.Cliente.Nombre, Destinatario = nuevaCita.Cliente.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
                 await _emailService.EnviarCorreoAsync(men_correo);
                 Notificacion notificacioncorreo = new Notificacion { UserID = user.UserID, Tipo = "Correo", Destinatario = user.Email.ToString(), Mensaje = mensaje, Enviado = true };
                 _context.Notificaciones.Add(notificacioncorreo);
@@ -155,7 +155,7 @@ namespace SalonDeBelleza.src.Controllers
             }
             if (preferencia.RecibirCorreo)
             {
-                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                NotificacionRequest men_correo = new NotificacionRequest { Nombre=user.Nombre, Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
                 await _emailService.EnviarCorreoAsync(men_correo);
             }
             return Ok(new { message = "Cita actualizada correctamente" });
@@ -178,7 +178,7 @@ namespace SalonDeBelleza.src.Controllers
             }
             if (preferencia.RecibirCorreo)
             {
-                NotificacionRequest men_correo = new NotificacionRequest { Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
+                NotificacionRequest men_correo = new NotificacionRequest { Nombre = user.Nombre, Destinatario = user.Email, Asunto = "Agendacion cita", CuerpoHtml = mensaje };
                 await _emailService.EnviarCorreoAsync(men_correo);
             }
             return Ok(new { message = "Cita cancelada correctamente" });

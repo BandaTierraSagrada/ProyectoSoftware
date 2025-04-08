@@ -50,13 +50,15 @@ namespace SalonDeBelleza.src.services
                     HttpClientInitializer = credential,
                     ApplicationName = "SalonDeBelleza"
                 });
-
+                // 🟡 Aquí usamos la plantilla
+                string htmlCuerpo = await ObtenerContenidoCorreoAsync(request.Nombre, request.CuerpoHtml);
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Salon de Belleza", emailFrom));
                 message.To.Add(new MailboxAddress(request.Destinatario, request.Destinatario));
                 message.Subject = request.Asunto;
 
-                var bodyBuilder = new BodyBuilder { HtmlBody = request.CuerpoHtml };
+                //var bodyBuilder = new BodyBuilder { HtmlBody = request.CuerpoHtml };
+                var bodyBuilder = new BodyBuilder { HtmlBody = htmlCuerpo };
                 message.Body = bodyBuilder.ToMessageBody();
 
                 using (var stream = new MemoryStream())
@@ -79,6 +81,18 @@ namespace SalonDeBelleza.src.services
                 return false;
             }
         }
+
+        public async Task<string> ObtenerContenidoCorreoAsync(string nombre, string mensaje)
+        {
+            string rutaPlantilla = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "plantillascorreo", "citaconfirmada.html");
+            string html = await File.ReadAllTextAsync(rutaPlantilla);
+
+            html = html.Replace("{{NOMBRE}}", nombre);
+            html = html.Replace("{{MENSAJE}}", mensaje);
+
+            return html;
+        }
+
 
     }
 }

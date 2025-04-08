@@ -13,10 +13,12 @@ namespace SalonDeBelleza.src.Controllers
     public class InventarioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly WhatsAppService _whatsAppService;
 
-        public InventarioController(ApplicationDbContext context)
+        public InventarioController(ApplicationDbContext context, WhatsAppService whatsAppService)
         {
             _context = context;
+            _whatsAppService = whatsAppService;
         }
 
         // Obtener todos los productos
@@ -57,7 +59,7 @@ namespace SalonDeBelleza.src.Controllers
             // Notificar al administrador si el stock es menor al mínimo
             if (producto.Stock <= producto.StockMinimo)
             {
-                // await _notificacionService.EnviarNotificacionAdministrador("El stock de " + producto.Nombre + " ha alcanzado el nivel mínimo.");
+                await _whatsAppService.EnviarWhatsAppAdmins("El stock de " + producto.Nombre + " ha alcanzado el nivel mínimo.");
             }
 
             await _context.SaveChangesAsync();
