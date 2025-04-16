@@ -4,49 +4,88 @@
 	ViewData["Title"] = "Historial de Notificaciones";
 }
 
-<h2 class="text-center text-2xl font-bold mt-4">Historial de Notificaciones</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="~/css/Notificaciones.css" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="notifications-container">
+        <h2 class="page-title">Historial de Notificaciones</h2>
 
-<!-- Filtros -->
-<form method="get" class="flex gap-4 my-4">
-    <input type="date" name="fecha" value="@Model.FechaFiltro?.ToString("yyyy-MM-dd")" class="border p-2 rounded" />
-    <select name="tipo" class="border p-2 rounded">
-        <option value="">Todos</option>
-        <option value="WhatsApp" selected="@(Model.TipoFiltro == "WhatsApp")">WhatsApp</option>
-        <option value="Correo" selected="@(Model.TipoFiltro == "Correo")">Correo</option>
-    </select>
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filtrar</button>
-</form>
+        <!-- Filtros -->
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <label for="fecha" class="filter-label">Fecha:</label>
+                <input type="date" name="fecha" value="@Model.FechaFiltro?.ToString("yyyy-MM-dd")" class="filter-input" />
+            </div>
 
-<!-- Tabla de notificaciones -->
-<table class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-    <thead class="bg-gray-100">
-        <tr>
-            <th class="p-2 text-left border">Fecha</th>
-            <th class="p-2 text-left border">Tipo</th>
-            <th class="p-2 text-left border">Destinatario</th>
-            <th class="p-2 text-left border">Mensaje</th>
-            <th class="p-2 text-left border">Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var notificacion in Model.Notificaciones)
-        {
-            <tr class="border-b">
-                <td class="p-2">@notificacion.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</td>
-                <td class="p-2">@notificacion.Tipo</td>
-                <td class="p-2">@notificacion.Destinatario</td>
-                <td class="p-2">@notificacion.Mensaje</td>
-                <td class="p-2">
-                    @if (notificacion.Enviado)
+            <div class="filter-group">
+                <label for="tipo" class="filter-label">Tipo:</label>
+                <select name="tipo" class="filter-input">
+                    <option value="">Todos</option>
+                    <option value="WhatsApp" selected="@(Model.TipoFiltro == "WhatsApp")">WhatsApp</option>
+                    <option value="Correo" selected="@(Model.TipoFiltro == "Correo")">Correo</option>
+                </select>
+            </div>
+
+            <button type="submit" class="filter-button">
+                <i class="fas fa-filter"></i> Filtrar
+            </button>
+            <button class="filter-button" onclick="window.location.href='/Home/Administrador'">Regresar</button>
+        </form>
+
+        <!-- Tabla de notificaciones -->
+        <div class="table-container">
+            <table class="notifications-table">
+                <thead>
+                    <tr>
+                        <th class="table-header">Fecha</th>
+                        <th class="table-header">Tipo</th>
+                        <th class="table-header">Destinatario</th>
+                        <th class="table-header">Mensaje</th>
+                        <th class="table-header">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var notificacion in Model.Notificaciones)
                     {
-                        <span class="text-green-600 font-bold">Enviado</span>
+                        <tr class="table-row">
+                            <td class="table-cell">@notificacion.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="table-cell">
+                                <span class="notification-type @notificacion.Tipo.ToLower()">
+                                    @notificacion.Tipo
+                                </span>
+                            </td>
+                            <td class="table-cell">@notificacion.Destinatario</td>
+                            <td class="table-cell message-cell">@notificacion.Mensaje</td>
+                            <td class="table-cell">
+                                @if (notificacion.Enviado)
+                                {
+                                    <span class="status-badge success">
+                                        <i class="fas fa-check-circle"></i> Enviado
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge failed">
+                                        <i class="fas fa-times-circle"></i> Fallido
+                                    </span>
+                                }
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <span class="text-red-600 font-bold">Fallido</span>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Agrega Font Awesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</body>
+</html>

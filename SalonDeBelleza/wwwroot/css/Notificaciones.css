@@ -1,0 +1,215 @@
+﻿/* Estilos generales */
+:root {
+    --primary-color: #6d28d9;
+    --primary-light: #8b5cf6;
+    --secondary-color: #f43f5e;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --gray-light: #f3f4f6;
+    --gray-medium: #e5e7eb;
+    --gray-dark: #6b7280;
+    --text-color: #1f2937;
+    --text-light: #9ca3af;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f9fafb;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+.notifications-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+}
+
+/* Título de la página */
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-medium);
+}
+
+/* Formulario de filtros */
+.filters-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--gray-light);
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--gray-dark);
+}
+
+.filter-input {
+    padding: 10px 12px;
+    border: 1px solid var(--gray-medium);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+    .filter-input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+    }
+
+.filter-button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .filter-button:hover {
+        background-color: var(--primary-light);
+        transform: translateY(-1px);
+    }
+
+/* Contenedor de la tabla */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de la tabla */
+.notifications-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.table-header {
+    padding: 15px;
+    text-align: left;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+}
+
+.table-row {
+    border-bottom: 1px solid var(--gray-medium);
+    transition: all 0.2s;
+}
+
+    .table-row:hover {
+        background-color: var(--gray-light);
+    }
+
+.table-cell {
+    padding: 15px;
+    font-size: 14px;
+}
+
+/* Estilos para los tipos de notificación */
+.notification-type {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+    .notification-type.whatsapp {
+        background-color: #25D366;
+        color: white;
+    }
+
+    .notification-type.correo {
+        background-color: #EA4335;
+        color: white;
+    }
+
+/* Estilos para los estados */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+    .status-badge.success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-badge.failed {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--error-color);
+    }
+
+/* Celda del mensaje */
+.message-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table-header, .table-cell {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+}
