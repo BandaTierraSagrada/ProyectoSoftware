@@ -3,57 +3,101 @@
 @{
     ViewData["Title"] = "RegistroColaboradores";
 }
-<h2>Registro de Usuario</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="~/css/CrearUsuario.css" rel="stylesheet" />
 
-@if (!string.IsNullOrEmpty(Model.Mensaje))
-{
-    <div class="alert alert-danger">@Model.Mensaje</div>
-}
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="page-title">Registro de Usuario</h2>
 
-<form method="post">
-    @Html.AntiForgeryToken()
-    <div class="mb-3">
-        <label for="Nombre" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+        @if (!string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert-message error">
+                <i class="fas fa-exclamation-circle"></i> @Model.Mensaje
+            </div>
+        }
+
+        <form method="post" class="user-form">
+            @Html.AntiForgeryToken()
+
+            <div class="form-grid">
+                <!-- Primera columna -->
+                <div class="form-group">
+                    <label for="Nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-input" id="Nombre" name="Nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Telefono" class="form-label">Teléfono</label>
+                    <input type="text" class="form-input" id="Telefono" name="Telefono" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-input" id="Email" name="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="Password" name="Password" required>
+                </div>
+            </div>
+
+            <!-- Segunda columna -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="Rol" class="form-label">Rol</label>
+                    <select class="form-input" id="Rol" name="Rol" required>
+                        <option value="Colaborador">Colaborador</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="TipoServicio" class="form-label">Servicio</label>
+                    <select class="form-input" id="TipoServicio" name="TipoServicio" required>
+                        <option value="Unas">Uñas</option>
+                        <option value="Tintes">Tintes</option>
+                        <option value="Corte">Corte</option>
+                        <option value="Peinado">Peinado</option>
+                        <option value="Cejas">Cejas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="DuracionServicio" class="form-label">Duración (minutos)</label>
+                    <input type="number" class="form-input" id="DuracionServicio" name="DuracionServicio" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Horario</label>
+                    <div class="time-inputs">
+                        <div class="time-group">
+                            <label for="HorarioEntrada" class="time-label">Entrada</label>
+                            <input type="time" class="form-input time-input" id="HorarioEntrada" name="HorarioEntrada" required>
+                        </div>
+                        <div class="time-group">
+                            <label for="HorarioSalida" class="time-label">Salida</label>
+                            <input type="time" class="form-input time-input" id="HorarioSalida" name="HorarioSalida" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-user-plus"></i> Registrar
+                </button>
+                <button class="submit-button" onclick="window.location.href='/Home/Administrador'">Regresar</button>
+            </div>
+        </form>
     </div>
-    <div class="mb-3">
-        <label for="Telefono" class="form-label">Teléfono</label>
-        <input type="text" class="form-control" id="Telefono" name="Telefono" required>
-    </div>
-    <div class="mb-3">
-        <label for="Email" class="form-label">Correo Electrónico</label>
-        <input type="email" class="form-control" id="Email" name="Email" required>
-    </div>
-    <div class="mb-3">
-        <label for="Password" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="Password" name="Password" required>
-    </div>
-    <div class="mb-3">
-        <label for="Rol" class="form-label">Rol</label>
-        <select class="form-control" id="Rol" name="Rol" required>
-            <option value="Colaborador">Colaborador</option>
-            <option value="Administrador">Administrador</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="TipoServicio">Servicio</label>
-        <select id="TipoServicio" name="TipoServicio" placeholder=" " required>
-            <option value="Unas">Uñas</option>
-            <option value="Tintes">Tintes</option>
-            <option value="Corte">Corte</option>
-            <option value="Peinado">Peinado</option>
-            <option value="Cejas">Cejas</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="DuracionServicio">Duracion</label>
-        <input type="number" id="DuracionServicio" name="DuracionServicio" min="0" placeholder="En minutos" required>
-    </div>
-    <div class="mb-3">
-        <label for="HoraEntrada">Hora Entrada </label>
-        <input type="time" id="HorarioEntrada" name="HorarioEntrada" required>
-        <label for="HoraSalida">Hora Salida </label>
-        <input type="time" id="HorarioSalida" name="HorarioSalida" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Registrar</button>
-</form>
+
+</body>
+</html>
