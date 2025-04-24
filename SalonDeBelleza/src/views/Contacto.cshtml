@@ -1,0 +1,46 @@
+﻿@page
+@model SalonDeBelleza.src.views.ContactoModel
+@{
+    Layout = "~/src/views/Shared/LayoutPrincipal.cshtml";
+    ViewData["Title"] = "Contacto";
+}
+
+@section Head {
+    <link rel="stylesheet" href="~/css/Contactostyle.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+}
+
+<!-- Imagen Informativa -->
+<div class="imagen-info">
+    <img src="~/img/slider1.jpg" alt="Información sobre la empresa">
+</div>
+
+<!-- Sección de Contacto -->
+<div class="contacto">
+    <div class="info">
+        <div class="icono">
+            <i class="fas fa-phone-alt"></i>
+        </div>
+        <h2>Teléfono:</h2>
+        <p>656-656-6565</p>
+    </div>
+
+    <div class="info">
+        <div class="icono">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h2>Dirección:</h2>
+        <p>El Cielito Lindo, 4450, COL Santo Tomas, Ciudad Juarez, Chih, C.P. 32695</p>
+        <p class="cerrado">Cerrado Ahora.</p>
+        <p class="abierto">Abierto Lunes 10:00 - 20:00</p>
+    </div>
+
+    <div class="info">
+        <div class="icono">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <h2>Email:</h2>
+        <p>BandaTierraSagrada@gmail.com</p>
+       
+    </div>
+</div>
