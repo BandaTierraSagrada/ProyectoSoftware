@@ -1,90 +1,61 @@
 ﻿@page
 @model SalonDeBelleza.src.views.IndexModel
 @{
+    Layout = "~/src/views/Shared/LayoutPrincipal.cshtml";
     ViewData["Title"] = "Home page";
 }
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="~/css/Principal.css" rel="stylesheet" />
 
-</head>
-<body>
-
-    <!--------------------------->
-    <nav class="navbar">
-        <div class="logo">Logo</div>
-        <ul class="nav-links">
-            <li><a href="#" class="active">Inicio</a></li>
-            <li><a href="#">Servicios</a></li>
-            <li><a href="#">Contacto</a></li>
-
-        </ul>
-        <button class="login-btn" onclick="window.location.href='/Usuarios/Login-register'">Iniciar Sesion</button>
-    </nav>
-    <!--------------------------->
-
-    <div class="container-slider">
-        <div class="slider" id="slider">
-            <div class="slider__section">
-                <img src="img/slider5.jpg" alt="" class="slider__img">
-            </div>
-            <div class="slider__section">
-                <img src="img/slider2.jpg" alt="" class="slider__img">
-            </div>
-            <div class="slider__section">
-                <img src="img/slider3.jpeg" alt="" class="slider__img">
-            </div>
-            <div class="slider__section">
-                <img src="img/slider4.jpeg" alt="" class="slider__img">
-            </div>
+<div class="container-slider">
+    <div class="slider" id="slider">
+        <div class="slider__section">
+            <img src="img/slider5.jpg" alt="" class="slider__img">
         </div>
-        <div class="slider__btn slider__btn--derecha" id="btn-derecha">&#62;</div>
-        <div class="slider__btn slider__btn--izquierda" id="btn-izquierda">&#60;</div>
-    </div>
-
-    <div class="container">
-        <div class="image-container">
-            <img src="img/slider3.jpeg" alt="Plato de espaguetis">
+        <div class="slider__section">
+            <img src="img/slider2.jpg" alt="" class="slider__img">
         </div>
-        <div class="content">
-            <h2>Expertise In Industrial Solution</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Molestiae ad nesciunt dolores magnam amet. Culpa, quidem nesciunt, magni ex dicta deleniti unde magnam obcaecati quae quibusdam at placeat doloribus ducimus?</p>
-            <a href="#" class="button">Contacto</a>
+        <div class="slider__section">
+            <img src="img/slider3.jpeg" alt="" class="slider__img">
+        </div>
+        <div class="slider__section">
+            <img src="img/slider4.jpeg" alt="" class="slider__img">
         </div>
     </div>
-    <h2>Nuestros Servicios</h2>
-    <div class="card-container">
-        <div class="card">
-            <img src="img/slider1.jpg" alt="Imagen 1">
-            <h3>Peinados</h3>
-        </div>
+    <div class="slider__btn slider__btn--derecha" id="btn-derecha">&#62;</div>
+    <div class="slider__btn slider__btn--izquierda" id="btn-izquierda">&#60;</div>
+</div>
 
-        <div class="card">
-            <img src="img/slider2.jpg" alt="Imagen 2">
-            <h3>Uñas</h3>
-        </div>
-
-        <div class="card">
-            <img src="img/slider3.jpeg" alt="Imagen 3">
-            <h3>Tintes</h3>
-        </div>
-
-        <div class="card">
-            <img src="img/slider5.jpg" alt="Imagen 3">
-            <h3>Cortes</h3>
-        </div>
+<div class="container">
+    <div class="image-container">
+        <img src="img/slider3.jpeg" alt="Plato de espaguetis">
     </div>
+    <div class="content">
+        <h2>Expertise In Industrial Solution</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <a href="#" class="button">Contacto</a>
+    </div>
+</div>
 
-    <footer>
-        Salón de Belleza
-    </footer>
+<h2>Nuestros Servicios</h2>
+<div class="card-container">
+    <div class="card">
+        <img src="img/slider1.jpg" alt="Imagen 1">
+        <h3>Peinados</h3>
+    </div>
+    <div class="card">
+        <img src="img/slider2.jpg" alt="Imagen 2">
+        <h3>Uñas</h3>
+    </div>
+    <div class="card">
+        <img src="img/slider3.jpeg" alt="Imagen 3">
+        <h3>Tintes</h3>
+    </div>
+    <div class="card">
+        <img src="img/slider5.jpg" alt="Imagen 3">
+        <h3>Cortes</h3>
+    </div>
+</div>
 
+@section Scripts {
     <script src="/js/Carrusel.js"></script>
-
-
-</body>
-</html>
+}
