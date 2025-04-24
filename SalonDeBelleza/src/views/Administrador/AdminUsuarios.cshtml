@@ -8,243 +8,207 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="~/css/UsuariosR.css" rel="stylesheet" />
-    <style>
-
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        /* Estilos para la tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin: auto;
-        }
-
-        thead {
-            background-color: #3498db;
-            color: white;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Contenedor para centrar los botones */
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        /* Botones */
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
-        }
-
-        .btn-edit {
-            background-color: #f39c12;
-            color: white;
-        }
-
-            .btn-edit:hover {
-                background-color: #e67e22;
-            }
-
-        .btn-delete {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-            .btn-delete:hover {
-                background-color: #c0392b;
-            }
-
-        /* Formulario */
-        form {
-            display: inline-block;
-            text-align: left;
-        }
-
-        label {
-            font-weight: bold;
-            margin-top: 10px;
-            display: block;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        button {
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: block;
-            margin: 10px auto;
-        }
-
-            button:hover {
-                background-color: #27ae60;
-            }
-
-
-    </style>
+    <link href="~/css/AdminUsuarios.css" rel="stylesheet" />
+    
 </head>
     <body>
-    <div class="grid grid-cols-3 gap-4">
-    <!-- Tabla de Usuarios -->
-    <div class="col-span-2">
-        <h2 class="text-lg font-bold mb-4">Usuarios Registrados</h2>
-        <table class="table-auto w-full border-collapse border border-gray-200">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border px-4 py-2">Nombre</th>
-                    <th class="border px-4 py-2">Email</th>
-                    <th class="border px-4 py-2">Teléfono</th>
-                    <th class="border px-4 py-2">Rol</th>
-                    <th class="border px-4 py-2">Estado</th>
-                    <th class="border px-4 py-2">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usuario in Model.Usuarios)
-                {
-                    <tr>
-                        <td class="border px-4 py-2">@usuario.Nombre</td>
-                        <td class="border px-4 py-2">@usuario.Email</td>
-                        <td class="border px-4 py-2">@usuario.Telefono</td>
-                        <td class="border px-4 py-2">@usuario.Rol</td>
-                        <td class="border px-4 py-2">@usuario.LoginStatus</td>
-                        <td class="border px-4 py-2">
-                            <button class="btn btn-edit" onclick="editarUsuario(@usuario.UserID)">Editar</button>
-                            <!--<button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="cambiarContrasena(@usuario.UserID)">Cambiar Contraseña</button>-->
-                            <form method="post" class="inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="userId" value="@usuario.UserID" />
-                                <input type="hidden" id="decision" name="decision" value="EliminarUsuario" />
-                                <input type="hidden" name="email" value="@usuario.Email" />
-                                <input type="hidden" name="nombre" value="@usuario.Nombre" />
-                                <input type="hidden" name="password" value="@usuario.Password" />
-                                <input type="hidden" name="telefono" value="@usuario.Telefono" />
-                                <input type="hidden" name="Password" value="@usuario.Password" />
-                                <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <div class="button-container">
-            <button onclick="window.location.href='/Home/Administrador'">Regresar</button>
-        </div>
-            <div class="button-container">
-                <button onclick="window.location.href='/Administrador/CrearUsuario'">Crear Usuario</button>
+    <div class="admin-container">
+        <h2 class="page-title">Administración de Usuarios</h2>
+
+        <div class="admin-content">
+            <!-- Tabla de Usuarios -->
+            <div class="users-table-container">
+                <div class="table-header-section">
+                    <h3 class="section-title">Usuarios Registrados</h3>
+                    <div class="action-buttons">
+                        <button onclick="window.location.href='/Home/Administrador'" class="action-button secondary">
+                            <i class="fas fa-arrow-left"></i> Regresar
+                        </button>
+                        <button onclick="window.location.href='/Administrador/CrearUsuario'" class="action-button primary">
+                            <i class="fas fa-user-plus"></i> Crear Usuario
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th class="table-header">Nombre</th>
+                                <th class="table-header">Email</th>
+                                <th class="table-header">Teléfono</th>
+                                <th class="table-header">Rol</th>
+                                <th class="table-header">Estado</th>
+                                <th class="table-header">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuario in Model.Usuarios)
+                            {
+                                <tr class="table-row">
+                                    <td class="table-cell">@usuario.Nombre</td>
+                                    <td class="table-cell">@usuario.Email</td>
+                                    <td class="table-cell">@usuario.Telefono</td>
+                                    <td class="table-cell">
+                                        <span class="role-badge @usuario.Rol.ToLower()">@usuario.Rol</span>
+                                    </td>
+                                    <td class="table-cell">
+                                        <span class="status-badge @usuario.LoginStatus.ToLower()">
+                                            @usuario.LoginStatus
+                                        </span>
+                                    </td>
+                                    <td class="table-cell actions-cell">
+                                        <button class="action-button edit" onclick="editarUsuario(@usuario.UserID)">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <form method="post" class="delete-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@usuario.UserID" />
+                                            <input type="hidden" id="decision" name="decision" value="EliminarUsuario" />
+                                            <input type="hidden" name="email" value="@usuario.Email" />
+                                            <input type="hidden" name="nombre" value="@usuario.Nombre" />
+                                            <input type="hidden" name="password" value="@usuario.Password" />
+                                            <input type="hidden" name="telefono" value="@usuario.Telefono" />
+                                            <input type="hidden" name="Password" value="@usuario.Password" />
+                                            <button type="submit" class="action-button delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                                <i class="fas fa-trash-alt"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-    </div>
 
+            <!-- Panel de Edición -->
+            <div class="edit-panel">
+                @if (Model.UsuarioEdit != null)
+                {
+                    <div class="edit-section">
+                        <h3 class="section-title">Editar Usuario</h3>
+                        <p class="current-user">Usuario seleccionado: <strong>@Model.UsuarioEdit?.Nombre</strong></p>
 
+                        <form id="formActualizar" method="post" asp-page-handler="Actualizar" class="edit-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="decision" name="decision" value="ActualizarUsuario" />
+                            <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
+                            <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
 
+                            <div class="form-group">
+                                <label class="form-label">Nombre:</label>
+                                <input value="@Model.UsuarioEdit?.Nombre" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" class="form-input" />
+                            </div>
 
-    <!-- Formulario de Edición o Cambio de Contraseña -->
-    <div class="col-span-1 p-4 border border-gray-300 rounded">
-        @if (Model.UsuarioEdit != null)
-        {
-            <h2 class="text-lg font-bold mb-4">Editar Usuario</h2>
-            <form id="formActualizar" method="post" asp-page-handler="Actualizar">
-                @Html.AntiForgeryToken()
-                <input type="hidden" id="decision" name="decision" value="ActualizarUsuario" />
-                <p>Usuario cargado: @Model.UsuarioEdit?.Nombre</p>
-                <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
-                <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
-                <label class="block">Nombre:</label>
-                <input value="@Model.UsuarioEdit?.Nombre" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" class="w-full border px-2 py-1 mb-2" />
-                <label class="block">Email:</label>
-                <input type="email" value="@Model.UsuarioEdit?.Email" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" class="w-full border px-2 py-1 mb-2" />
-                <label class="block">Teléfono:</label>
-                <input type="tel" value="@Model.UsuarioEdit?.Telefono" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" class="w-full border px-2 py-1 mb-2" />
-                <label class="block">Rol:</label>
-                <select name="UsuarioEdit.Rol" asp-for-handler="UsuarioEdit.Rol" class="w-full border px-2 py-1 mb-2">
-                    <option>Colaborador</option>
-                    <option>Administrador</option>
-                    <option>Cliente</option>
-                </select>
+                            <div class="form-group">
+                                <label class="form-label">Email:</label>
+                                <input type="email" value="@Model.UsuarioEdit?.Email" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" class="form-input" />
+                            </div>
 
-                @if(Model.UsuarioEdit.Rol == "Colaborador"){
-                    <input type="hidden" name="ColaboradorEdit.UserID" asp-for-handler="ColaboradorEdit.UserID" value="@Model.ColaboradorEdit?.UserID" />
-                    <input type="hidden" name="ColaboradorEdit.Usuario" asp-for-handler="ColaboradorEdit.Usuario" value="@Model.UsuarioEdit" />
-                    <br />
-                    <label class="block">Horario Entrada</label>
-                    <input type="datetime" value="@Model.ColaboradorEdit?.HorarioEntrada" name="ColaboradorEdit.HorarioEntrada" asp-for-handler="ColaboradorEdit.HorarioEntrada" />
-                    <label class="block">Horario Salida</label>
-                    <input type="datetime" value="@Model.ColaboradorEdit?.HorarioSalida" name="ColaboradorEdit.HorarioSalida" asp-for-handler="ColaboradorEdit.HorarioSalida" />
-                    <label class="block">Tipo de Servicio:</label>
-                    <select name="ColaboradorEdit.TipoServicio" asp-for-handler="ColaboradorEdit.TipoServicio" value="@Model.ColaboradorEdit.TipoServicio"  class="w-full border px-2 py-1 mb-2">
-                        <option value="Corte">Corte</option>
-                        <option value="Tintes">Tintes</option>
-                    </select>
-                    <label class="block">Duracion Servicio</label>
-                    <input type="number" value="@Model.ColaboradorEdit?.DuracionServicio" name="ColaboradorEdit.DuracionServicio" asp-for-handler="ColaboradorEdit.DuracionServicio" min="1" />
+                            <div class="form-group">
+                                <label class="form-label">Teléfono:</label>
+                                <input type="tel" value="@Model.UsuarioEdit?.Telefono" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" class="form-input" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Rol:</label>
+                                <select name="UsuarioEdit.Rol" asp-for-handler="UsuarioEdit.Rol" class="form-input">
+                                    <option value="Colaborador">Colaborador</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Cliente">Cliente</option>
+                                </select>
+                            </div>
+
+                            @if (Model.UsuarioEdit.Rol == "Colaborador")
+                            {
+                                <div class="collaborator-fields">
+                                    <input type="hidden" name="ColaboradorEdit.UserID" asp-for-handler="ColaboradorEdit.UserID" value="@Model.ColaboradorEdit?.UserID" />
+                                    <input type="hidden" name="ColaboradorEdit.Usuario" asp-for-handler="ColaboradorEdit.Usuario" value="@Model.UsuarioEdit" />
+
+                                    <div class="form-group">
+                                        <label class="form-label">Horario Entrada</label>
+                                        <input type="time" value="@Model.ColaboradorEdit?.HorarioEntrada" name="ColaboradorEdit.HorarioEntrada" asp-for-handler="ColaboradorEdit.HorarioEntrada" class="form-input" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Horario Salida</label>
+                                        <input type="time" value="@Model.ColaboradorEdit?.HorarioSalida" name="ColaboradorEdit.HorarioSalida" asp-for-handler="ColaboradorEdit.HorarioSalida" class="form-input" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Tipo de Servicio:</label>
+                                        <select name="ColaboradorEdit.TipoServicio" asp-for-handler="ColaboradorEdit.TipoServicio" value="@Model.ColaboradorEdit.TipoServicio" class="form-input">
+                                            <option value="Corte">Corte</option>
+                                            <option value="Tintes">Tintes</option>
+                                            <option value="Unas">Uñas</option>
+                                            <option value="Peinado">Peinado</option>
+                                            <option value="Cejas">Cejas</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Duración Servicio (minutos)</label>
+                                        <input type="number" value="@Model.ColaboradorEdit?.DuracionServicio" name="ColaboradorEdit.DuracionServicio" asp-for-handler="ColaboradorEdit.DuracionServicio" min="1" class="form-input" />
+                                    </div>
+                                </div>
+                            }
+
+                            <input type="hidden" name="@Model.UsuarioEdit?.LoginStatus" asp-for-handler="UsuarioEdit.LoginStatus" />
+
+                            <div class="form-actions">
+                                <button type="button" onclick="actualizarUsuario()" class="submit-button">
+                                    <i class="fas fa-save"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="password-section">
+                        <h3 class="section-title">Cambiar Contraseña</h3>
+                        <p class="current-user">Usuario seleccionado: <strong>@Model.UsuarioEdit?.Nombre</strong></p>
+
+                        <form id="formContrasena" method="post" asp-page-handler="CambiarContrasena" class="edit-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="decision" value="CambiarContrasena" />
+                            <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
+                            <input type="hidden" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" value="@Model.UsuarioEdit?.Email" />
+                            <input type="hidden" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" value="@Model.UsuarioEdit?.Nombre" />
+                            <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
+                            <input type="hidden" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" value="@Model.UsuarioEdit?.Telefono" />
+
+                            <div class="form-group">
+                                <label class="form-label">Nueva Contraseña:</label>
+                                <input type="password" name="NuevaContrasena" asp-for="NuevaContrasena" class="form-input" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confirmar Contraseña:</label>
+                                <input type="password" name="ConfirmarContrasena" asp-for="ConfirmarContrasena" class="form-input" />
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" onclick="cambiarContrasena(Model.UsuarioEdit.UserID)" class="submit-button">
+                                    <i class="fas fa-key"></i> Actualizar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 }
-
-                <input type="hidden" name="@Model.UsuarioEdit?.LoginStatus" asp-for-handler="UsuarioEdit.LoginStatus" />
-                <button type="button" onclick="actualizarUsuario()" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
-            </form>
-
-            <h2 class="text-lg font-bold mb-4">Cambiar Contraseña</h2>
-            <form id="formContrasena" method="post" asp-page-handler="CambiarContrasena">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="decision" value="CambiarContrasena" />
-                <input type="hidden" name="UsuarioEdit.UserID" asp-for-handler="UsuarioEdit.UserID" value="@Model.UsuarioEdit?.UserID" />
-                <input type="hidden" name="UsuarioEdit.Email" asp-for-handler="UsuarioEdit.Email" value="@Model.UsuarioEdit?.Email" />
-                <input type="hidden" name="UsuarioEdit.Nombre" asp-for-handler="UsuarioEdit.Nombre" value="@Model.UsuarioEdit?.Nombre" />
-                <input type="hidden" name="UsuarioEdit.Password" asp-for-handler="UsuarioEdit.Password" value="@Model.UsuarioEdit?.Password" />
-                <input type="hidden" name="UsuarioEdit.Telefono" asp-for-handler="UsuarioEdit.Telefono" value="@Model.UsuarioEdit?.Telefono" />
-
-                <p>Usuario cargado: @Model.UsuarioEdit?.Nombre</p>
-                <label class="block">Nueva Contraseña:</label>
-                <input type="password" name="NuevaContrasena" asp-for="NuevaContrasena" class="w-full border px-2 py-1 mb-2" />
-                <label class="block">Confirmar Contraseña:</label>
-                <input type="password" name="ConfirmarContrasena" asp-for="ConfirmarContrasena" class="w-full border px-2 py-1 mb-2" />
-                <button type="submit" onclick="cambiarContrasena(Model.UsuarioEdit.UserID)" class="bg-green-500 text-white px-4 py-2 rounded">Actualizar Contraseña</button>
-            </form>
-        }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-user-edit"></i>
+                        <p>Selecciona un usuario para editarlo</p>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- Agrega Font Awesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
     <script>
     function editarUsuario(userID) {
