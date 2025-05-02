@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalonDeBelleza.src.services;
+using Twilio.Http;
 using Twilio.TwiML;
 
 namespace SalonDeBelleza.src.Controllers
@@ -8,11 +9,11 @@ namespace SalonDeBelleza.src.Controllers
     [Route("api/twilio")]
     public class TwilioBotController : ControllerBase
     {
-        private readonly BotService _citaService;
+        private readonly BotService _botService;
 
-        public TwilioBotController(BotService citaService)
+        public TwilioBotController(BotService botService)
         {
-            _citaService = citaService;
+            _botService = botService;
         }
 
         [HttpPost("whatsapp")]
@@ -28,7 +29,7 @@ namespace SalonDeBelleza.src.Controllers
 
             if (body == "ver citas")
             {
-                var citas = await _citaService.ObtenerCitasPendientesPorTelefono(numero);
+                var citas = await _botService.ObtenerCitasPendientesPorTelefono(numero);
                 if (!citas.Any())
                 {
                     response.Message("No tienes citas pendientes.");
@@ -40,6 +41,9 @@ namespace SalonDeBelleza.src.Controllers
                         response.Message($"Cita #{cita.CitaID} - {cita.FechaHora:dd/MM/yyyy HH:mm}\nEscribe:\n*confirmar {cita.CitaID}* o *cancelar {cita.CitaID}*");
                     }
                 }
+            }else if(body == "numero"){
+                response.Message($"Tu numero es #{numero}");
+
             }
             else
             {
@@ -49,5 +53,16 @@ namespace SalonDeBelleza.src.Controllers
 
             return Content(response.ToString(), "application/xml");
         }
+
+        [HttpGet("ver")]
+        public async Task<IActionResult> VerCitasPorTelefono([FromQuery] string telefono)
+        {
+            var citas = await _botService.ObtenerCitasPendientesPorTelefono(telefono);
+
+            return Ok(citas);
+        }
+
+
+
     }
 }
