@@ -24,7 +24,7 @@ namespace SalonDeBelleza.src.Controllers
             string body = form["Body"].ToString().Trim().ToLower();
 
             var numero = from.Replace("whatsapp:", "").Trim();
-
+            numero = numero.Substring(4);
             var response = new MessagingResponse();
 
             if (body == "ver citas")
