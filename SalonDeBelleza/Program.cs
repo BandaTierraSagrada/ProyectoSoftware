@@ -48,6 +48,7 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CitaService>();
 builder.Services.AddScoped<CitaRepository>();
+builder.Services.AddScoped<BotService>();
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddScoped<WhatsAppService>();
 builder.Services.AddHttpContextAccessor();
