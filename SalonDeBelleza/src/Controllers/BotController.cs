@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalonDeBelleza.src.services;
+using SalonDeBelleza.src.models;
 
 namespace SalonDeBelleza.src.Controllers
 {
@@ -25,6 +26,15 @@ namespace SalonDeBelleza.src.Controllers
                 Cliente = c.Cliente.Nombre,
                 Estado = c.Estado
             }));
+        }
+
+        [HttpPost("confirmar")]
+        public async Task<IActionResult> ConfirmarOCancelarCita([FromBody] ConfirmacionCitaRequest request)
+        {
+            var exito = await _citaService.ConfirmarOCancelarCitaAsync(request.CitaID, request.Estado);
+            if (!exito) return NotFound("Cita no encontrada");
+
+            return Ok("Cita actualizada");
         }
     }
 }
