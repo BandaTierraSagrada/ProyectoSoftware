@@ -10,12 +10,11 @@ namespace SalonDeBelleza.src.services
     public class BotService
     {
         private readonly ApplicationDbContext _context;
-        private readonly Dictionary<string, EstadoConversacion> _conversaciones;
+        private static readonly Dictionary<string, EstadoConversacion> _conversaciones;
 
         public BotService(ApplicationDbContext context)
         {
             _context = context;
-            _conversaciones = new Dictionary<string, EstadoConversacion>();
         }
 
         public async Task<List<Cita>> ObtenerCitasPendientesPorTelefono(string telefono)
@@ -66,11 +65,13 @@ namespace SalonDeBelleza.src.services
                 estado.Reset();
                 estado.Paso = PasoConversacion.Fecha;
                 _conversaciones[numero].Paso = PasoConversacion.Fecha;
+
                 return "📅 Por favor, escribe la fecha (formato: YYYY-MM-DD):";
             }
 
             if (estado.Paso == PasoConversacion.Fecha)
             {
+                Console.WriteLine("Entro a seleccionar servicio");
                 if (DateTime.TryParse(body, out DateTime fecha))
                 {
                     estado.Fecha = fecha;
