@@ -65,6 +65,7 @@ namespace SalonDeBelleza.src.services
             {
                 estado.Reset();
                 estado.Paso = PasoConversacion.Fecha;
+                _conversaciones[numero] = estado;
                 return "📅 Por favor, escribe la fecha (formato: YYYY-MM-DD):";
             }
 
