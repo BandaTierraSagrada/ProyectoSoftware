@@ -19,6 +19,10 @@
             Colaborador = null;
             HorasDisponibles = new List<string>();
         }
+        public override string ToString()
+        {
+            return $"PasoActual: {Paso}, Fecha: {Fecha}, Servicio: {Servicio}, Colaborador: {Colaborador}";
+        }
     }
 
     public enum PasoConversacion
