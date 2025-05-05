@@ -51,6 +51,8 @@ namespace SalonDeBelleza.src.services
             var estado = _conversaciones[numero];
 
             body = body.Trim().ToLower();
+            int clienteid = await GetUsuarioPorTelefono(numero);
+            if (clienteid == 0) return "No estas registrado, ve al sitio web a registrarte";
 
             if (body == "agendar")
             {
@@ -135,8 +137,6 @@ namespace SalonDeBelleza.src.services
                 {
                     var horaSeleccionada = TimeSpan.Parse(estado.HorasDisponibles[index - 1]);
                     var fechaHora = estado.Fecha.Date + horaSeleccionada;
-                    int clienteid = await GetUsuarioPorTelefono(numero);
-                    if (clienteid == 0) return "No estas registrado, ve al sitio web a registrarte";
                     Cita cita = new Cita 
                     { 
                         ClienteID = clienteid,
@@ -157,6 +157,22 @@ namespace SalonDeBelleza.src.services
                 return "❌ Selección inválida.";
             }
 
+            if (body == "ver citas")
+            {
+                var citas = await _context.Citas
+                    .Where(c => c.ClienteID == clienteid && c.Estado == "Pendiente")
+                    .ToListAsync();
+
+                if (!citas.Any())
+                    return "No tienes citas pendientes.";
+
+                string lista = "📋 Tus citas:\n";
+                foreach (var cita in citas)
+                {
+                    lista += $"Cita #{cita.CitaID} - {cita.FechaHora:dd/MM/yyyy HH:mm}\nServicio: {cita.Servicio}\nEscribe:\n*confirmar {cita.CitaID}* o *cancelar {cita.CitaID}*\n\n\n";
+                }
+                return lista;
+            }
 
 
             return "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";

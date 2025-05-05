@@ -27,7 +27,7 @@ namespace SalonDeBelleza.src.Controllers
             var numero = from.Replace("whatsapp:", "").Trim();
             numero = numero.Substring(4);
             var messagingResponse = new MessagingResponse();
-            if (body == "ver citas")
+            /*if (body == "ver citas")
             {
                 var citas = await _botService.ObtenerCitasPendientesPorTelefono(numero);
                 if (!citas.Any())
@@ -42,7 +42,7 @@ namespace SalonDeBelleza.src.Controllers
                     }
                 }
             }
-            else if (body.StartsWith("confirmar"))
+            else*/ if (body.StartsWith("confirmar"))
             {
                 if (int.TryParse(body.Split(' ')[1], out int citaId))
                 {
