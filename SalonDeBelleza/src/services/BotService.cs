@@ -200,8 +200,8 @@ namespace SalonDeBelleza.src.services
                         ColaboradorID = colaborador.UserID,
                         FechaHora = fechaHora,
                         Servicio = estado.Servicio,
-                        Estado = "Pendiente"
-
+                        Estado = "Pendiente",
+                        Notas = "Desde WhatsApp"
                     };
 
                     _context.Citas.Add(cita);
