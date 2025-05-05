@@ -50,7 +50,11 @@ namespace SalonDeBelleza.src.services
                 _conversaciones[numero] = new EstadoConversacion();
             var estado = _conversaciones[numero];
 
-            Console.WriteLine(_conversaciones.Values);
+            foreach (var item in _conversaciones)
+            {
+                Console.WriteLine($"Clave: {item.Key}, Valor: {item.Value}");
+            }
+
 
 
             body = body.Trim().ToLower();
