@@ -42,11 +42,13 @@ namespace SalonDeBelleza.src.services
         }
         public async Task<string> ProcesarMensajeAsync(string numero, string body)
         {
+            Console.WriteLine("Entro a procesar");
+            Console.WriteLine($"{numero} {body}");
             int clienteid = await GetUsuarioPorTelefono(numero);
             if (clienteid == 0) return "No estas registrado, ve al sitio web a registrarte";
             var estado = await _context.EstadosConversacion
             .FirstOrDefaultAsync(e => e.TelefonoUsuario == numero);
-
+            body = body.Trim().ToLower();
             if (estado == null)
             {
                 estado = new EstadoConversacion
@@ -57,8 +59,6 @@ namespace SalonDeBelleza.src.services
                 _context.EstadosConversacion.Add(estado);
                 await _context.SaveChangesAsync();
             }
-
-            body = body.Trim().ToLower();
 
             if(body == "cancelar")
             {
