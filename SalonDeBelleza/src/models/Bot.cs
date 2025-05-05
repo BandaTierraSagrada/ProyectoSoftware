@@ -12,7 +12,7 @@
         public void Reset()
         {
             Paso = PasoConversacion.Inicio;
-            Fecha = DateTime.MinValue;
+            Fecha = DateTime.Now;
             Servicio = null;
             Colaboradores = new List<ColaboradorInfo>();
             Colaborador = null;

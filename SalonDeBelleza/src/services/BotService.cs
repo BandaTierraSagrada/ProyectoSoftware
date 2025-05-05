@@ -49,7 +49,7 @@ namespace SalonDeBelleza.src.services
             if (!_conversaciones.ContainsKey(numero))
                 _conversaciones[numero] = new EstadoConversacion();
             var estado = _conversaciones[numero];
-
+            Console.WriteLine(_conversaciones);
             body = body.Trim().ToLower();
             int clienteid = await GetUsuarioPorTelefono(numero);
             if (clienteid == 0) return "No estas registrado, ve al sitio web a registrarte";
