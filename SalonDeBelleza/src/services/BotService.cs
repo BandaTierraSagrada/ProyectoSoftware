@@ -236,8 +236,8 @@ namespace SalonDeBelleza.src.services
                 }
                 return lista;
             }
-            string menu = "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";
-            return menu;
+           
+            return "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";
         }
         
     }
