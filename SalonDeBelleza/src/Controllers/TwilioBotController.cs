@@ -27,6 +27,11 @@ namespace SalonDeBelleza.src.Controllers
             var numero = from.Replace("whatsapp:", "").Trim();
             numero = numero.Substring(4);
             var messagingResponse = new MessagingResponse();
+            if (await _botService.GetUsuarioPorTelefono(numero) == 0)
+            {
+                messagingResponse.Message("Tu numero no esta registrado en el sitio");
+                return Content(messagingResponse.ToString(), "application/xml");
+            }
             /*if (body == "ver citas")
             {
                 var citas = await _botService.ObtenerCitasPendientesPorTelefono(numero);

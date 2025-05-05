@@ -13,6 +13,8 @@ namespace SalonDeBelleza.src.config
         public DbSet<Notificacion> Notificaciones { get; set; }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<PreferenciaNotificacion> PreferenciasNotificaciones { get; set; }
+        public DbSet<EstadoConversacion> EstadosConversacion { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

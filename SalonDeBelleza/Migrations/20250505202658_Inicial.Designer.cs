@@ -12,8 +12,8 @@ using SalonDeBelleza.src.config;
 namespace SalonDeBelleza.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406024223_ModificarProducto")]
-    partial class ModificarProducto
+    [Migration("20250505202658_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -10,7 +10,6 @@ namespace SalonDeBelleza.src.services
     public class BotService
     {
         private readonly ApplicationDbContext _context;
-        private static readonly Dictionary<string, EstadoConversacion> _conversaciones;
 
         public BotService(ApplicationDbContext context)
         {
@@ -41,59 +40,68 @@ namespace SalonDeBelleza.src.services
             if (usuario == null) return 0;
             return usuario.UserID;
         }
-
-
         public async Task<string> ProcesarMensajeAsync(string numero, string body)
         {
-            if (!_conversaciones.ContainsKey(numero))
-                _conversaciones[numero] = new EstadoConversacion();
-            var estado = _conversaciones[numero];
-
-            foreach (var item in _conversaciones)
-            {
-                Console.WriteLine($"Clave: {item.Key}, Valor: {item.Value}");
-            }
-
-
-
-            body = body.Trim().ToLower();
             int clienteid = await GetUsuarioPorTelefono(numero);
             if (clienteid == 0) return "No estas registrado, ve al sitio web a registrarte";
+            var estado = await _context.EstadosConversacion
+            .FirstOrDefaultAsync(e => e.TelefonoUsuario == numero);
+
+            if (estado == null)
+            {
+                estado = new EstadoConversacion
+                {
+                    TelefonoUsuario = numero,
+                    PasoActual = PasoConversacion.Inicio
+                };
+                _context.EstadosConversacion.Add(estado);
+                await _context.SaveChangesAsync();
+            }
+
+            body = body.Trim().ToLower();
+
+            if(body == "cancelar")
+            {
+                _context.EstadosConversacion.Remove(estado);
+                await _context.SaveChangesAsync();
+                return "Saliendo...";
+            }
 
             if (body == "agendar")
             {
-                estado.Reset();
-                estado.Paso = PasoConversacion.Fecha;
-                _conversaciones[numero].Paso = PasoConversacion.Fecha;
-
+                estado.PasoActual = PasoConversacion.Fecha;
+                await _context.SaveChangesAsync();
                 return "📅 Por favor, escribe la fecha (formato: YYYY-MM-DD):";
             }
 
-            if (estado.Paso == PasoConversacion.Fecha)
+            if (estado.PasoActual == PasoConversacion.Fecha)
             {
                 Console.WriteLine("Entro a seleccionar servicio");
                 if (DateTime.TryParse(body, out DateTime fecha))
                 {
                     estado.Fecha = fecha;
-                    estado.Paso = PasoConversacion.Servicio;
+                    estado.PasoActual = PasoConversacion.Servicio;
+                    await _context.SaveChangesAsync();
                     return "💇‍♀️ Escribe el nombre del servicio:";
                 }
                 return "❌ Fecha inválida. Intenta con el formato YYYY-MM-DD.";
             }
 
-            if (estado.Paso == PasoConversacion.Servicio)
+            if (estado.PasoActual == PasoConversacion.Servicio)
             {
                 estado.Servicio = body;
+                estado.PasoActual = PasoConversacion.Colaborador;
+                await _context.SaveChangesAsync();
+
                 var colaboradores = await _context.Colaboradores
                     .Include(c => c.Usuario)
-                    .Where(c => c.TipoServicio.ToLower() == body)
+                    .Where(c => c.TipoServicio.ToLower() == body.ToLower())
                     .ToListAsync();
 
                 if (!colaboradores.Any())
                     return "❌ No se encontraron colaboradores para ese servicio.";
 
-                estado.Colaboradores = colaboradores;
-                estado.Paso = PasoConversacion.Colaborador;
+                estado.PasoActual = PasoConversacion.Colaborador;
 
                 string lista = "👩‍🔧 Elige una colaboradora (escribe el número):\n";
                 for (int i = 0; i < colaboradores.Count; i++)
@@ -102,23 +110,32 @@ namespace SalonDeBelleza.src.services
                 return lista;
             }
 
-            if (estado.Paso == PasoConversacion.Colaborador)
+            if (estado.PasoActual == PasoConversacion.Colaborador)
             {
-                if (int.TryParse(body, out int index) && index >= 1 && index <= estado.Colaboradores.Count)
+                var colaboradores = await _context.Colaboradores
+                    .Include(c => c.Usuario)
+                    .Where(c => c.TipoServicio.ToLower() == estado.Servicio.ToLower())
+                    .ToListAsync();
+
+
+                if (int.TryParse(body, out int index) && index >= 1 && index <= colaboradores.Count)
                 {
-                    estado.Colaborador = estado.Colaboradores[index - 1];
+                    var colaborador = colaboradores[index - 1];
+                    estado.ColaboradorID = colaborador.UserID;
+                    estado.PasoActual = PasoConversacion.Hora;
+                    await _context.SaveChangesAsync();
 
                     // Buscar horarios disponibles
                     var citas = await _context.Citas
-                        .Where(c => c.ColaboradorID == estado.Colaborador.UserID && c.FechaHora.Date == estado.Fecha.Date)
+                        .Where(c => c.ColaboradorID == colaborador.UserID && c.FechaHora.Date == estado.Fecha.Date)
                         .Select(c => c.FechaHora.TimeOfDay)
                         .ToListAsync();
 
                     var disponibles = new List<string>();
-                    var hora = estado.Colaborador.HorarioEntrada;
-                    var duracion = TimeSpan.FromMinutes(estado.Colaborador.DuracionServicio);
+                    var hora = colaborador.HorarioEntrada;
+                    var duracion = TimeSpan.FromMinutes(colaborador.DuracionServicio);
 
-                    while (hora + duracion <= estado.Colaborador.HorarioSalida)
+                    while (hora + duracion <= colaborador.HorarioSalida)
                     {
                         if (!citas.Any(c => Math.Abs((c - hora).TotalMinutes) < 1))
                             disponibles.Add(hora.ToString(@"hh\:mm"));
@@ -128,8 +145,9 @@ namespace SalonDeBelleza.src.services
                     if (!disponibles.Any())
                         return "❌ No hay horarios disponibles ese día.";
 
-                    estado.HorasDisponibles = disponibles;
-                    estado.Paso = PasoConversacion.Hora;
+
+                    estado.ColaboradorID = colaborador.UserID; // ya se guardó
+                    await _context.SaveChangesAsync();
 
                     string horarios = "⏰ Horas disponibles:\n";
                     for (int i = 0; i < disponibles.Count; i++)
@@ -140,16 +158,46 @@ namespace SalonDeBelleza.src.services
                 return "❌ Selección inválida. Escribe el número correspondiente.";
             }
 
-            if (estado.Paso == PasoConversacion.Hora)
+            if (estado.PasoActual == PasoConversacion.Hora)
             {
-                if (int.TryParse(body, out int index) && index >= 1 && index <= estado.HorasDisponibles.Count)
+                var colaborador = await _context.Colaboradores
+                    .Include(c => c.Usuario)
+                    .FirstOrDefaultAsync(c => c.Usuario.UserID == estado.ColaboradorID);
+
+                if (colaborador == null)
+                    return "❌ No se pudo encontrar la colaboradora seleccionada.";
+
+                var citas = await _context.Citas
+                    .Where(c => c.ColaboradorID == colaborador.UserID && c.FechaHora.Date == estado.Fecha.Date)
+                    .Select(c => c.FechaHora.TimeOfDay)
+                    .ToListAsync();
+
+                var disponibles = new List<string>();
+                var hora = colaborador.HorarioEntrada;
+                var duracion = TimeSpan.FromMinutes(colaborador.DuracionServicio);
+
+                while (hora + duracion <= colaborador.HorarioSalida)
                 {
-                    var horaSeleccionada = TimeSpan.Parse(estado.HorasDisponibles[index - 1]);
+                    if (!citas.Any(c => Math.Abs((c - hora).TotalMinutes) < 1))
+                        disponibles.Add(hora.ToString(@"hh\:mm"));
+                    hora += duracion;
+                }
+
+                if (int.TryParse(body, out int index) && index >= 1 && index <= disponibles.Count)
+                {
+                    var horaSeleccionada = TimeSpan.Parse(disponibles[index - 1]);
                     var fechaHora = estado.Fecha.Date + horaSeleccionada;
+
+                    var cliente = await _context.Usuarios
+                        .FirstOrDefaultAsync(c => c.Telefono == numero);
+
+                    if (cliente == null)
+                        return "❌ No se encontró tu cuenta como cliente.";
+
                     Cita cita = new Cita 
                     { 
                         ClienteID = clienteid,
-                        ColaboradorID = estado.Colaborador.UserID,
+                        ColaboradorID = colaborador.UserID,
                         FechaHora = fechaHora,
                         Servicio = estado.Servicio,
                         Estado = "Pendiente"
@@ -157,11 +205,10 @@ namespace SalonDeBelleza.src.services
                     };
 
                     _context.Citas.Add(cita);
+                    _context.EstadosConversacion.Remove(estado);
                     await _context.SaveChangesAsync();
 
-                    _conversaciones.Remove(numero);
-
-                    return $"✅ Cita agendada el {fechaHora:dd/MM/yyyy HH:mm} con {estado.Colaborador.Usuario.Nombre}.";
+                    return $"✅ Cita agendada el {fechaHora:dd/MM/yyyy HH:mm} con {colaborador.Usuario.Nombre}.";
                 }
                 return "❌ Selección inválida.";
             }
@@ -183,8 +230,8 @@ namespace SalonDeBelleza.src.services
                 return lista;
             }
 
-
             return "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";
         }
+        
     }
 }
