@@ -49,7 +49,7 @@ namespace SalonDeBelleza.src.services
             var estado = await _context.EstadosConversacion
             .FirstOrDefaultAsync(e => e.TelefonoUsuario == numero);
             body = body.Trim().ToLower();
-            List<string> servicios = ["Corte", "Tintes", "Manicura", "Pedicura"];
+            List<string> servicios = ["corte", "tintes", "manicura", "pedicura"];
             if (estado == null)
             {
                 estado = new EstadoConversacion
