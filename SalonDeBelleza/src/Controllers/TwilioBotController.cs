@@ -47,7 +47,8 @@ namespace SalonDeBelleza.src.Controllers
                     }
                 }
             }
-            else*/ if (body.StartsWith("confirmar"))
+            else*/ 
+            if (body.StartsWith("confirmar"))
             {
                 if (int.TryParse(body.Split(' ')[1], out int citaId))
                 {

@@ -14,11 +14,11 @@ namespace SalonDeBelleza.src.models
 
         public DateTime Fecha { get; set; }
 
-        public string Servicio { get; set; }
+        public string? Servicio { get; set; }
 
         public int ColaboradorID { get; set; }
 
-        public string Hora { get; set; }
+        public string? Hora { get; set; }
     }
 
     public enum PasoConversacion
