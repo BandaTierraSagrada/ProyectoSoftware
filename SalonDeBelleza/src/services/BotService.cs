@@ -49,6 +49,7 @@ namespace SalonDeBelleza.src.services
             var estado = await _context.EstadosConversacion
             .FirstOrDefaultAsync(e => e.TelefonoUsuario == numero);
             body = body.Trim().ToLower();
+            List<string> servicios = ["Corte", "Tintes", "Manicura", "Pedicura"];
             if (estado == null)
             {
                 estado = new EstadoConversacion
@@ -59,7 +60,7 @@ namespace SalonDeBelleza.src.services
                 _context.EstadosConversacion.Add(estado);
                 await _context.SaveChangesAsync();
             }
-
+            Console.WriteLine("Aqui si pasa");
             if(body == "cancelar")
             {
                 _context.EstadosConversacion.Remove(estado);
@@ -82,7 +83,10 @@ namespace SalonDeBelleza.src.services
                     estado.Fecha = fecha;
                     estado.PasoActual = PasoConversacion.Servicio;
                     await _context.SaveChangesAsync();
-                    return "💇‍♀️ Escribe el nombre del servicio:";
+                    string lista = "💇‍♀️ Escribe el nombre del servicio:\n";
+                    for (int i = 0; i < servicios.Count; i++)
+                        lista += $"{i + 1}. {servicios[i]}\n";
+                    return lista;
                 }
                 return "❌ Fecha inválida. Intenta con el formato YYYY-MM-DD.";
             }
@@ -90,6 +94,10 @@ namespace SalonDeBelleza.src.services
             if (estado.PasoActual == PasoConversacion.Servicio)
             {
                 estado.Servicio = body;
+                if (!servicios.Contains(body))
+                {
+                    return "Servicio invalido";
+                }
                 estado.PasoActual = PasoConversacion.Colaborador;
                 await _context.SaveChangesAsync();
 
@@ -116,7 +124,6 @@ namespace SalonDeBelleza.src.services
                     .Include(c => c.Usuario)
                     .Where(c => c.TipoServicio.ToLower() == estado.Servicio.ToLower())
                     .ToListAsync();
-
 
                 if (int.TryParse(body, out int index) && index >= 1 && index <= colaboradores.Count)
                 {
@@ -229,8 +236,8 @@ namespace SalonDeBelleza.src.services
                 }
                 return lista;
             }
-
-            return "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";
+            string menu = "Hola 👋\nOpciones disponibles:\n- *agendar* 📆\n- *ver citas* 📋";
+            return menu;
         }
         
     }
