@@ -2,6 +2,7 @@
 {
     public class EstadoConversacion
     {
+        public string TelefonoCliente {  get; set; }
         public PasoConversacion Paso { get; set; } = PasoConversacion.Inicio;
         public DateTime Fecha { get; set; }
         public string Servicio { get; set; }
