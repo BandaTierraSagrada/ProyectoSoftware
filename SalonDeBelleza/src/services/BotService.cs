@@ -98,6 +98,7 @@ namespace SalonDeBelleza.src.services
                 {
                     return "Servicio invalido";
                 }
+                estado.Servicio = char.ToUpper(estado.Servicio[0]) + estado.Servicio.Substring(1).ToLower();
                 estado.PasoActual = PasoConversacion.Colaborador;
                 await _context.SaveChangesAsync();
 

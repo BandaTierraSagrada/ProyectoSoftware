@@ -31,7 +31,7 @@ namespace SalonDeBelleza.src.views.Usuarios
             // Cerrar sesión
             HttpContext.Session.Clear();
 
-            return RedirectToPage("/Usuarios/Login-register");
+            return RedirectToPage("/Index");
         }
     }
 }

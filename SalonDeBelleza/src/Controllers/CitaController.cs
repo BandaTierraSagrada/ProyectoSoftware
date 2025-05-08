@@ -129,6 +129,7 @@ namespace SalonDeBelleza.src.Controllers
                 })
                 .ToListAsync();
 
+            Console.WriteLine($"{citas.Count}");
             return Ok(citas);
         }
 
