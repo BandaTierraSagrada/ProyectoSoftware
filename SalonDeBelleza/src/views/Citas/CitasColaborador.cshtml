@@ -1,225 +1,194 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Citas.CitasColaboradorModel
 @{
+    ViewData["Title"] = "Agenda de Citas";
 }
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de Citas</title>
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
-    <style>
-        /* Estilos para el modal */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
 
-        #calendario {
-            width: 80%;
-            max-width: 1000px;
-            height: 550px;
-        }
+<link href="~/css/CitasColaborador.css" rel="stylesheet" />
 
-        h1 {
-            margin-bottom: 20px;
-        }
 
-        .button-container {
-            margin-top: 20px;
-        }
+<div class="calendar-container">
+    <h1 class="page-title">Agenda de Citas</h1>
 
-        .button-container button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-         }
+    <input type="hidden" id="UserID" value="@Model.UserID">
+    <input type="hidden" id="Rol" value="@Model.Rol">
 
-        .button-container button:hover {
-           background-color: #0056b3;
-          }
-        
-        #modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 400px;
-            position:relative;
-            z-index: 1001;
-        }
-        .modal button {
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        #cerrarModal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            background: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Citas Agendadas</h1>
     <div id="calendario"></div>
-    <div class="button-container">
-        <button onclick="window.location.href='/Home/Administrador'">Regresar</button>
+
+    <div class="calendar-actions">
+        <button class="action-button secondary" onclick="window.location.href='/Home/Administrador'">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </button>
     </div>
-    <!-- MODAL DE EDICIÓN -->
+
+    <!-- Modal de detalles de cita -->
     <div id="modal" class="modal">
         <div class="modal-content">
-            <h3>Detalles de la Cita</h3>
-            <input type="hidden" id="UserID" value="@Model.UserID" />
-            <input type="hidden" id="Rol" value="@Model.Rol" />
-            <input type="hidden" id="citaId">
-            <p><strong>Cliente:</strong> <span id="modalCliente"></span></p>
-            <p><strong>Servicio:</strong> <span id="modalServicio"></span></p>
-            <p><strong>Fecha y Hora:</strong> <input type="datetime-local" id="modalFechaHora"></p>
-            <p>
-                <strong>Estado:</strong>
-                <select id="modalEstado">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Confirmada">Confirmada</option>
-                    <option value="Completada">Completada</option>
-                </select>
-            </p>
-            <p><strong>Notas:</strong> <textarea id="modalNotas"></textarea></p>
-            <button onclick="guardarCambios()">✅ Guardar Cambios</button>
-            <button onclick="cancelarCita()">❌ Cancelar Cita</button>
-            <button onclick="cerrarModal()">🔙 Cerrar</button>
+            <div class="modal-header">
+                <h3 class="modal-title">Detalles de la Cita</h3>
+                <button class="close-button" onclick="cerrarModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="citaId">
+
+                <div class="form-group">
+                    <label class="form-label">Cliente:</label>
+                    <span id="modalCliente" class="form-value"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Servicio:</label>
+                    <span id="modalServicio" class="form-value"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Fecha y Hora:</label>
+                    <input type="datetime-local" id="modalFechaHora" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Estado:</label>
+                    <select id="modalEstado" class="form-input">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="Completada">Completada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notas:</label>
+                    <textarea id="modalNotas" class="form-input" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="action-button primary" onclick="guardarCambios()">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                <button class="action-button danger" onclick="cancelarCita()">
+                    <i class="fas fa-times"></i> Cancelar Cita
+                </button>
+                <button class="action-button secondary" onclick="cerrarModal()">
+                    <i class="fas fa-times"></i> Cerrar
+                </button>
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            let calendarEl = document.getElementById("calendario");
-            let calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: "dayGridMonth",
-                locale: "es",
-                events: async function (fetchInfo, successCallback, failureCallback) {
-                    try {
-                        let colaboradorId = document.getElementById("UserID").value;
-                        let rol = document.getElementById("Rol").value;
-                        if (!colaboradorId) {
-                            console.error("❌ Error: colaboradorId es null");
-                        } else {
-                            console.log("✅ colaboradorId:", colaboradorId);
+<!-- Agrega Font Awesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Agrega FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/locales/es.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        let calendarEl = document.getElementById("calendario");
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            locale: "es",
+            headerToolbar: {
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,timeGridDay"
+            },
+            buttonText: {
+                today: "Hoy",
+                month: "Mes",
+                week: "Semana",
+                day: "Día"
+            },
+            events: async function (fetchInfo, successCallback, failureCallback) {
+                try {
+                    let colaboradorId = document.getElementById("UserID").value;
+                    let rol = document.getElementById("Rol").value;
+
+                    let url = rol === "Administrador"
+                        ? "/api/citas/agenda"
+                        : `/api/citas/agenda?colaboradorId=${colaboradorId}`;
+
+                    let response = await fetch(url);
+                    let citas = await response.json();
+
+                    let eventos = citas.map(c => ({
+                        id: c.citaID,
+                        title: `${c.servicio} - ${c.cliente}`,
+                        start: c.fechaHora,
+                        className: `fc-event-${c.estado.toLowerCase()}`,
+                        extendedProps: {
+                            estado: c.estado
                         }
-                        let url = `/api/citas/agenda?colaboradorId=${colaboradorId}`;
+                    }));
 
-                        if(rol == "Administrador"){
-                            url = "/api/citas/agenda";
-                        }
-                        console.log("el rol es",rol)
-
-                        let response = await fetch(url);
-                        let citas = await response.json();
-
-                        console.log("📅 Citas recibidas:", citas);
-
-                        let eventos = citas.map(c => ({
-                            id: c.citaID,
-                            title: `${c.servicio} - ${c.cliente}`,
-                            start: new Date(c.fechaHora).toISOString(), // Asegura que sea ISO 8601
-                            color: obtenerColorEstado(c.estado)
-                        }));
-
-                        successCallback(eventos);
-                    } catch (error) {
-                        console.error("Error cargando citas:", error);
-                        failureCallback(error);
-                    }
-                },
-                eventClick: function(info) {
-                    abrirModal(info.event);
+                    successCallback(eventos);
+                } catch (error) {
+                    console.error("Error cargando citas:", error);
+                    failureCallback(error);
                 }
-            });
-
-            calendar.render();
-        });
-        
-        function obtenerColorEstado(estado) {
-            switch (estado.toLowerCase()) {
-                case "pendiente": return "yellow";   // Amarillo
-                case "confirmada": return "orange";  // Naranja
-                case "cancelada": return "red";      // Rojo
-                case "completada": return "green";   // Verde
-                default: return "gray";              // Gris para estados desconocidos
+            },
+            eventClick: function(info) {
+                abrirModal(info.event);
+            },
+            eventDidMount: function(info) {
+                // Tooltip con más información
+                info.el.setAttribute('title', `${info.event.title}\nEstado: ${info.event.extendedProps.estado}`);
             }
-        }
-        async function cerrarModal(evento) {
-            let modal = document.getElementById("modal");
-            modal.style.display = "flex";
-            modal.style.opacity = "0";
-        }
-        async function abrirModal(evento) {
-            let modal = document.getElementById("modal");
-            modal.style.display = "flex";
-            modal.style.opacity = "1";
+        });
 
-            try {
-                let response = await fetch(`/api/citas/detalle/${evento.id}`); // Endpoint para obtener detalles de la cita
-                if (!response.ok) {
-                    throw new Error("No se pudo obtener la información de la cita");
-                }
+        calendar.render();
+    });
 
-                let cita = await response.json();
+    function abrirModal(evento) {
+        let modal = document.getElementById("modal");
+        modal.style.display = "block";
 
-                // Llenar los campos del modal con los datos obtenidos de la API
+        // Obtener detalles completos de la cita
+        fetch(`/api/citas/detalle/${evento.id}`)
+            .then(response => response.json())
+            .then(cita => {
                 document.getElementById("citaId").value = cita.citaID;
                 document.getElementById("modalCliente").textContent = cita.cliente;
                 document.getElementById("modalServicio").textContent = cita.servicio;
-                document.getElementById("modalFechaHora").value = cita.fechaHora.slice(0, 16); // Formatear fecha para el input
-                document.getElementById("modalEstado").value = cita.estado;
-                document.getElementById("modalNotas").value = cita.notas;
 
-            } catch (error) {
-                console.error("Error obteniendo datos de la cita:", error);
-                alert("❌ Error al cargar la información de la cita.");
-            }
+                if (cita.fechaHora) {
+                    let fechaHora = cita.fechaHora.slice(0, 16);
+                    document.getElementById("modalFechaHora").value = fechaHora;
+                }
+
+                document.getElementById("modalEstado").value = cita.estado;
+                document.getElementById("modalNotas").value = cita.notas || "";
+            })
+            .catch(error => {
+                console.error("Error obteniendo detalles de la cita:", error);
+                alert("Error al cargar los detalles de la cita");
+            });
+    }
+
+    function cerrarModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    async function guardarCambios() {
+        let id = document.getElementById("citaId").value;
+        let fechaHora = document.getElementById("modalFechaHora").value;
+        let estado = document.getElementById("modalEstado").value;
+        let notas = document.getElementById("modalNotas").value;
+
+        if (!fechaHora) {
+            alert("Por favor, selecciona una fecha y hora válida");
+            return;
         }
 
-        async function guardarCambios() {
-            let id = document.getElementById("citaId").value;
-            let fechaHora = document.getElementById("modalFechaHora").value;
-            let estado = document.getElementById("modalEstado").value;
-            let notas = document.getElementById("modalNotas").value;
+        let formData = new URLSearchParams();
+        formData.append("fechaHora", fechaHora);
+        formData.append("estado", estado);
+        formData.append("notas", notas);
 
-            let formData = new URLSearchParams();
-            formData.append("fechaHora", fechaHora);
-            formData.append("estado", estado);
-            formData.append("notas", notas);
-
+        try {
             let response = await fetch(`/api/citas/editar/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -227,29 +196,42 @@
             });
 
             if (response.ok) {
-                alert("✅ Cita actualizada correctamente.");
+                alert("✅ Cita actualizada correctamente");
                 cerrarModal();
-                location.reload();
+                window.location.reload();
             } else {
-                alert("❌ Error al actualizar la cita.");
+                let error = await response.json();
+                alert(`❌ Error al actualizar: ${error.message || 'Inténtalo de nuevo'}`);
             }
+        } catch (error) {
+            console.error("Error al actualizar cita:", error);
+            alert("❌ Error de conexión al actualizar la cita");
+        }
+    }
+
+    async function cancelarCita() {
+        if (!confirm("¿Estás seguro de que deseas cancelar esta cita?")) {
+            return;
         }
 
-        async function cancelarCita() {
-            let id = document.getElementById("citaId").value;
+        let id = document.getElementById("citaId").value;
 
+        try {
             let response = await fetch(`/api/citas/cancelar/${id}`, {
                 method: "DELETE"
             });
 
             if (response.ok) {
-                alert("✅ Cita cancelada correctamente.");
+                alert("✅ Cita cancelada correctamente");
                 cerrarModal();
-                location.reload();
+                window.location.reload();
             } else {
-                alert("❌ Error al cancelar la cita.");
+                let error = await response.json();
+                alert(`❌ Error al cancelar: ${error.message || 'Inténtalo de nuevo'}`);
             }
+        } catch (error) {
+            console.error("Error al cancelar cita:", error);
+            alert("❌ Error de conexión al cancelar la cita");
         }
-    </script>
-</body>
-</html>
+    }
+</script>

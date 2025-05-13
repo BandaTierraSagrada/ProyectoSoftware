@@ -1,0 +1,289 @@
+﻿
+/* Estilos generales (consistentes con las páginas anteriores) */
+:root {
+    --primary-color: #6d28d9;
+    --primary-light: #8b5cf6;
+    --secondary-color: #f43f5e;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --gray-light: #f3f4f6;
+    --gray-medium: #e5e7eb;
+    --gray-dark: #6b7280;
+    --text-color: #1f2937;
+    --text-light: #9ca3af;
+}
+
+body {
+    background-color: #f9fafb;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor principal */
+.appointments-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+}
+
+/* Título de la página */
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-medium);
+}
+
+/* Tabla de citas */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.table-header {
+    padding: 15px;
+    text-align: left;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+}
+
+.appointments-table tbody tr {
+    border-bottom: 1px solid var(--gray-medium);
+    transition: all 0.2s;
+}
+
+    .appointments-table tbody tr:hover {
+        background-color: var(--gray-light);
+    }
+
+.appointments-table td {
+    padding: 15px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* Badges para estados */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+    .status-badge.pendiente {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+    }
+
+    .status-badge.confirmada {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-badge.cancelada {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--error-color);
+    }
+
+    .status-badge.completada {
+        background-color: rgba(109, 40, 217, 0.1);
+        color: var(--primary-color);
+    }
+
+/* Botones de acción */
+.action-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+}
+
+    .action-button.success {
+        background-color: var(--success-color);
+        color: white;
+    }
+
+        .action-button.success:hover {
+            background-color: #0d9b6e;
+            transform: translateY(-1px);
+        }
+
+    .action-button.danger {
+        background-color: var(--error-color);
+        color: white;
+    }
+
+        .action-button.danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+
+    .action-button.secondary {
+        background-color: var(--gray-light);
+        color: var(--text-color);
+    }
+
+        .action-button.secondary:hover {
+            background-color: var(--gray-medium);
+        }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 600px;
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-medium);
+}
+
+.modal-title {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--gray-dark);
+    transition: color 0.2s;
+}
+
+    .close-button:hover {
+        color: var(--error-color);
+    }
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-dark);
+}
+
+.detail-value {
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.detail-input {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-medium);
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.detail-textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-medium);
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .appointments-container {
+        padding: 20px;
+    }
+
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+

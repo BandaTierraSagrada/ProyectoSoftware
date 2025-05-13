@@ -1,173 +1,251 @@
 ﻿@page
 @model SalonDeBelleza.src.Citas.CalendarioModel
 @{
+    ViewData["Title"] = "Reserva de Citas";
 }
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario</title>
-    <link href="~/css/Calendario.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-</head>
-<body>
-   
+<link href="~/css/calendarioo.css" rel="stylesheet" />
 
-    <div class="calendario">
-        <h2>Reserva tu Cita</h2>
+<div class="booking-container">
+    <h1 class="page-title">Reserva tu Cita</h1>
+
+    <div class="booking-form">
         @if (Model.Rol != "Cliente")
         {
-            <label for="email">Ingresar correo del cliente:</label>
-            <form >
-                <input class="input" type="email" id="EmailBusqueda" placeholder="Correo del cliente" required>
-            </form>
+            <div class="form-group">
+                <label class="form-label" for="EmailBusqueda">Ingresar correo del cliente:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input class="form-input" type="email" id="EmailBusqueda" placeholder="Correo del cliente" required>
+                </div>
+            </div>
         }
 
-        <label for="fecha">Selecciona la fecha:</label>
-        <input class="input" type="text" id="fecha" placeholder="Elige la fecha">
+        <div class="form-group">
+            <label class="form-label" for="fecha">Selecciona la fecha:</label>
+            <div class="input-with-icon">
+                <i class="fas fa-calendar-alt input-icon"></i>
+                <input class="form-input" type="text" id="fecha" placeholder="Elige la fecha">
+            </div>
+        </div>
 
-        <label for="servicio">Elige el servicio:</label>
-        <select class="select" id="servicio" onchange="cargarColaboradores()">
-            <option value="">Selecciona un servicio</option>
-            @foreach (var servicio in Model.ServiciosD)
-            {
-                <option value="@servicio">@servicio</option>
+        <div class="form-group">
+            <label class="form-label" for="servicio">Elige el servicio:</label>
+            <div class="select-with-icon">
+                <i class="fas fa-spa input-icon"></i>
+                <select class="form-input" id="servicio" onchange="cargarColaboradores()">
+                    <option value="">Selecciona un servicio</option>
+                    @foreach (var servicio in Model.ServiciosD)
+                    {
+                        <option value="@servicio">@servicio</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="colaborador">Selecciona el colaborador:</label>
+            <div class="select-with-icon">
+                <i class="fas fa-user-tie input-icon"></i>
+                <select class="form-input" id="colaborador" onchange="cargarHorarios()">
+                    <option value="">Selecciona un colaborador</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="hora">Selecciona la hora:</label>
+            <div class="select-with-icon">
+                <i class="fas fa-clock input-icon"></i>
+                <select class="form-input" id="hora">
+                    <option value="">Selecciona un horario</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="notas">Notas adicionales:</label>
+            <textarea class="form-input" id="notas" rows="3" placeholder="Escribe aquí cualquier nota especial..."></textarea>
+        </div>
+
+        <input type="hidden" id="UserIDCliente" name="@Model.UserIDCliente" value="@Model.UserIDCliente">
+        <input type="hidden" id="UserRol" name="@Model.Rol" value="@Model.Rol">
+
+        <div class="form-actions">
+            <button type="button" class="action-button secondary" onclick="window.location.href='/Home/@Model.Rol'">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </button>
+            <button type="button" class="action-button primary" onclick="reservarCita(event)">
+                <i class="fas fa-calendar-check"></i> Reservar Cita
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Agrega Font Awesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Agrega Flatpickr para el calendario -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+<script>
+    // Configuración de Flatpickr
+    flatpickr("#fecha", {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        locale: "es",
+        disable: [
+            function(date) {
+                return (date.getDay() === 0); // Deshabilitar domingos
             }
-        </select>
+        ]
+    });
 
-        <label for="colaborador">Selecciona el colaborador:</label>
-        <select class="select" id="colaborador" onchange="cargarHorarios()">
-            <option value="">Selecciona un colaborador</option>
-        </select>
-
-        <label for="hora">Selecciona la hora:</label>
-        <select class="select" id="hora">
-            <option value="">Selecciona un horario</option>
-        </select>
-        <label for="notas">Notas adicionales:</label>
-        <input type="text" id="notas" value=" " placeholder=" " />
-        <input type="hidden" id="UserIDCliente" name="@Model.UserIDCliente" value="@Model.UserIDCliente" />
-        <input type="hidden" id="UserRol" name="@Model.Rol" value="@Model.Rol" />
-        <button type="button" class="button" onclick="reservarCita(event)">Reservar</button>
-    </div>
-
-    <div class="button-container">
-        <button onclick="window.location.href='/Home/@Model.Rol'">Regresar</button>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        flatpickr("#fecha", {
-            dateFormat: "Y-m-d",
-            minDate: "today",
-        });
-        
-
-        async function BuscarCliente(email){
-            try {
+    async function BuscarCliente(email){
+        try {
             let response = await fetch(`/api/citas/buscar-cliente?email=${email}`);
             console.log("🔎 Código de respuesta:", response.status);
             if (!response.ok) {
                 alert("❌ Error al encontrar usuario. Inténtalo de nuevo.");
-                return null; // 🔹 Retorna null explícitamente en caso de error
+                return null;
             }
 
             let data = await response.json();
             console.log(data);
-            return data.userID || null; // 🔹 Si no hay UserID, devuelve null en lugar de undefined
+            return data.userID || null;
 
-            } catch (error) {
-                console.error("❌ Error al buscar cliente:", error);
-                alert("❌ Ocurrió un error al buscar el cliente.");
-                return null; // 🔹 También retorna null si ocurre un error en el fetch
-            }
+        } catch (error) {
+            console.error("❌ Error al buscar cliente:", error);
+            alert("❌ Ocurrió un error al buscar el cliente.");
+            return null;
         }
-     
+    }
 
-        async function cargarColaboradores() {
-            let servicio = document.getElementById("servicio").value;
+    async function cargarColaboradores() {
+        let servicio = document.getElementById("servicio").value;
+        if (!servicio) return;
+
+        try {
             let response = await fetch(`/api/citas/colaboradores?servicio=${servicio}`);
             let colaboradores = await response.json();
 
             let selectColaborador = document.getElementById("colaborador");
             selectColaborador.innerHTML = '<option value="">Selecciona un colaborador</option>';
-            colaboradores.forEach(col => {
-                selectColaborador.innerHTML += `<option value="${col.userID}">${col.nombre}</option>`;
-            });
-        }
 
-        async function cargarHorarios() {
-            let colaboradorId = document.getElementById("colaborador").value;
-            let fecha = document.getElementById("fecha").value;
+            colaboradores.forEach(col => {
+                let option = document.createElement("option");
+                option.value = col.userID;
+                option.textContent = col.nombre;
+                selectColaborador.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error("Error al cargar colaboradores:", error);
+            alert("Ocurrió un error al cargar los colaboradores");
+        }
+    }
+
+    async function cargarHorarios() {
+        let colaboradorId = document.getElementById("colaborador").value;
+        let fecha = document.getElementById("fecha").value;
+
+        if (!colaboradorId || !fecha) return;
+
+        try {
             let response = await fetch(`/api/citas/horarios?colaboradorId=${colaboradorId}&fecha=${fecha}`);
             let horarios = await response.json();
 
             let selectHora = document.getElementById("hora");
             selectHora.innerHTML = '<option value="">Selecciona un horario</option>';
+
             horarios.forEach(hora => {
-                selectHora.innerHTML += `<option value="${hora}">${hora}</option>`;
+                let option = document.createElement("option");
+                option.value = hora;
+                option.textContent = hora;
+                selectHora.appendChild(option);
             });
+
+        } catch (error) {
+            console.error("Error al cargar horarios:", error);
+            alert("Ocurrió un error al cargar los horarios disponibles");
+        }
+    }
+
+    async function reservarCita(event) {
+        event.preventDefault();
+
+        let rol = document.getElementById("UserRol").value;
+        let fecha = document.getElementById("fecha").value;
+        let hora = document.getElementById("hora").value;
+        let colaborador = document.getElementById("colaborador").value;
+        let servicio = document.getElementById("servicio").value;
+        let nota = document.getElementById("notas").value;
+        let id = document.getElementById("UserIDCliente").value;
+
+        // Validación de campos
+        if (!fecha || !hora || !colaborador || !servicio) {
+            alert("Por favor, completa todos los campos requeridos.");
+            return;
         }
 
-        async function reservarCita(event) {
-            let rol = document.getElementById("UserRol").value;
-            let fecha = document.getElementById("fecha").value;
-            let hora = document.getElementById("hora").value;
-            let colaborador = document.getElementById("colaborador").value;
-            let servicio = document.getElementById("servicio").value;
-            let nota = document.getElementById("notas").value;
-            let id = document.getElementById("UserIDCliente").value;
-            let fechaISO = new Date(`${fecha}T${hora}:00Z`).toISOString();
-            if (fecha === "" || hora === "" || colaborador === "" || servicio ==="") {
-                alert("Por favor, completa todos los campos.");
+        // Para administradores, buscar cliente por email
+        if (rol === "Administrador") {
+            let email = document.getElementById("EmailBusqueda").value;
+            if (!email) {
+                alert("Por favor, ingresa el correo del cliente.");
                 return;
             }
-            if(rol=="Administrador"){
-                id = await BuscarCliente(document.getElementById("EmailBusqueda").value);
-            }
-            console.log(id);
+
+            id = await BuscarCliente(email);
+            if (!id) return; // Si no se encontró el cliente, salir
+        }
+
+        // Verificar si es cliente frecuente
+        try {
             let response = await fetch(`/api/citas/recurrente/${id}`);
             let recurrente = await response.json();
 
-            console.log(recurrente);
-            if(recurrente.recurrente){
-                nota = `ES CLIENTE FRECUENTE \n${nota}`;
+            if (recurrente.recurrente) {
+                nota = `ES CLIENTE FRECUENTE\n${nota}`;
             }
-            console.log(nota);
-            let formData = new URLSearchParams();
-            formData.append("clienteID", id);
-            formData.append("colaboradorID", colaborador);
-            formData.append("fechaHora", fechaISO);
-            formData.append("servicio", servicio);
-            formData.append("estado", "Pendiente");
-            formData.append("notas", nota);
-
-            console.log("Enviando cita al backend");
-            console.log(" Enviando cita:", formData.toString());
-            try {
-                let response = await fetch("/api/citas/reservar", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: formData.toString()
-                 });
-
-                if (response.ok) {
-                    alert(`✅ Cita reservada para el ${fecha} a las ${hora}.`);
-                    location.reload();
-                } else {
-                    alert("❌ Error al reservar la cita. Inténtalo de nuevo.");
-                }
-            } catch (error) {
-                console.error("Error al reservar cita:", error);
-                alert("❌ Ocurrió un error en la conexión.");
-            }
+        } catch (error) {
+            console.error("Error al verificar cliente frecuente:", error);
         }
 
-    </script>
+        // Preparar datos para enviar
+        let fechaISO = new Date(`${fecha}T${hora}:00Z`).toISOString();
+        let formData = new URLSearchParams();
+        formData.append("clienteID", id);
+        formData.append("colaboradorID", colaborador);
+        formData.append("fechaHora", fechaISO);
+        formData.append("servicio", servicio);
+        formData.append("estado", "Pendiente");
+        formData.append("notas", nota);
 
-</body>
-</html>
+        // Enviar la reserva
+        try {
+            let response = await fetch("/api/citas/reservar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: formData.toString()
+            });
+
+            if (response.ok) {
+                alert(`✅ Cita reservada para el ${fecha} a las ${hora}.`);
+                location.reload();
+            } else {
+                let errorData = await response.json();
+                alert(`❌ Error al reservar la cita: ${errorData.message || 'Inténtalo de nuevo.'}`);
+            }
+        } catch (error) {
+            console.error("Error al reservar cita:", error);
+            alert("❌ Ocurrió un error en la conexión.");
+        }
+    }
+</script>

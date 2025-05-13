@@ -4,45 +4,92 @@
     ViewData["Title"] = "Inventario";
 }
 
-<h1>Inventario de Productos</h1>
+<link href="~/css/Inventario.css" rel="stylesheet" />
 
-<div>
-    <button onclick="abrirModalCrear()">Crear Producto</button>
-    <input type="text" id="filtro" placeholder="Filtrar por nombre..." onkeyup="filtrarProductos()">
+<div class="inventory-container">
+    <h1 class="page-title">Inventario de Productos</h1>
+
+    <div class="inventory-actions">
+        <div class="search-filter">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="filtro" class="search-input" placeholder="Filtrar por nombre..." onkeyup="filtrarProductos()">
+        </div>
+        <button class="action-button primary" onclick="abrirModalCrear()">
+            <i class="fas fa-plus"></i> Crear Producto
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="inventory-table" id="productosTable">
+            <thead>
+                <tr>
+                    <th class="table-header">Nombre</th>
+                    <th class="table-header">Descripción</th>
+                    <th class="table-header">Stock</th>
+                    <th class="table-header">Ajustar Stock</th>
+                    <th class="table-header">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="productosBody">
+                <!-- Productos serán cargados aquí con JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para crear o editar productos -->
+    <div id="modalProducto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Producto</h3>
+                <button class="close-button" onclick="cerrarModal()">&times;</button>
+            </div>
+            <form id="formProducto" class="modal-form" onsubmit="guardarProducto(event)">
+                <input type="hidden" id="productoId">
+
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    <input type="text" id="nombre" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción:</label>
+                    <textarea id="descripcion" class="form-input" rows="3" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Stock Mínimo:</label>
+                        <input type="number" id="stockMinimo" class="form-input" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Stock Actual:</label>
+                        <input type="number" id="stock" class="form-input" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Categoría:</label>
+                    <select id="categoria" class="form-input"></select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="action-button secondary" onclick="cerrarModal()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="action-button primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<table id="productosTable">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="productosBody">
-        <!-- Productos serán cargados aquí con JavaScript -->
-    </tbody>
-</table>
+<!-- Agrega Font Awesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<!-- Modal para crear o editar productos -->
-<div id="modalProducto" style="display:none;">
-    <form id="formProducto" onsubmit="guardarProducto(event)">
-        <input type="hidden" id="productoId">
-        <label>Nombre:</label>
-        <input type="text" id="nombre" required><br>
-        <label>Descripción:</label>
-        <input type="text" id="descripcion" required><br>
-        <label>Stock Mínimo:</label>
-        <input type="number" id="stockMinimo" required><br>
-        <label>Stock Actual:</label>
-        <input type="number" id="stock" required><br>
-        <label>Categoría:</label>
-        <select id="categoria"></select><br>
-        <button type="submit">Guardar</button>
-        <button type="button" onclick="cerrarModal()">Cancelar</button>
-    </form>
-</div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -59,18 +106,35 @@
                 tbody.innerHTML = '';
                 data.forEach(producto => {
                     const tr = document.createElement('tr');
+
+                    // Determinar clase de stock bajo
+                    const stockClass = producto.stock < producto.stockMinimo ? 'low-stock' : '';
+
                     tr.innerHTML = `
                         <td>${producto.nombre}</td>
                         <td>${producto.descripcion}</td>
-                        <td>${producto.stock}</td>
-                        <td>
-                            <button onclick="actualizarStock(${producto.productoID}, -1)">-</button>
-                            <input type="number" value="1" min="1" id="cantidad-${producto.productoID}">
-                            <button onclick="actualizarStock(${producto.productoID}, 1)">+</button>
+                        <td class="${stockClass}">
+                            ${producto.stock}
+                            ${producto.stock < producto.stockMinimo ? '<i class="fas fa-exclamation-triangle warning-icon"></i>' : ''}
                         </td>
                         <td>
-                            <button onclick="abrirModalEditar(${producto.productoID})">Editar</button>
-                            <button onclick="eliminarProducto(${producto.productoID})">Eliminar</button>
+                            <div class="stock-controls">
+                                <button class="stock-button" onclick="actualizarStock(${producto.productoID}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" value="1" min="1" class="stock-input" id="cantidad-${producto.productoID}">
+                                <button class="stock-button" onclick="actualizarStock(${producto.productoID}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="action-button warning" onclick="abrirModalEditar(${producto.productoID})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="action-button danger" onclick="eliminarProducto(${producto.productoID})">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -79,12 +143,11 @@
             .catch(error => console.error("Error al cargar los productos", error));
     }
 
-
-
     // Actualizar el stock de un producto
     function actualizarStock(id, cantidad) {
         const cantidadInput = document.getElementById(`cantidad-${id}`).value;
         const cantidadFinal = cantidad === 1 ? parseInt(cantidadInput) : -parseInt(cantidadInput);
+
         fetch(`/api/inventario/actualizarStock/${id}?cantidad=${cantidadFinal}`, {
             method: 'POST'
         })
@@ -99,6 +162,7 @@
     // Abrir el modal para crear un producto
     function abrirModalCrear() {
         document.getElementById('modalProducto').style.display = 'block';
+        document.getElementById('modalTitle').textContent = 'Nuevo Producto';
         document.getElementById('productoId').value = '';
         document.getElementById('formProducto').reset();
     }
@@ -108,6 +172,7 @@
         fetch(`/api/inventario/producto/${id}`)
             .then(response => response.json())
             .then(producto => {
+                document.getElementById('modalTitle').textContent = 'Editar Producto';
                 document.getElementById('productoId').value = producto.productoID;
                 document.getElementById('nombre').value = producto.nombre;
                 document.getElementById('descripcion').value = producto.descripcion;
@@ -155,15 +220,17 @@
 
     // Eliminar producto
     function eliminarProducto(id) {
-        fetch(`/api/inventario/eliminarProducto/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    cargarProductos();
-                }
+        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+            fetch(`/api/inventario/eliminarProducto/${id}`, {
+                method: 'DELETE'
             })
-            .catch(error => console.error("Error al eliminar el producto", error));
+                .then(response => {
+                    if (response.ok) {
+                        cargarProductos();
+                    }
+                })
+                .catch(error => console.error("Error al eliminar el producto", error));
+        }
     }
 
     // Cerrar el modal
@@ -177,6 +244,7 @@
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById('categoria');
+                select.innerHTML = '';
                 data.forEach(categoria => {
                     const option = document.createElement('option');
                     option.value = categoria;
