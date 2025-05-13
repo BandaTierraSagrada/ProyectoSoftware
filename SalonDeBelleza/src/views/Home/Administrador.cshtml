@@ -1,9 +1,14 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Home.AdministradorModel
+@using System.Globalization
 @{
 	ViewData["Title"] = "Administrador";
+    var nombres = System.Text.Json.JsonSerializer.Serialize(Model.NombresColaboradores);
+    var cantidades = System.Text.Json.JsonSerializer.Serialize(Model.CantidadCitas);
 }
-<h2>Bienvenido, @Model.Nombre</h2>
+
+<!-- 
+	<h2>Bienvenido, @Model.Nombre</h2>
 
 <p>ola admin, tqm</p>
 <button onclick="window.location.href='/Citas/Calendario'">Agendar Cita</button>
@@ -11,3 +16,104 @@
 <button onclick="window.location.href='/Citas/CitasColaborador'">Todas Citas</button>
 <button onclick="window.location.href='/Administrador/HistorialNotificaciones'">Notificaciones</button>
 <button onclick="window.location.href='/Administrador/Inventario'">Inventario</button>
+-->
+
+<div class="container mt-4">
+    <h2 class="mb-4">👋 Bienvenido, @Model.Nombre</h2>
+    <div class="row">
+        <!-- Widget de reloj -->
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🕒 Hora actual</h5>
+                    <h1 id="reloj">--:--:--</h1>
+                </div>
+            </div>
+        </div>
+        <!-- Gráfico de citas por colaborador -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">📊 Citas por colaborador (Mes actual)</div>
+                <div class="card-body">
+                    <canvas id="graficoCitas" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Citas más próximas -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">📅 Citas más próximas</div>
+        <ul class="list-group list-group-flush">
+            @foreach (var cita in Model.CitasProximas)
+            {
+                <li class="list-group-item">
+                    <strong>@cita.FechaHora.ToString("dd/MM/yyyy HH:mm")</strong> - @cita.Cliente con @cita.Colaborador
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Productos con stock bajo -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning">📦 Productos con stock bajo</div>
+        <ul class="list-group list-group-flush">
+            @foreach (var producto in Model.ProductosConStockBajo)
+            {
+                <li class="list-group-item">
+                    <strong>@producto.Nombre</strong>: @producto.Stock unidades (mínimo: @producto.StockMinimo)
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<!-- Botones -->
+<!-- SCRIPTS: Reloj y Gráfico -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Reloj en tiempo real
+    function actualizarReloj() {
+        const ahora = new Date();
+        const hora = ahora.toLocaleTimeString();
+        document.getElementById("reloj").textContent = hora;
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
+
+    // Gráfico de citas por colaborador
+    const nombres = @Html.Raw(nombres);
+    const cantidades = @Html.Raw(cantidades);
+
+    const ctx = document.getElementById('graficoCitas').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Cantidad de citas',
+                data: cantidades,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Citas por colaborador'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+
