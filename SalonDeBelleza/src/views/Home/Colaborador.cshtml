@@ -3,6 +3,60 @@
 @{
 	ViewData["Title"] = "Colaborador";
 }
-<h2>Bienvenido, @Model.Nombre</h2>
+<!---
+
 <button onclick="window.location.href='/Citas/Calendario'">Agendar Cita</button>
 <button onclick="window.location.href='/Citas/CitasColaborador'">Mis Citas</button>
+-->
+<h2>Bienvenido, @Model.Nombre</h2>
+<div class="row mt-4">
+    <!-- Botón agendar -->
+    <div class="col-md-3 mb-3">
+        <a class="btn btn-primary w-100" asp-page="/Citas/Agendar">📅 Agendar Cita este es boton</a>
+    </div>
+
+    <!-- Reloj -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-header bg-dark text-white">🕒 Reloj</div>
+            <div class="card-body">
+                <h3 id="clock">--:--:--</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen del día -->
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">📋 Resumen del Día</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Total de citas: @Model.TotalCitas</li>
+                <li class="list-group-item">Clientes atendidos: @Model.ClientesAtendidos</li>
+                <li class="list-group-item">Tiempo estimado: @Model.TiempoEstimado</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Citas más próximas -->
+<div class="card mt-4">
+    <div class="card-header bg-info text-white">📅 Citas más próximas</div>
+    <ul class="list-group list-group-flush">
+        @foreach (var cita in Model.CitasProximas)
+        {
+            <li class="list-group-item">
+                <strong>@cita.FechaHora.ToString("dd/MM/yyyy HH:mm")</strong> - @cita.Cliente
+            </li>
+        }
+    </ul>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const time = now.toLocaleTimeString();
+        document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>

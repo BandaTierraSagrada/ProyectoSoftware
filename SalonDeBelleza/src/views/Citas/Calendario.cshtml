@@ -17,6 +17,7 @@
                 <div class="input-with-icon">
                     <i class="fas fa-envelope input-icon"></i>
                     <input class="form-input" type="email" id="EmailBusqueda" placeholder="Correo del cliente" required>
+                    <button type="button" onclick="ejecutarBusquedaCliente()">Buscar</button>
                 </div>
             </div>
         }
@@ -113,7 +114,7 @@
                 alert("❌ Error al encontrar usuario. Inténtalo de nuevo.");
                 return null;
             }
-
+            alert("Cliente Encontrado Correctamente");
             let data = await response.json();
             console.log(data);
             return data.userID || null;
@@ -123,6 +124,21 @@
             alert("❌ Ocurrió un error al buscar el cliente.");
             return null;
         }
+    }
+    function ejecutarBusquedaCliente() {
+        const email = document.getElementById("EmailBusqueda").value;
+        if (!email) {
+            alert("⚠️ Ingresa un correo válido.");
+            return;
+        }
+
+        // Llamar a la función async
+        BuscarCliente(email).then(userId => {
+            if (userId !== null) {
+                console.log("✅ ID del cliente:", userId);
+                // Aquí puedes hacer algo con el userId, como llenar otro campo o redirigir
+            }
+        });
     }
 
     async function cargarColaboradores() {
