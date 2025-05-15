@@ -2,118 +2,237 @@
 @model SalonDeBelleza.src.views.Home.AdministradorModel
 @using System.Globalization
 @{
-	ViewData["Title"] = "Administrador";
+    ViewData["Title"] = "Panel de Administración";
     var nombres = System.Text.Json.JsonSerializer.Serialize(Model.NombresColaboradores);
     var cantidades = System.Text.Json.JsonSerializer.Serialize(Model.CantidadCitas);
+
+    Layout = "~/src/views/Shared/LayoutPrincipal.cshtml";
+    
 }
 
-<!-- 
-	<h2>Bienvenido, @Model.Nombre</h2>
 
-<p>ola admin, tqm</p>
-<button onclick="window.location.href='/Citas/Calendario'">Agendar Cita</button>
-<button onclick="window.location.href='/Administrador/AdminUsuarios'">Usuarios</button>
-<button onclick="window.location.href='/Citas/CitasColaborador'">Todas Citas</button>
-<button onclick="window.location.href='/Administrador/HistorialNotificaciones'">Notificaciones</button>
-<button onclick="window.location.href='/Administrador/Inventario'">Inventario</button>
--->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
-<div class="container mt-4">
-    <h2 class="mb-4">👋 Bienvenido, @Model.Nombre</h2>
-    <div class="row">
-        <!-- Widget de reloj -->
-        <div class="col-md-4">
-            <div class="card text-white bg-dark mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title">🕒 Hora actual</h5>
-                    <h1 id="reloj">--:--:--</h1>
-                </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="~/css/DashBoardAdmin.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <div class="admin-dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-tachometer-alt"></i> Panel de Administración
+            </h1>
+            <div class="user-info">
+                <span class="welcome-text">Bienvenido, <strong>@Model.Nombre</strong></span>
+                <span id="current-time" class="time-display"></span>
             </div>
         </div>
-        <!-- Gráfico de citas por colaborador -->
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">📊 Citas por colaborador (Mes actual)</div>
-                <div class="card-body">
-                    <canvas id="graficoCitas" width="400" height="200"></canvas>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/Citas/Calendario" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-plus"></i>
                 </div>
+                <span>Agendar Cita</span>
+            </a>
+            <a href="/Administrador/AdminUsuarios" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <span>Gestionar Usuarios</span>
+            </a>
+            <a href="/Citas/CitasColaborador" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span>Todas las Citas</span>
+            </a>
+            <a href="/Administrador/HistorialNotificaciones" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <span>Notificaciones</span>
+            </a>
+            <a href="/Administrador/Inventario" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <span>Inventario</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Left Column -->
+            <div class="dashboard-column">
+                <!-- Citas por Colaborador Chart -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Citas por Colaborador</h3>
+                        <span class="card-subtitle">Este mes</span>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoCitas" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Productos con Stock Bajo -->
+                <div class="dashboard-card">
+                    <div class="card-header alert">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Productos con Stock Bajo</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Stock Actual</th>
+                                        <th>Stock Mínimo</th>
+                                        <th>Diferencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var producto in Model.ProductosConStockBajo)
+                                    {
+                                        <tr>
+                                            <td>@producto.Nombre</td>
+                                            <td>@producto.Stock</td>
+                                            <td>@producto.StockMinimo</td>
+                                            <td class="@(producto.Stock < producto.StockMinimo ? "text-danger" : "text-warning")">
+                                                @(producto.Stock - producto.StockMinimo)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="dashboard-column">
+                <!-- Próximas Citas -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Próximas Citas</h3>
+                        <span class="card-subtitle">Hoy y mañana</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="appointments-list">
+                            @foreach (var cita in Model.CitasProximas)
+                            {
+                                <div class="appointment-item">
+                                    <div class="appointment-time">
+                                        <span class="time">@cita.FechaHora.ToString("HH:mm")</span>
+                                        <span class="date">@cita.FechaHora.ToString("dd/MM")</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h4>@cita.Cliente</h4>
+                                        <p>
+                                            <i class="fas fa-user-tie"></i> @cita.Colaborador
+                                            <br>
+
+                                        </p>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <button class="btn-icon" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas Rápidas -->
+
             </div>
         </div>
     </div>
 
-    <!-- Citas más próximas -->
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">📅 Citas más próximas</div>
-        <ul class="list-group list-group-flush">
-            @foreach (var cita in Model.CitasProximas)
-            {
-                <li class="list-group-item">
-                    <strong>@cita.FechaHora.ToString("dd/MM/yyyy HH:mm")</strong> - @cita.Cliente con @cita.Colaborador
-                </li>
-            }
-        </ul>
-    </div>
-
-    <!-- Productos con stock bajo -->
-    <div class="card mb-4">
-        <div class="card-header bg-warning">📦 Productos con stock bajo</div>
-        <ul class="list-group list-group-flush">
-            @foreach (var producto in Model.ProductosConStockBajo)
-            {
-                <li class="list-group-item">
-                    <strong>@producto.Nombre</strong>: @producto.Stock unidades (mínimo: @producto.StockMinimo)
-                </li>
-            }
-        </ul>
-    </div>
-</div>
-
-<!-- Botones -->
-<!-- SCRIPTS: Reloj y Gráfico -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Reloj en tiempo real
-    function actualizarReloj() {
-        const ahora = new Date();
-        const hora = ahora.toLocaleTimeString();
-        document.getElementById("reloj").textContent = hora;
-    }
-    setInterval(actualizarReloj, 1000);
-    actualizarReloj();
-
-    // Gráfico de citas por colaborador
-    const nombres = @Html.Raw(nombres);
-    const cantidades = @Html.Raw(cantidades);
-
-    const ctx = document.getElementById('graficoCitas').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: nombres,
-            datasets: [{
-                label: 'Cantidad de citas',
-                data: cantidades,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: 'Citas por colaborador'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    precision: 0
-                }
-            }
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Actualizar reloj en tiempo real
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-MX', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
         }
-    });
-</script>
+        setInterval(updateClock, 1000);
+        updateClock();
 
+        // Gráfico de citas por colaborador
+        const nombres = @Html.Raw(nombres);
+        const cantidades = @Html.Raw(cantidades);
+
+        const ctx = document.getElementById('graficoCitas').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nombres,
+                datasets: [{
+                    label: 'Citas',
+                    data: cantidades,
+                    backgroundColor: [
+                        'rgba(109, 40, 217, 0.7)',
+                        'rgba(139, 92, 246, 0.7)',
+                        'rgba(167, 139, 250, 0.7)',
+                        'rgba(216, 180, 254, 0.7)',
+                        'rgba(237, 233, 254, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(109, 40, 217, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(167, 139, 250, 1)',
+                        'rgba(216, 180, 254, 1)',
+                        'rgba(237, 233, 254, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' citas';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+</body>
+</html>

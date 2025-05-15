@@ -18,7 +18,8 @@
         <h2 class="page-title">Historial de Notificaciones</h2>
 
         <!-- Filtros -->
-        <form method="get" class="filters-form">
+        <div class="filters-form">
+        <form method="get" >
             <div class="filter-group">
                 <label for="fecha" class="filter-label">Fecha:</label>
                 <input type="date" name="fecha" value="@Model.FechaFiltro?.ToString("yyyy-MM-dd")" class="filter-input" />
@@ -36,8 +37,12 @@
             <button type="submit" class="filter-button">
                 <i class="fas fa-filter"></i> Filtrar
             </button>
-            <button class="filter-button" onclick="window.location.href='~/Home/Administrador'">Regresar</button>
+            
+
+            
         </form>
+            <button class="filter-button" onclick="window.location.href='/Home/Administrador'">Regresar</button>
+        </div>
 
         <!-- Tabla de notificaciones -->
         <div class="table-container">

@@ -3,64 +3,116 @@
 @{
     ViewData["Title"] = "Editar Perfil";
 }
-<html>
-    <head>
-    <link rel="stylesheet" href="~/css/EditUsuarios.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
 
+<link href="~/css/EditarPerfil.css" rel="stylesheet" />
 
-@if (!string.IsNullOrEmpty(Model.Mensaje))
-{
-    <script>
-        alert('@Model.Mensaje')
-    </script>
-}
-
-<form method="post" id="editarPerfilForm">
-    @Html.AntiForgeryToken()
-    <div class="Fondo">
-            <h2>Editar Perfil</h2>
-    <div class="Campos">
-        <label for="Nombre">Nombre:</label>
-        <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Usuario.Nombre" required>
+<div class="profile-container">
+    <div class="profile-header">
+        <h1 class="page-title">
+            <i class="fas fa-user-edit"></i> Editar Perfil
+        </h1>
     </div>
 
-    <div class="Campos">
-        <label for="Telefono">Teléfono:</label>
-        <input type="text" class="form-control" id="Telefono" name="Telefono" value="@Model.Usuario.Telefono" required>
-    </div>
+    @if (!string.IsNullOrEmpty(Model.Mensaje))
+    {
+        <script>
+            alert('@Model.Mensaje')
+        </script>
+    }
 
-    <div class="Campos">
-        <label for="Email">Correo Electrónico:</label>
-        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Usuario.Email" required>
-    </div>
+    <form method="post" id="editarPerfilForm" class="profile-form">
+        @Html.AntiForgeryToken()
 
-    <div class="Campos">
-        <label for="NuevaPassword">Nueva Contraseña:</label>
-        <input type="password" class="form-control" id="NuevaPassword" name="NuevaPassword">
-    </div>
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-user"></i> Información Personal
+            </h3>
 
-    <div class="Campos">
-        <label for="ConfirmarPassword">Confirmar Nueva Contraseña:</label>
-        <input type="password" class="form-control" id="ConfirmarPassword" name="ConfirmarPassword">
-    </div>
+            <div class="form-group">
+                <label class="form-label" for="Nombre">Nombre:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" class="form-input" id="Nombre" name="Nombre" value="@Model.Usuario.Nombre" required>
+                </div>
+            </div>
 
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <div class="form-group">
+                <label class="form-label" for="Telefono">Teléfono:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" class="form-input" id="Telefono" name="Telefono" value="@Model.Usuario.Telefono" required>
+                </div>
+            </div>
 
-    <div class="Campos">
-        <label>Preferencia de notificación:</label>
+            <div class="form-group">
+                <label class="form-label" for="Email">Correo Electrónico:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" class="form-input" id="Email" name="Email" value="@Model.Usuario.Email" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-lock"></i> Seguridad
+            </h3>
+
+            <div class="form-group">
+                <label class="form-label" for="NuevaPassword">Nueva Contraseña:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="password" class="form-input" id="NuevaPassword" name="NuevaPassword" placeholder="Dejar vacío para no cambiar">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="ConfirmarPassword">Confirmar Nueva Contraseña:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="password" class="form-input" id="ConfirmarPassword" name="ConfirmarPassword">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-bell"></i> Preferencias de Notificación
+            </h3>
+
+            <div class="form-group">
+                <label class="form-label">Método de notificación:</label>
                 <input type="hidden" id="usuarioid" value="@Model.UserID" />
-        <select class="form-control" id="preferenciaNotificacion">
-            <option value="Correo">Correo</option>
-            <option value="WhatsApp">WhatsApp</option>
-            <option value="Ambos">Ambos</option>
-        </select>
-        <button onclick="guardarPreferencia()">Guardar Preferencia</button>
-    </div>
-     </div>
-</form>
+                <div class="select-with-icon">
+                    <i class="fas fa-comment-alt"></i>
+                    <select class="form-input" id="preferenciaNotificacion">
+                        <option value="Correo">Correo Electrónico</option>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Ambos">Ambos métodos</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" class="action-button secondary" onclick="guardarPreferencia()">
+                <i class="fas fa-save"></i> Guardar Preferencia
+            </button>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="action-button secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </button>
+            <button type="submit" class="action-button primary">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Agrega Font Awesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
 
 <script>
     document.getElementById("editarPerfilForm").addEventListener("submit", function (event) {
@@ -69,29 +121,30 @@
 
         if (nuevaPassword !== confirmarPassword) {
             alert("Las contraseñas no coinciden.");
-            event.preventDefault(); // Evita el envío del formulario
+            event.preventDefault();
         }
     });
 
     async function guardarPreferencia() {
         let metodo = document.getElementById("preferenciaNotificacion").value;
-        let userID = document.getElementById("usuarioid").value; 
-        console.log(userID);
-        let response = await fetch("/api/notificaciones/preferencia", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userID, metodo })
-        });
+        let userID = document.getElementById("usuarioid").value;
 
-        if (response.ok) {
-            alert("✅ Preferencia guardada.");
-        } else {
-            alert("❌ Error al guardar preferencia.");
+        try {
+            let response = await fetch("/api/notificaciones/preferencia", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userID, metodo })
+            });
+
+            if (response.ok) {
+                alert("✅ Preferencia guardada correctamente.");
+            } else {
+                let error = await response.json();
+                alert(`❌ Error al guardar preferencia: ${error.message || 'Inténtalo de nuevo'}`);
+            }
+        } catch (error) {
+            console.error("Error al guardar preferencia:", error);
+            alert("❌ Ocurrió un error en la conexión.");
         }
-     }
-
+    }
 </script>
-
-</body>
-
-</html>

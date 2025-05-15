@@ -3,29 +3,40 @@
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - Salón de Belleza</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Beauty Salon</title>
 
-    <link href="~/css/Principal.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans&display=swap" rel="stylesheet" />
-  
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
+    <link href="~/css/Layout.css" rel="stylesheet" />
+   
+    @RenderSection("Styles", required: false)
     @RenderSection("Head", required: false)
 </head>
 <body>
-
     <nav class="navbar">
         <div class="logo">
             <a asp-page="/Index">
-            <img src="~/img/Bts.png" alt="Logo del salón" width="50px" />
+                <img src="~/img/Bts.png" alt="Logo del salón" width="50" />
             </a>
             <span>Beauty Salon</span>
         </div>
         <div class="nav-links">
-            
-            <a asp-area="" asp-page="/Usuarios/Login-register">Iniciar Sesión</a>
-            <a asp-area="" asp-page="/Contacto">Contacto</a>
-            <a asp-area="" asp-page="/Informacion">Información</a>
+            <a asp-area="" asp-page="/Usuarios/Login-register">
+                <i class="fas fa-user-circle"></i> Iniciar Sesión
+            </a>
+            <a asp-area="" asp-page="/Contacto">
+                <i class="fas fa-envelope"></i> Contacto
+            </a>
+            <a asp-area="" asp-page="/Informacion">
+                <i class="fas fa-info-circle"></i> Información
+            </a>
         </div>
     </nav>
 
@@ -35,11 +46,11 @@
 
     <footer class="simple-footer">
         <div class="footer-content">
-            <p>&copy; @DateTime.Now.Year Salón de Belleza. Todos los derechos reservados.</p>
+            <p>&copy; @DateTime.Now.Year Beauty Salon. Todos los derechos reservados.</p>
             <nav class="footer-links">
-                <a asp-page="/Index">Inicio</a>
-                <a asp-page="/Contacto">Contacto</a>
-                <a asp-page="/Informacion">Información</a>
+                <a asp-page="/Index"><i class="fas fa-home"></i> Inicio</a>
+                <a asp-page="/Contacto"><i class="fas fa-envelope"></i> Contacto</a>
+                <a asp-page="/Informacion"><i class="fas fa-info-circle"></i> Información</a>
             </nav>
         </div>
     </footer>

@@ -5,57 +5,227 @@
     ViewData["Title"] = "Home page";
 }
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="~/css/Index.css" rel="stylesheet" />
 
-<div class="container-slider">
-    <div class="slider" id="slider">
-        <div class="slider__section">
-            <img src="img/slider5.jpg" alt="" class="slider__img">
-        </div>
-        <div class="slider__section">
-            <img src="img/slider2.jpg" alt="" class="slider__img">
-        </div>
-        <div class="slider__section">
-            <img src="img/slider3.jpeg" alt="" class="slider__img">
-        </div>
-        <div class="slider__section">
-            <img src="img/slider4.jpeg" alt="" class="slider__img">
-        </div>
-    </div>
-    <div class="slider__btn slider__btn--derecha" id="btn-derecha">&#62;</div>
-    <div class="slider__btn slider__btn--izquierda" id="btn-izquierda">&#60;</div>
-</div>
+    
+</head>
+<body>
 
-<div class="container">
-    <div class="image-container">
-        <img src="img/slider3.jpeg" alt="Plato de espaguetis">
-    </div>
-    <div class="content">
-        <h2>Expertise In Industrial Solution</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-        <a href="#" class="button">Contacto</a>
-    </div>
-</div>
+    <!-- Hero Slider -->
+    <section class="hero-slider">
+        <div class="slider-container">
+            <div class="slider" id="slider">
+                <div class="slider-item">
+                    <img src="img/slider5.jpg" alt="Salón de belleza" class="slider-img">
+                    <div class="slider-caption">
+                        <h1>Transforma tu look</h1>
+                        <p>Servicios profesionales de belleza a tu medida</p>
 
-<h2>Nuestros Servicios</h2>
-<div class="card-container">
-    <div class="card">
-        <img src="img/slider1.jpg" alt="Imagen 1">
-        <h3>Peinados</h3>
-    </div>
-    <div class="card">
-        <img src="img/slider2.jpg" alt="Imagen 2">
-        <h3>Uñas</h3>
-    </div>
-    <div class="card">
-        <img src="img/slider3.jpeg" alt="Imagen 3">
-        <h3>Tintes</h3>
-    </div>
-    <div class="card">
-        <img src="img/slider5.jpg" alt="Imagen 3">
-        <h3>Cortes</h3>
-    </div>
-</div>
+                    </div>
+                </div>
+                <div class="slider-item">
+                    <img src="img/slider2.jpg" alt="Servicio de uñas" class="slider-img">
+                    <div class="slider-caption">
+                        <h1>Manos perfectas</h1>
+                        <p>Diseños exclusivos para tus uñas</p>
 
-@section Scripts {
-    <script src="/js/Carrusel.js"></script>
-}
+                    </div>
+                </div>
+                <div class="slider-item">
+                    <img src="img/slider3.jpeg" alt="Cortes de cabello" class="slider-img">
+                    <div class="slider-caption">
+                        <h1>Estilo único</h1>
+                        <p>Cortes modernos para resaltar tu personalidad</p>
+
+                    </div>
+                </div>
+                <div class="slider-item">
+                    <img src="img/slider4.jpeg" alt="Coloración profesional" class="slider-img">
+                    <div class="slider-caption">
+                        <h1>Color experto</h1>
+                        <p>Tintes de la mejor calidad para tu cabello</p>
+
+                    </div>
+                </div>
+            </div>
+            <button class="slider-nav slider-prev" id="btn-izquierda">&#10094;</button>
+            <button class="slider-nav slider-next" id="btn-derecha">&#10095;</button>
+            <div class="slider-dots"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="img/slider3.jpeg" alt="Nuestro salón" class="about-img">
+                    <div class="experience-badge">
+                        <span>CALIDAD Y CUIDADO</span>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h2 class="section-title">Excelencia en Belleza y Estilo</h2>
+                    <p class="highlight-text">En nuestro salón, combinamos técnicas tradicionales con las últimas tendencias para ofrecerte resultados excepcionales.</p>
+                    <p>Cada cliente recibe un tratamiento personalizado por nuestro equipo de profesionales certificados. Nos enorgullecemos de usar productos de la más alta calidad que cuidan tu cabello y piel.</p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-certificate"></i>
+                            <h4>Profesionales</h4>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-spa"></i>
+                            <h4>Productos Premium</h4>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-heart"></i>
+                            <h4>Trato Personalizado</h4>
+                        </div>
+                    </div>
+                    <a href="/Contacto" class="btn btn-outline">Conoce más</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section" id="servicios">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <p class="section-subtitle">Descubre todo lo que podemos hacer por ti</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="img/slider1.jpg" alt="Peinados">
+                        <div class="service-overlay">
+                        </div>
+                    </div>
+                    <div class="service-info">
+                        <h3>Peinados</h3>
+                        <p>Para bodas, eventos especiales o tu día a día</p>
+                        <div class="service-meta">
+                            <span class="price">Desde $250</span>
+                            <span class="duration">1-2 hrs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="img/slider2.jpg" alt="Uñas">
+                        <div class="service-overlay">
+                        </div>
+                    </div>
+                    <div class="service-info">
+                        <h3>Uñas</h3>
+                        <p>Manicure, pedicure y diseños personalizados</p>
+                        <div class="service-meta">
+                            <span class="price">Desde $180</span>
+                            <span class="duration">45-90 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="img/slider3.jpeg" alt="Tintes">
+                        <div class="service-overlay">
+                        </div>
+                    </div>
+                    <div class="service-info">
+                        <h3>Tintes</h3>
+                        <p>Coloración profesional con productos de calidad</p>
+                        <div class="service-meta">
+                            <span class="price">Desde $400</span>
+                            <span class="duration">2-3 hrs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="img/slider5.jpg" alt="Cortes">
+                        <div class="service-overlay">
+                        </div>
+                    </div>
+                    <div class="service-info">
+                        <h3>Cortes</h3>
+                        <p>Estilo personalizado para cada tipo de cabello</p>
+                        <div class="service-meta">
+                            <span class="price">Desde $200</span>
+                            <span class="duration">30-60 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="/Servicios" class="btn btn-primary">Ver todos los servicios</a>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>¿Lista para tu próxima transformación?</h2>
+                <p>Reserva tu cita ahora y recibe un 10% de descuento en tu primer servicio</p>
+                <div class="cta-buttons">
+                    <a href="/Reservar" class="btn btn-light">Reservar ahora</a>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Preview Section -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Consejos de belleza</h2>
+                <p class="section-subtitle">Aprende con nuestros expertos</p>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <img src="img/slider.jpg" alt="Cuidado del cabello" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Cuidado capilar</span>
+                        <h3>5 tips para mantener tu color vibrante</h3>
+                        <p>Aprende cómo prolongar la vida de tu coloración con estos sencillos consejos...</p>
+                        <a href="/Blog/cuidado-color" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <img src="img/slider1.jpg" alt="Tendencias" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Tendencias</span>
+                        <h3>Los cortes que dominarán este año</h3>
+                        <p>Descubre los estilos que todas las celebridades están luciendo esta temporada...</p>
+                        <a href="/Blog/tendencias-cortes" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <img src="img/slider2.jpg" alt="Cuidado de uñas" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Uñas</span>
+                        <h3>Diseños de uñas para cada ocasión</h3>
+                        <p>Inspírate con estas ideas para llevar tus uñas al siguiente nivel...</p>
+                        <a href="/Blog/disenos-unas" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/Slider.js"></script>
+
+</body>
+</html>
