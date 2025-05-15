@@ -13,7 +13,9 @@
 
 @if (!string.IsNullOrEmpty(Model.Mensaje))
 {
-    <div class="alert alert-danger">@Model.Mensaje</div>
+    <script>
+        alert('@Model.Mensaje')
+    </script>
 }
 
 <form method="post" id="editarPerfilForm">
