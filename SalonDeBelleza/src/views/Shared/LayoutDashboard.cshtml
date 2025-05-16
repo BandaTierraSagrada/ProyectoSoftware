@@ -14,7 +14,7 @@
 
     <!-- Favicon -->
     <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
-    <link href="~/css/LayoutAdm.css" rel="stylesheet" />
+    <link href="~/css/LDashboard.css" rel="stylesheet" />
 
     @RenderSection("Styles", required: false)
     @RenderSection("Head", required: false)
@@ -22,27 +22,19 @@
 <body>
     <nav class="navbar">
         <div class="logo">
-
-            <img src="~/img/Bts.png" alt="Logo del salón" width="50" />
-
+           
+                <img src="~/img/Bts.png" alt="Logo del salón" width="50" />
+            
             <span>Beauty Salon</span>
         </div>
         <div class="nav-links">
-            <a asp-area="" asp-page="/Citas/Calendario">
-                <i class="far fa-calendar-plus"></i> Agendar cita
+            <a asp-area="" asp-page="/Usuarios/Logout">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>
-            <a asp-area="" asp-page="/Administrador/AdminUsuarios">
-                <i class="fas fa-users-cog"></i> Gestionar usuarios
+            <a asp-area="" asp-page="/Usuarios/EditProfile">
+                <i class="fas fa-user-edit"></i> Editar Perfil
             </a>
-            <a asp-area="" asp-page="/Citas/CitasColaborador">
-                <i class="fas fa-list-ul"></i> Todas las citas
-            </a>
-            <a asp-area="" asp-page="/Administrador/HistorialNotificaciones">
-                <i class="fas fa-bell"></i> Notificaciones
-            </a>
-            <a asp-area="" asp-page="/Administrador/Inventario">
-                <i class="fas fa-boxes"></i> Inventario
-            </a>
+            
         </div>
     </nav>
 
@@ -53,7 +45,7 @@
     <footer class="simple-footer">
         <div class="footer-content">
             <p>&copy; @DateTime.Now.Year Beauty Salon. Todos los derechos reservados.</p>
-            
+           
         </div>
     </footer>
 
