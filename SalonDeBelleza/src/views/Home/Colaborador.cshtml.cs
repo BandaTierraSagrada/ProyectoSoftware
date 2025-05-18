@@ -19,8 +19,8 @@ namespace SalonDeBelleza.src.views.Home
         public int UserID { get; set; }
         public List<(DateTime FechaHora, string Cliente, string Colaborador)> CitasProximas { get; set; }
         public int TotalCitas { get; set; }
-        public int ClientesAtendidos { get; set; }
-        public string TiempoEstimado { get; set; }
+        public int ClientesAtendidos { get; set; } = 0;
+        public int TiempoEstimado { get; set; } = 0;
         public async Task OnGet()
         {
             Nombre = HttpContext.Session.GetString("Nombre") ?? "Invitado";
@@ -47,6 +47,12 @@ namespace SalonDeBelleza.src.views.Home
                 .ToListAsync()
                 .ContinueWith(t => t.Result
                 .Select(x => (x.FechaHora, x.Cliente, x.Colaborador)).ToList());
+
+            ClientesAtendidos = await _context.Citas
+                .Where(c => c.ColaboradorID == UserID && c.FechaHora.Day == hoy.Day && c.Estado == "Completada")
+                .CountAsync();
+
+            TiempoEstimado = await _context.Colaboradores.Where(c => c.UserID == UserID).Select(c => c.DuracionServicio).FirstOrDefaultAsync() * ClientesAtendidos;
 
             // Total de citas del día
             TotalCitas = await _context.Citas
