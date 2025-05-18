@@ -1,0 +1,54 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Beauty Salon</title>
+
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
+    <link href="~/css/LayoutAdm.css" rel="stylesheet" />
+
+    @RenderSection("Styles", required: false)
+    @RenderSection("Head", required: false)
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+
+            <img src="~/img/Bts.png" alt="Logo del salón" width="50" />
+
+            <span>Beauty Salon</span>
+        </div>
+        <div class="nav-links">
+            <a asp-area="" asp-page="/Citas/Calendario">
+                <i class="far fa-calendar-plus"></i> Agendar cita
+            </a>
+            <a asp-area="" asp-page="/Citas/CitasCliente">
+                <i class="fas fa-list-ul"></i> Mis citas
+            </a>
+
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="simple-footer">
+        <div class="footer-content">
+            <p>&copy; @DateTime.Now.Year Beauty Salon. Todos los derechos reservados.</p>
+
+        </div>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

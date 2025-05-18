@@ -2,7 +2,18 @@
 @model SalonDeBelleza.src.Citas.CalendarioModel
 @{
     ViewData["Title"] = "Reserva de Citas";
-    Layout = "~/src/views/Shared/LayoutAdmin.cshtml";
+    if (Model.Rol == "Colaborador")
+    {
+        Layout = "~/src/views/Shared/LayoutColab.cshtml";
+    }
+    else if (Model.Rol == "Cliente")
+	{
+		Layout = "~/src/views/Shared/LayoutCliente.cshtml";
+	}
+	else if (Model.Rol == "Administrador")
+    {
+        Layout = "~/src/views/Shared/LayoutAdmin.cshtml";
+    }
 }
 
 <link href="~/css/calendarioo.css" rel="stylesheet" />
