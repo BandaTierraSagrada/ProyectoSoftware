@@ -1,63 +1,133 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Home.ColaboradorModel
 @{
-	ViewData["Title"] = "Colaborador";
+    ViewData["Title"] = "Colaborador";
     Layout = "~/src/views/Shared/LayoutDashboard.cshtml";
 }
-<!---
 
-<button onclick="window.location.href='/Citas/Calendario'">Agendar Cita</button>
-<button onclick="window.location.href='/Citas/CitasColaborador'">Mis Citas</button>
--->
-<h2>Bienvenido, @Model.Nombre</h2>
-<div class="row mt-4">
-    <!-- Botón agendar -->
-    <div class="col-md-3 mb-3">
-        <a class="btn btn-primary w-100" asp-page="/Citas/Agendar">📅 Agendar Cita este es boton</a>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/DashBoardCola.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body>
 
-    <!-- Reloj -->
-    <div class="col-md-3 mb-3">
-        <div class="card text-center">
-            <div class="card-header bg-dark text-white">🕒 Reloj</div>
+    <div class="colaborador-dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-user-tie"></i> Panel del Colaborador
+            </h1>
+            <div class="user-info">
+                <span class="welcome-text">Bienvenido, <strong>@Model.Nombre</strong></span>
+                <span id="current-time" class="time-display"></span>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/Citas/Agendar" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+                <span>Agendar Cita</span>
+            </a>
+            <a href="/Citas/CitasColaborador" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span>Mis Citas</span>
+            </a>
+
+
+        </div>
+
+        <!-- Resumen del Día -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-day"></i> Resumen del Día</h3>
+            </div>
             <div class="card-body">
-                <h3 id="clock">--:--:--</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">@Model.TotalCitas</span>
+                            <span class="stat-label">Total de citas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">@Model.ClientesAtendidos</span>
+                            <span class="stat-label">Clientes atendidos</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-info">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">@Model.TiempoEstimado</span>
+                            <span class="stat-label">Tiempo estimado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Citas más próximas -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-clock"></i> Citas más próximas</h3>
+            </div>
+            <div class="card-body">
+                <div class="appointments-list">
+                    @foreach (var cita in Model.CitasProximas)
+                    {
+                        <div class="appointment-item">
+                            <div class="appointment-time">
+                                <span class="time">@cita.FechaHora.ToString("HH:mm")</span>
+                                <span class="date">@cita.FechaHora.ToString("dd/MM")</span>
+                            </div>
+                            <div class="appointment-details">
+                                <h4>@cita.Cliente</h4>
+                                
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn-icon" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Resumen del día -->
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-header bg-success text-white">📋 Resumen del Día</div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Total de citas: @Model.TotalCitas</li>
-                <li class="list-group-item">Clientes atendidos: @Model.ClientesAtendidos</li>
-                <li class="list-group-item">Tiempo estimado: @Model.TiempoEstimado</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- Citas más próximas -->
-<div class="card mt-4">
-    <div class="card-header bg-info text-white">📅 Citas más próximas</div>
-    <ul class="list-group list-group-flush">
-        @foreach (var cita in Model.CitasProximas)
-        {
-            <li class="list-group-item">
-                <strong>@cita.FechaHora.ToString("dd/MM/yyyy HH:mm")</strong> - @cita.Cliente
-            </li>
+    <script>
+        // Actualizar reloj en tiempo real
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-MX', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
         }
-    </ul>
-</div>
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 
-<script>
-    function updateClock() {
-        const now = new Date();
-        const time = now.toLocaleTimeString();
-        document.getElementById('clock').textContent = time;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
+</body>
+</html>

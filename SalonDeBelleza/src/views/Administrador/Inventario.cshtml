@@ -5,268 +5,284 @@
     Layout = "~/src/views/Shared/LayoutAdmin.cshtml";
 }
 
-<link href="~/css/Inventario.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/Inventario.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body>
 
-<div class="inventory-container">
-    <h1 class="page-title">Inventario de Productos</h1>
-
-    <div class="inventory-actions">
-        <div class="search-filter">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="filtro" class="search-input" placeholder="Filtrar por nombre..." onkeyup="filtrarProductos()">
+    <div class="inventory-dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-boxes"></i> Gestión de Inventario
+            </h1>
+            <a href="/Home/Administrador" class="back-button">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
         </div>
-        <button class="action-button primary" onclick="abrirModalCrear()">
-            <i class="fas fa-plus"></i> Crear Producto
-        </button>
-    </div>
 
-    <div class="table-container">
-        <table class="inventory-table" id="productosTable">
-            <thead>
-                <tr>
-                    <th class="table-header">Nombre</th>
-                    <th class="table-header">Descripción</th>
-                    <th class="table-header">Stock</th>
-                    <th class="table-header">Ajustar Stock</th>
-                    <th class="table-header">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="productosBody">
-                <!-- Productos serán cargados aquí con JavaScript -->
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Modal para crear o editar productos -->
-    <div id="modalProducto" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Nuevo Producto</h3>
-                <button class="close-button" onclick="cerrarModal()">&times;</button>
+        <!-- Actions and Search -->
+        <div class="inventory-actions">
+            <div class="search-filter">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="filtro" class="search-input" placeholder="Filtrar por nombre..." onkeyup="filtrarProductos()">
             </div>
-            <form id="formProducto" class="modal-form" onsubmit="guardarProducto(event)">
-                <input type="hidden" id="productoId">
+            <button class="action-button primary" onclick="abrirModalCrear()">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Nombre:</label>
-                    <input type="text" id="nombre" class="form-input" required>
+        <!-- Products Table -->
+        <div class="table-container">
+            <table class="inventory-table" id="productosTable">
+                <thead>
+                    <tr>
+                        <th class="table-header">Nombre</th>
+                        <th class="table-header">Descripción</th>
+                        <th class="table-header">Stock</th>
+                        <th class="table-header">Ajustar Stock</th>
+                        <th class="table-header">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productosBody">
+                    <!-- Products will be loaded here with JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Product Modal -->
+        <div id="modalProducto" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Nuevo Producto</h3>
+                    <button class="close-button" onclick="cerrarModal()">&times;</button>
                 </div>
+                <form id="formProducto" class="modal-form" onsubmit="guardarProducto(event)">
+                    <input type="hidden" id="productoId">
 
-                <div class="form-group">
-                    <label class="form-label">Descripción:</label>
-                    <textarea id="descripcion" class="form-input" rows="3" required></textarea>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Stock Mínimo:</label>
-                        <input type="number" id="stockMinimo" class="form-input" min="0" required>
+                        <label class="form-label">Nombre:</label>
+                        <input type="text" id="nombre" class="form-input" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Stock Actual:</label>
-                        <input type="number" id="stock" class="form-input" min="0" required>
+                        <label class="form-label">Descripción:</label>
+                        <textarea id="descripcion" class="form-input" rows="3" required></textarea>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">Categoría:</label>
-                    <select id="categoria" class="form-input"></select>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Stock Mínimo:</label>
+                            <input type="number" id="stockMinimo" class="form-input" min="0" required>
+                        </div>
 
-                <div class="form-actions">
-                    <button type="button" class="action-button secondary" onclick="cerrarModal()">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                    <button type="submit" class="action-button primary">
-                        <i class="fas fa-save"></i> Guardar
-                    </button>
-                </div>
-            </form>
+                        <div class="form-group">
+                            <label class="form-label">Stock Actual:</label>
+                            <input type="number" id="stock" class="form-input" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Categoría:</label>
+                        <select id="categoria" class="form-input"></select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="action-button secondary" onclick="cerrarModal()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="action-button primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- Agrega Font Awesome para los íconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarProductos();
+            cargarCategorias();
+        });
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        cargarProductos();
-        cargarCategorias();
-    });
+        // Load products from API
+        function cargarProductos() {
+            fetch('/api/inventario/productos')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('productosBody');
+                    tbody.innerHTML = '';
+                    data.forEach(producto => {
+                        const tr = document.createElement('tr');
 
-    // Cargar productos desde la API
-    function cargarProductos() {
-        fetch('/api/inventario/productos')
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById('productosBody');
-                tbody.innerHTML = '';
-                data.forEach(producto => {
-                    const tr = document.createElement('tr');
+                        // Determine low stock class
+                        const stockClass = producto.stock < producto.stockMinimo ? 'low-stock' : '';
 
-                    // Determinar clase de stock bajo
-                    const stockClass = producto.stock < producto.stockMinimo ? 'low-stock' : '';
-
-                    tr.innerHTML = `
-                        <td>${producto.nombre}</td>
-                        <td>${producto.descripcion}</td>
-                        <td class="${stockClass}">
-                            ${producto.stock}
-                            ${producto.stock < producto.stockMinimo ? '<i class="fas fa-exclamation-triangle warning-icon"></i>' : ''}
-                        </td>
-                        <td>
-                            <div class="stock-controls">
-                                <button class="stock-button" onclick="actualizarStock(${producto.productoID}, -1)">
-                                    <i class="fas fa-minus"></i>
+                        tr.innerHTML = `
+                            <td>${producto.nombre}</td>
+                            <td>${producto.descripcion}</td>
+                            <td class="${stockClass}">
+                                ${producto.stock}
+                                ${producto.stock < producto.stockMinimo ? '<i class="fas fa-exclamation-triangle warning-icon"></i>' : ''}
+                            </td>
+                            <td>
+                                <div class="stock-controls">
+                                    <button class="stock-button" onclick="actualizarStock(${producto.productoID}, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" value="1" min="1" class="stock-input" id="cantidad-${producto.productoID}">
+                                    <button class="stock-button" onclick="actualizarStock(${producto.productoID}, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="actions-cell">
+                                <button class="action-button warning" onclick="abrirModalEditar(${producto.productoID})">
+                                    <i class="fas fa-edit"></i> Editar
                                 </button>
-                                <input type="number" value="1" min="1" class="stock-input" id="cantidad-${producto.productoID}">
-                                <button class="stock-button" onclick="actualizarStock(${producto.productoID}, 1)">
-                                    <i class="fas fa-plus"></i>
+                                <button class="action-button danger" onclick="eliminarProducto(${producto.productoID})">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
                                 </button>
-                            </div>
-                        </td>
-                        <td class="actions-cell">
-                            <button class="action-button warning" onclick="abrirModalEditar(${producto.productoID})">
-                                <i class="fas fa-edit"></i> Editar
-                            </button>
-                            <button class="action-button danger" onclick="eliminarProducto(${producto.productoID})">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            })
-            .catch(error => console.error("Error al cargar los productos", error));
-    }
-
-    // Actualizar el stock de un producto
-    function actualizarStock(id, cantidad) {
-        const cantidadInput = document.getElementById(`cantidad-${id}`).value;
-        const cantidadFinal = cantidad === 1 ? parseInt(cantidadInput) : -parseInt(cantidadInput);
-
-        fetch(`/api/inventario/actualizarStock/${id}?cantidad=${cantidadFinal}`, {
-            method: 'POST'
-        })
-            .then(response => {
-                if (response.ok) {
-                    cargarProductos();
-                }
-            })
-            .catch(error => console.error("Error al actualizar el stock", error));
-    }
-
-    // Abrir el modal para crear un producto
-    function abrirModalCrear() {
-        document.getElementById('modalProducto').style.display = 'block';
-        document.getElementById('modalTitle').textContent = 'Nuevo Producto';
-        document.getElementById('productoId').value = '';
-        document.getElementById('formProducto').reset();
-    }
-
-    // Abrir el modal para editar un producto
-    function abrirModalEditar(id) {
-        fetch(`/api/inventario/producto/${id}`)
-            .then(response => response.json())
-            .then(producto => {
-                document.getElementById('modalTitle').textContent = 'Editar Producto';
-                document.getElementById('productoId').value = producto.productoID;
-                document.getElementById('nombre').value = producto.nombre;
-                document.getElementById('descripcion').value = producto.descripcion;
-                document.getElementById('stockMinimo').value = producto.stockMinimo;
-                document.getElementById('stock').value = producto.stock;
-                document.getElementById('categoria').value = producto.categoria;
-                document.getElementById('modalProducto').style.display = 'block';
-            })
-            .catch(error => console.error("Error al cargar el producto", error));
-    }
-
-    // Guardar producto (crear o editar)
-    function guardarProducto(event) {
-        event.preventDefault();
-        const id = document.getElementById('productoId').value;
-        const producto = {
-            nombre: document.getElementById('nombre').value,
-            descripcion: document.getElementById('descripcion').value,
-            stockMinimo: document.getElementById('stockMinimo').value,
-            stock: document.getElementById('stock').value,
-            categoria: document.getElementById('categoria').value
-        };
-
-        let url = '/api/inventario/crearProducto';
-        let method = 'POST';
-
-        if (id) {
-            url = `/api/inventario/actualizarProducto/${id}`;
-            method = 'PUT';
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error("Error al cargar los productos", error));
         }
 
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(producto)
-        })
-            .then(response => {
-                if (response.ok) {
-                    cargarProductos();
-                    cerrarModal();
-                }
-            })
-            .catch(error => console.error("Error al guardar el producto", error));
-    }
+        // Update product stock
+        function actualizarStock(id, cantidad) {
+            const cantidadInput = document.getElementById(`cantidad-${id}`).value;
+            const cantidadFinal = cantidad === 1 ? parseInt(cantidadInput) : -parseInt(cantidadInput);
 
-    // Eliminar producto
-    function eliminarProducto(id) {
-        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-            fetch(`/api/inventario/eliminarProducto/${id}`, {
-                method: 'DELETE'
+            fetch(`/api/inventario/actualizarStock/${id}?cantidad=${cantidadFinal}`, {
+                method: 'POST'
             })
                 .then(response => {
                     if (response.ok) {
                         cargarProductos();
                     }
                 })
-                .catch(error => console.error("Error al eliminar el producto", error));
+                .catch(error => console.error("Error al actualizar el stock", error));
         }
-    }
 
-    // Cerrar el modal
-    function cerrarModal() {
-        document.getElementById('modalProducto').style.display = 'none';
-    }
+        // Open modal to create product
+        function abrirModalCrear() {
+            document.getElementById('modalProducto').style.display = 'block';
+            document.getElementById('modalTitle').textContent = 'Nuevo Producto';
+            document.getElementById('productoId').value = '';
+            document.getElementById('formProducto').reset();
+        }
 
-    // Cargar las categorías desde la API
-    function cargarCategorias() {
-        fetch('/api/inventario/categorias')
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById('categoria');
-                select.innerHTML = '';
-                data.forEach(categoria => {
-                    const option = document.createElement('option');
-                    option.value = categoria;
-                    option.textContent = categoria;
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => console.error("Error al cargar las categorías", error));
-    }
+        // Open modal to edit product
+        function abrirModalEditar(id) {
+            fetch(`/api/inventario/producto/${id}`)
+                .then(response => response.json())
+                .then(producto => {
+                    document.getElementById('modalTitle').textContent = 'Editar Producto';
+                    document.getElementById('productoId').value = producto.productoID;
+                    document.getElementById('nombre').value = producto.nombre;
+                    document.getElementById('descripcion').value = producto.descripcion;
+                    document.getElementById('stockMinimo').value = producto.stockMinimo;
+                    document.getElementById('stock').value = producto.stock;
+                    document.getElementById('categoria').value = producto.categoria;
+                    document.getElementById('modalProducto').style.display = 'block';
+                })
+                .catch(error => console.error("Error al cargar el producto", error));
+        }
 
-    // Filtrar productos por nombre
-    function filtrarProductos() {
-        const filtro = document.getElementById('filtro').value.toLowerCase();
-        const filas = document.getElementById('productosBody').getElementsByTagName('tr');
-        Array.from(filas).forEach(fila => {
-            const nombre = fila.getElementsByTagName('td')[0].textContent.toLowerCase();
-            if (nombre.includes(filtro)) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
+        // Save product (create or edit)
+        function guardarProducto(event) {
+            event.preventDefault();
+            const id = document.getElementById('productoId').value;
+            const producto = {
+                nombre: document.getElementById('nombre').value,
+                descripcion: document.getElementById('descripcion').value,
+                stockMinimo: document.getElementById('stockMinimo').value,
+                stock: document.getElementById('stock').value,
+                categoria: document.getElementById('categoria').value
+            };
+
+            let url = '/api/inventario/crearProducto';
+            let method = 'POST';
+
+            if (id) {
+                url = `/api/inventario/actualizarProducto/${id}`;
+                method = 'PUT';
             }
-        });
-    }
-</script>
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(producto)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        cargarProductos();
+                        cerrarModal();
+                    }
+                })
+                .catch(error => console.error("Error al guardar el producto", error));
+        }
+
+        // Delete product
+        function eliminarProducto(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+                fetch(`/api/inventario/eliminarProducto/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            cargarProductos();
+                        }
+                    })
+                    .catch(error => console.error("Error al eliminar el producto", error));
+            }
+        }
+
+        // Close modal
+        function cerrarModal() {
+            document.getElementById('modalProducto').style.display = 'none';
+        }
+
+        // Load categories from API
+        function cargarCategorias() {
+            fetch('/api/inventario/categorias')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('categoria');
+                    select.innerHTML = '';
+                    data.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria;
+                        option.textContent = categoria;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar las categorías", error));
+        }
+
+        // Filter products by name
+        function filtrarProductos() {
+            const filtro = document.getElementById('filtro').value.toLowerCase();
+            const filas = document.getElementById('productosBody').getElementsByTagName('tr');
+            Array.from(filas).forEach(fila => {
+                const nombre = fila.getElementsByTagName('td')[0].textContent.toLowerCase();
+                if (nombre.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

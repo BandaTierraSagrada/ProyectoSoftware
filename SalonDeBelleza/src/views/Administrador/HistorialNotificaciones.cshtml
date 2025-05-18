@@ -1,7 +1,7 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Administrador.HistorialNotificacionesModel
 @{
-	ViewData["Title"] = "Historial de Notificaciones";
+    ViewData["Title"] = "Historial de Notificaciones";
     Layout = "~/src/views/Shared/LayoutAdmin.cshtml";
 }
 
@@ -10,17 +10,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="~/css/Notificaciones.css" rel="stylesheet" />
-    
+    <title>Document</title>
 </head>
 <body>
-    <div class="notifications-container">
-        <h2 class="page-title">Historial de Notificaciones</h2>
+    <div class="notifications-dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-bell"></i> Historial de Notificaciones
+            </h1>
+            <a href="/Home/Administrador" class="back-button">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
+        </div>
 
         <!-- Filtros -->
-        <div class="filters-form">
-        <form method="get" >
+        <form method="get" class="filters-form">
             <div class="filter-group">
                 <label for="fecha" class="filter-label">Fecha:</label>
                 <input type="date" name="fecha" value="@Model.FechaFiltro?.ToString("yyyy-MM-dd")" class="filter-input" />
@@ -38,12 +45,7 @@
             <button type="submit" class="filter-button">
                 <i class="fas fa-filter"></i> Filtrar
             </button>
-            
-
-            
         </form>
-            <button class="filter-button" onclick="window.location.href='/Home/Administrador'">Regresar</button>
-        </div>
 
         <!-- Tabla de notificaciones -->
         <div class="table-container">
@@ -68,7 +70,7 @@
                                 </span>
                             </td>
                             <td class="table-cell">@notificacion.Destinatario</td>
-                            <td class="table-cell message-cell">@notificacion.Mensaje</td>
+                            <td class="table-cell message-cell" title="@notificacion.Mensaje">@notificacion.Mensaje</td>
                             <td class="table-cell">
                                 @if (notificacion.Enviado)
                                 {
@@ -89,9 +91,5 @@
             </table>
         </div>
     </div>
-
-    <!-- Agrega Font Awesome para los íconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 </body>
 </html>
