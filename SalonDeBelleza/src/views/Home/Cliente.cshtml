@@ -1,9 +1,129 @@
 ﻿@page
 @model SalonDeBelleza.src.views.Home.ClienteModel
 @{
-	ViewData["Title"] = "Cliente";
-	Layout = "~/src/views/Shared/LayoutDashboard.cshtml";
+    ViewData["Title"] = "Panel del Cliente";
+    Layout = "~/src/views/Shared/LayoutDashboard.cshtml";
 }
-<h2>Bienvenido, @Model.Nombre</h2>
-<button onclick="window.location.href='/Citas/Calendario'">Agendar Cita</button>
-<button onclick="window.location.href='/Citas/CitasCliente'">Mis Citas</button>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="~/css/DashBoardCliente.css" rel="stylesheet" />
+    <title>Cliente</title>
+</head>
+<body>
+
+    <div class="client-dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-user"></i> Panel del Cliente
+            </h1>
+            <div class="user-info">
+                <span class="welcome-text">Bienvenido, <strong>@Model.Nombre</strong></span>
+                <span id="current-time" class="time-display"></span>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/Citas/Calendario" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+                <span>Agendar Cita</span>
+            </a>
+            <a href="/Citas/CitasCliente" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span>Mis Citas</span>
+            </a>
+
+        </div>
+
+
+
+        <!-- Multimedia Section -->
+        <div class="multimedia-section">
+            <!-- Video Container -->
+            <div class="video-container">
+                <h3 class="video-title">
+                    <i class="fas fa-music"></i> Multimedia
+                </h3>
+
+                <div class="video-wrapper">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/WMweEpGlu_U?si=0FTCyfObtplJ4aEs?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+
+            </div>
+
+            <!-- QR Container -->
+            <div class="qr-container">
+                <h3 class="qr-title">
+                    <i class="fas fa-qrcode"></i> QR DE CONTACTO
+                </h3>
+                <div class="qr-code">
+                    <!-- Aquí iría tu código QR real -->
+                    <img src="/img/imagen.png" alt="Contacto" class="fas fa-qrcode" style="height: 500px; width: 500px;">
+                </div>
+
+            </div>
+        </div>
+        <!-- Blog Preview Section -->
+        <section class="blog-section">
+            <div class="section-header">
+                <h2 class="section-title">Consejos de belleza</h2>
+                <p class="section-subtitle">Aprende con nuestros expertos</p>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <img src="/img/slider.jpg" alt="Cuidado del cabello" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Cuidado capilar</span>
+                        <h3>5 tips para mantener tu color vibrante</h3>
+                        <p>Aprende cómo prolongar la vida de tu coloración con estos sencillos consejos...</p>
+                        <a href="/Blog/cuidado-color" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <img src="/img/slider1.jpg" alt="Tendencias" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Tendencias</span>
+                        <h3>Los cortes que dominarán este año</h3>
+                        <p>Descubre los estilos que todas las celebridades están luciendo esta temporada...</p>
+                        <a href="/Blog/tendencias-cortes" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <img src="/img/slider1.jpg" alt="Cuidado de uñas" class="blog-img">
+                    <div class="blog-content">
+                        <span class="blog-category">Uñas</span>
+                        <h3>Diseños de uñas para cada ocasión</h3>
+                        <p>Inspírate con estas ideas para llevar tus uñas al siguiente nivel...</p>
+                        <a href="/Blog/disenos-unas" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Actualizar reloj en tiempo real
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-MX', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
