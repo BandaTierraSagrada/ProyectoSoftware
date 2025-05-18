@@ -1,18 +1,16 @@
-﻿
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: "Fredoka", sans-serif; 
+    font-family: "Fredoka", sans-serif;
     line-height: 1.6;
     background-color: #fffdfc;
     color: #333;
     padding: 0;
 }
-
 
 .hero-section {
     text-align: center;
@@ -27,13 +25,12 @@ body {
         font-size: 3rem;
         margin-bottom: 1rem;
         font-weight: bold;
-        font-family: "Zain", serif; 
+        font-family: "Zain", serif;
     }
 
     .hero-section p {
         font-size: 1.2rem;
     }
-
 
 .servicios {
     margin-bottom: 3rem;
@@ -53,7 +50,6 @@ body {
     gap: 1.5rem;
 }
 
-
 .servicio-card {
     background-color: #f9f5f0;
     border-left: 6px solid #7e5431;
@@ -68,20 +64,24 @@ body {
 
     .servicio-card h3 {
         color: #7e5431;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-family: "Zain", serif;
+        font-size: 2rem;
     }
 
     .servicio-card p {
         font-size: 0.95rem;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1rem;
     }
 
-.servicio-icono {
-    display: block;
-    width: 100px;
-    height: 40px;
-    margin: 0 auto 0.5rem;
-}
 
+.servicio-icono {
+    color: #7e5431;
+    display: block;
+    text-align: center;
+    margin-bottom: 1.5rem; 
+}
 
 .nosotros {
     background-color: #f9f5f0;
@@ -104,6 +104,7 @@ body {
         margin: 0 auto;
         text-align: center;
         font-size: 1rem;
+        font-family: 'Fredoka', sans-serif;
     }
 
 .nosotros-img {

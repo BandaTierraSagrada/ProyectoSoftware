@@ -1,4 +1,4 @@
-﻿
+﻿@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
 /* Imagen Informativa */
 .imagen-info img {
     width: 100%;
@@ -29,19 +29,20 @@
     align-items: center;
     width: 50px;
     height: 50px;
-    border: 2px solid black;
+    border: 2px solid #a67c52;
     border-radius: 50%;
     margin: 0 auto 10px;
 }
 
     .icono i {
         font-size: 22px;
-        color: black;
+        color: #a67c52;
     }
 
 /* Títulos */
 h2 {
-    color: #1c2d6b;
+    font-family: 'Zain', sans-serif;
+    color: #333333;
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 5px;
@@ -49,6 +50,7 @@ h2 {
 
 /* Texto */
 p {
+    font-family: 'Fredoka', sans-serif;
     color: #333;
     font-size: 16px;
     margin: 5px 0;
@@ -57,19 +59,12 @@ p {
 /* Estado de horario */
 .cerrado {
     font-weight: bold;
-    color: #1c2d6b;
+    color: #333333;
 }
 
 .abierto {
     font-weight: bold;
-    color: #1c2d6b;
-}
-
-/* Ícono de Facebook */
-.facebook {
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 10px;
+    color: #333333;
 }
 
 /* Footer */
