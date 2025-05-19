@@ -101,7 +101,7 @@ namespace SalonDeBelleza.src.views.Usuarios
 
             if (usuario == null)
             {
-                Mensaje = "Correo o contraseña incorrectos.";
+                Mensaje = "Correo o contrasena incorrectos.";
                 return Page();
             }
             HttpContext.Session.SetInt32("UserID", usuario.UserID);

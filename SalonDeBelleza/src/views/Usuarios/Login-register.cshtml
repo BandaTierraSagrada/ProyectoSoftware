@@ -14,7 +14,9 @@
 
         @if (!string.IsNullOrEmpty(Model.Mensaje))
         {
-            <div class="alert alert-danger">@Model.Mensaje</div>
+            <script>
+                alert('@Model.Mensaje')
+            </script>
         }
 
         <div class="tabs">
