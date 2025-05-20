@@ -32,7 +32,7 @@ namespace SalonDeBelleza.src.Citas
         public string EmailBusqueda { get; set; }
         public Usuario UsuarioEncontrado { get; private set; }
 
-        public List<string> ServiciosD { get; set; } = new List<string> { "Corte", "Tintes", "Manicura", "Pedicura" };
+        public List<string> ServiciosD { get; set; } = new List<string> { "Corte", "Tintes", "Unas","Cejas","Keratina", "Pestanas" };
 
         public void OnGet()
         {
