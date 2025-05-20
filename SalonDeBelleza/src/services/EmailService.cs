@@ -78,6 +78,7 @@ namespace SalonDeBelleza.src.services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al enviar correo: {ex.Message}");
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
