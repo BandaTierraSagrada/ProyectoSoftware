@@ -85,7 +85,7 @@ namespace SalonDeBelleza.src.Controllers
             _context.Citas.Add(nuevaCita);
             await _context.SaveChangesAsync();
             PreferenciaNotificacion preferencia = await _context.PreferenciasNotificaciones.FirstOrDefaultAsync(u => u.UserID == user.UserID);
-            string mensaje = $"Hola {user.Nombre}, tu cita ha sido agendada para {nuevaCita.FechaHora}.";
+            string mensaje = $"Hola {user.Nombre}, tu cita ha sido agendada para {nuevaCita.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")}.";
             if (preferencia.RecibirWhatsApp)
             {
                 await _whatsAppService.EnviarMensajeAsync("+521" + nuevaCita.Cliente.Telefono.ToString(), mensaje);

@@ -80,6 +80,7 @@ namespace SalonDeBelleza.src.views.Usuarios
                 Rol = Input.Rol
             };
             await _usuarioService.RegistrarUsuarioAsync(nuevoUsuario);
+            Mensaje = "Registrado correctamente";
             return RedirectToPage("/Usuarios/Login-register");
         }
         private async Task<IActionResult> HandleLogin()

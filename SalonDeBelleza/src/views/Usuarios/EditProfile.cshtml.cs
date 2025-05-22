@@ -26,11 +26,13 @@ namespace SalonDeBelleza.src.views.Usuarios
 
         public string Mensaje { get; set; }
         public int? UserID { get; set; }
+        public string Rol { get; private set; }
 
         public async Task<IActionResult> OnGet()
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
             UserID = userId;
+            Rol = HttpContext.Session.GetString("Rol") ?? "Cliente";
             if (userId == null)
             {
                 return RedirectToPage("/Usuarios/Login-register");

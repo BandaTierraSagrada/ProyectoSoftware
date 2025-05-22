@@ -86,7 +86,7 @@ namespace SalonDeBelleza.src.Controllers
         [HttpGet("categorias")]
         public ActionResult<IEnumerable<string>> ObtenerCategorias()
         {
-            var categorias = new List<string> { "Bebida", "Ropa", "Barra" };
+            var categorias = new List<string> { "Bebida", "Ropa", "Snack", "Limpieza","Articulos de Oficina","Desechables" };
             return Ok(categorias);
         }
 
