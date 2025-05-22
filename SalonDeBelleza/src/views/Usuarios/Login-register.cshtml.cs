@@ -81,7 +81,8 @@ namespace SalonDeBelleza.src.views.Usuarios
             };
             await _usuarioService.RegistrarUsuarioAsync(nuevoUsuario);
             Mensaje = "Registrado correctamente";
-            return RedirectToPage("/Usuarios/Login-register");
+            // return RedirectToPage("/Usuarios/Login-register");
+            return Page();
         }
         private async Task<IActionResult> HandleLogin()
         {
